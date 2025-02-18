@@ -13,6 +13,10 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  'person.fill': 'account-circle', // Account icon
+  'heart.fill': 'favorite', // Heart icon
+  'bookmark.fill': 'bookmark', // Bookmark icon
+  'bubble.left.and.bubble.right.fill': 'chat', // Messages icon
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
