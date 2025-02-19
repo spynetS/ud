@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { TextInput, Button, Avatar, Text, Divider, PaperProvider } from 'react-native-paper';
+import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+
+import { View, TextField, Button, Text, Avatar} from 'react-native-ui-lib';
+
+//<Divider d10 testID={'divider'}/>
+
 import * as ImagePicker from 'expo-image-picker';
+
+const Divider = ({ color = '#D3D3D3', height = 1, marginV = 10 }) => (
+  <View style={{ height, backgroundColor: color, width: '100%', marginVertical: marginV }} />
+);
 
 const ProfileScreen = () => {
   const [profile, setProfile] = useState({
@@ -39,56 +47,54 @@ const ProfileScreen = () => {
 
   return (
 
-      		  <ScrollView contentContainerStyle={styles.container}>
-			  {/* Profile Picture */}
-			  <View style={styles.profileContainer}>
-				  <TouchableOpacity onPress={pickImage}>
-					  <Avatar.Image size={100} source={{ uri: profile.profile_picture }} />
-				  </TouchableOpacity>
-				  <Text variant="titleLarge" style={styles.name}>{profile.name}</Text>
-			  </View>
+    <ScrollView contentContainerStyle={styles.container}>
+			{/* Profile Picture */}
+			<View style={styles.profileContainer}>
+				<TouchableOpacity onPress={pickImage}>
+					<Avatar size={100} source={{ uri: profile.profile_picture }} />
+				</TouchableOpacity>
+				<Text style={styles.name}>{profile.name}</Text>
+			</View>
 
-			  <Divider style={styles.divider} />
+			<Divider />
 
-			  {/* Editable Fields */}
-			  <View style={styles.form}>
-				  <TextInput
-					  label="Name"
-					  value={profile.name}
-					  onChangeText={(text) => setProfile({ ...profile, name: text })}
-					  mode="outlined"
-				  />
-				  <TextInput
-					  label="Pronouns"
-					  value={profile.pronoun}
-					  onChangeText={(text) => setProfile({ ...profile, pronoun: text })}
-					  mode="outlined"
-				  />
-				  <TextInput
-					  label="Bio"
-					  value={profile.bio}
-					  onChangeText={(text) => setProfile({ ...profile, bio: text })}
-					  mode="outlined"
-					  multiline
-				  />
-				  <TextInput
-					  label="Interests"
-					  value={profile.interests}
-					  onChangeText={(text) => setProfile({ ...profile, interests: text })}
-					  mode="outlined"
-				  />
-			  </View>
+			{/* Editable Fields */}
+			<View style={styles.form}>
+				<TextField
+					label="Name"
+					value={profile.name}
+					onChangeText={(text) => setProfile({ ...profile, name: text })}
+				/>
+				<TextField
+					label="Pronouns"
+					value={profile.pronoun}
+					onChangeText={(text) => setProfile({ ...profile, pronoun: text })}
+				/>
+				<TextField
+					label="Bio"
+					value={profile.bio}
+					onChangeText={(text) => setProfile({ ...profile, bio: text })}
+					multiline
+				/>
+				<TextField
+					label="Interests"
+					value={profile.interests}
+					onChangeText={(text) => setProfile({ ...profile, interests: text })}
+				/>
+			</View>
 
-			  {/* Save Button */}
-			  <Button
-				  mode="contained"
-				  onPress={saveProfile}
-				  loading={loading}
-				  style={styles.saveButton}
-			  >
-				  Save Profile
-			  </Button>
-		  </ScrollView>
+			{/* Save Button */}
+			<Button
+				onPress={saveProfile}
+								loading={loading}
+								style={styles.saveButton}
+			>
+				<Text>
+					Save Profile
+				</Text>
+
+			</Button>
+		</ScrollView>
   );
 };
 
@@ -115,3 +121,4 @@ const styles = StyleSheet.create({
 });
 
 export default ProfileScreen;
+2
