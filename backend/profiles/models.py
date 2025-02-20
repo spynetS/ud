@@ -8,15 +8,19 @@ class CustomUser(AbstractUser):
         # Add more pronoun choices as needed
     ]
 
+    first_name = models.CharField(max_length=30, blank=True)  # Already exists in AbstractUser
+    last_name = models.CharField(max_length=30, blank=True)   # Already exists in AbstractUser
     pronoun         = models.CharField(max_length=10, choices=PRONOUN_CHOICES, blank=True)
     location        = models.CharField(max_length=255, blank=True)
-    category        = models.CharField(max_length=50, blank=True)
+    programe        = models.CharField(max_length=50, blank=True)
     school          = models.CharField(max_length=255, blank=True)
     about           = models.TextField(blank=True)
     details         = models.JSONField(default=list, blank=True)  # Stores a list of details
     interests       = models.JSONField(default=list, blank=True)  # Stores a list of interests
     profile_picture = models.ImageField(upload_to='uploads/', blank=True, null=True)
     more_images     = models.ManyToManyField('UserImage', blank=True, related_name='users')
+
+    bookmarks       = models.ManyToManyField('CustomUser',related_name='bookmarked_by',blank=True)
 
     groups = models.ManyToManyField(
         Group,

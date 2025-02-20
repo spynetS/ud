@@ -21,6 +21,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -42,10 +44,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "rest_framework",
+    'rest_framework',
+    'rest_framework_simplejwt',
     "profiles",
     "corsheaders",
 ]
+
+AUTH_USER_MODEL = 'profiles.CustomUser'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -66,6 +79,21 @@ REST_FRAMEWORK = {
 
 CORS_ALLOW_ALL_ORIGINS = True  # Allow React Native frontend to connect
 
+CORS_ALLOWED_ORIGINS = [
+    "http://192.168.1.119",  # Your React Native device IP
+    "http://localhost:8081",  # If testing on web
+]
+
+# Allow Authorization headers (important for JWT)
+CORS_ALLOW_HEADERS = [
+    'authorization',
+    'content-type',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://192.168.1.119",
+    "http://localhost:8081"
+]
 
 ROOT_URLCONF = 'backend.urls'
 

@@ -1,28 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import axios from "axios"
 
 import { View, TextField, Button, Text, Avatar} from 'react-native-ui-lib';
+import { useFocusEffect } from '@react-navigation/native';
 
 //<Divider d10 testID={'divider'}/>
 
 import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Divider = ({ color = '#D3D3D3', height = 1, marginV = 10 }) => (
   <View style={{ height, backgroundColor: color, width: '100%', marginVertical: marginV }} />
 );
 
 const ProfileScreen = () => {
-  const [profile, setProfile] = useState({
-    name: 'John Doe',
-    pronoun: 'He/Him',
-    bio: 'A passionate explorer and software developer.',
-    interests: 'Coding, Hiking, Photography',
-    profile_picture: 'https://via.placeholder.com/150', // Default profile pic
-  });
+  const [profile, setProfile] = useState({});
 
   const [loading, setLoading] = useState(false);
 
-  // Function to handle image selection
+	useFocusEffect(useCallback(() => {
+    const fetchUserData = async () => {
+            try {
+                const token = await AsyncStorage.getItem('access_token');
+                if (!token) throw new Error("No token found!");
+								console.log(token)
+                const response = await axios.get("http://192.168.1.119:8000/api/user/", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                setProfile(response.data);  // Store user data
+			
+            } catch (err) {
+      
+            } finally {
+                setLoading(false); // Stop loading state
+            }
+        };
+
+        fetchUserData();
+  },[]));
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -53,7 +73,7 @@ const ProfileScreen = () => {
 				<TouchableOpacity onPress={pickImage}>
 					<Avatar size={100} source={{ uri: profile.profile_picture }} />
 				</TouchableOpacity>
-				<Text style={styles.name}>{profile.name}</Text>
+				<Text style={styles.name}>{profile.username}</Text>
 			</View>
 
 			<Divider />
@@ -62,7 +82,7 @@ const ProfileScreen = () => {
 			<View style={styles.form}>
 				<TextField
 					label="Name"
-					value={profile.name}
+					value={profile.username}
 					onChangeText={(text) => setProfile({ ...profile, name: text })}
 				/>
 				<TextField
@@ -72,7 +92,7 @@ const ProfileScreen = () => {
 				/>
 				<TextField
 					label="Bio"
-					value={profile.bio}
+					value={profile.about}
 					onChangeText={(text) => setProfile({ ...profile, bio: text })}
 					multiline
 				/>
