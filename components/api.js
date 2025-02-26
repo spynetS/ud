@@ -2,7 +2,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const api = axios.create({
-  baseURL: "http://your-api-url.com/api",
+  baseURL: "http://192.168.1.119:8000/api",
 });
 
 api.interceptors.request.use(
@@ -16,7 +16,7 @@ api.interceptors.request.use(
       const refreshToken = await AsyncStorage.getItem("refresh_token");
       try {
         const response = await axios.post(
-          "http://your-api-url.com/api/token/refresh/",
+          "http://192.168.1.119:8000/api/token/refresh/",
           {
             refresh: refreshToken,
           },

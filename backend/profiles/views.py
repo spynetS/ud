@@ -2,6 +2,7 @@ from rest_framework import generics, permissions
 from .models import CustomUser
 from .serializers import CustomUserSerializer
 
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
@@ -9,6 +10,8 @@ from rest_framework.decorators import api_view, permission_classes
 
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.exceptions import TokenError
+
 
 User = get_user_model()
 
@@ -58,16 +61,49 @@ def login_user(request):
 
     if user is not None:
         refresh = RefreshToken.for_user(user)
+        access_token = refresh.access_token
+        expire_timestamp = access_token.payload["exp"]  # Correct way to access expiration
+
         return Response({
             "message": "Login successful",
-            "access_token": str(refresh.access_token),
+            "access_token": str(access_token),
             "refresh_token": str(refresh),
+            "expire": expire_timestamp,
             "user": user.username
         })
     else:
         return Response({"error": "Invalid credentials"}, status=400)
 
+@api_view(['POST'])
+def refresh_token(request):
+    refresh_token = request.data.get('refresh_token')
+    if not refresh_token:
+        return Response({"error": "Refresh token is required"}, status=400)
 
+    try:
+        refresh = RefreshToken(refresh_token)
+        access_token = str(refresh.access_token)
+        return Response({
+            "message": "Token refreshed successfully",
+            "access_token": access_token
+        })
+    except TokenError:
+        return Response({"error": "Invalid or expired refresh token"}, status=400)
+
+class Top100UsersView(generics.ListAPIView):
+    queryset = CustomUser.objects.order_by('-swipes')
+    serializer_class = CustomUserSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['pronoun','programe','location','school']  # Define filterable fields
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def swipe(request):
+    swiped_user = CustomUser.objects.get(pk=request.data.get('id'))
+    swiped_user.swipes = swiped_user.swipes+1
+    swiped_user.save()
+
+    return Response({"user":swiped_user.username})
 
 @api_view(['GET'])
 #@permission_classes([IsAuthenticated])  # Requires token authentication

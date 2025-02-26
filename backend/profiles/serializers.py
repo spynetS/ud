@@ -13,5 +13,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = [
             'id', 'username','first_name','last_name', 'email', 'pronoun', 'programe', 'location',
-            'about', 'details', 'interests', 'profile_picture', 'more_images', 'bookmarks'
-        ]
+            'about', 'details', 'interests', 'profile_picture', 'more_images', 'bookmarks', 'swipes'
+
+]

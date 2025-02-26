@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import axios from "axios"
 
 import { View, TextField, Button, Text, Avatar} from 'react-native-ui-lib';
@@ -21,26 +21,26 @@ const ProfileScreen = () => {
 
 	useFocusEffect(useCallback(() => {
     const fetchUserData = async () => {
-            try {
-                const token = await AsyncStorage.getItem('access_token');
-                if (!token) throw new Error("No token found!");
-								console.log(token)
-                const response = await axios.get("http://192.168.1.119:8000/api/user/", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
-                setProfile(response.data);  // Store user data
-			
-            } catch (err) {
-      
-            } finally {
-                setLoading(false); // Stop loading state
-            }
-        };
+      try {
+        const token = await AsyncStorage.getItem('access_token');
+        if (!token) throw new Error("No token found!");
+				console.log(token)
+        const response = await axios.get("http://192.168.1.119:8000/api/user/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        setProfile(response.data);  // Store user data
 
-        fetchUserData();
+      } catch (err) {
+
+      } finally {
+        setLoading(false); // Stop loading state
+      }
+    };
+
+    fetchUserData();
   },[]));
 
   const pickImage = async () => {
@@ -66,55 +66,60 @@ const ProfileScreen = () => {
   };
 
   return (
+		<SafeAreaView>
 
-    <ScrollView contentContainerStyle={styles.container}>
-			{/* Profile Picture */}
-			<View style={styles.profileContainer}>
-				<TouchableOpacity onPress={pickImage}>
-					<Avatar size={100} source={{ uri: profile.profile_picture }} />
-				</TouchableOpacity>
-				<Text style={styles.name}>{profile.username}</Text>
-			</View>
+			<ScrollView contentContainerStyle={styles.container}>
+				<View>
 
-			<Divider />
 
-			{/* Editable Fields */}
-			<View style={styles.form}>
-				<TextField
-					label="Name"
-					value={profile.username}
-					onChangeText={(text) => setProfile({ ...profile, name: text })}
-				/>
-				<TextField
-					label="Pronouns"
-					value={profile.pronoun}
-					onChangeText={(text) => setProfile({ ...profile, pronoun: text })}
-				/>
-				<TextField
-					label="Bio"
-					value={profile.about}
-					onChangeText={(text) => setProfile({ ...profile, bio: text })}
-					multiline
-				/>
-				<TextField
-					label="Interests"
-					value={profile.interests}
-					onChangeText={(text) => setProfile({ ...profile, interests: text })}
-				/>
-			</View>
+					<View style={styles.profileContainer}>
+						<TouchableOpacity onPress={pickImage}>
+							<Avatar size={100} source={{ uri: profile.profile_picture }} />
+						</TouchableOpacity>
+						<Text style={styles.name}>{profile.username}</Text>
+					</View>
 
-			{/* Save Button */}
-			<Button
-				onPress={saveProfile}
-								loading={loading}
-								style={styles.saveButton}
-			>
-				<Text>
-					Save Profile
-				</Text>
+					<Divider />
 
-			</Button>
-		</ScrollView>
+					{/* Editable Fields */}
+					<View style={styles.form}>
+						<TextField
+							label="Name"
+							value={profile.username}
+							onChangeText={(text) => setProfile({ ...profile, name: text })}
+						/>
+						<TextField
+							label="Pronouns"
+							value={profile.pronoun}
+							onChangeText={(text) => setProfile({ ...profile, pronoun: text })}
+						/>
+						<TextField
+							label="Bio"
+							value={profile.about}
+							onChangeText={(text) => setProfile({ ...profile, bio: text })}
+							multiline
+						/>
+						<TextField
+							label="Interests"
+							value={profile.interests}
+							onChangeText={(text) => setProfile({ ...profile, interests: text })}
+						/>
+					</View>
+
+					{/* Save Button */}
+					<Button
+						onPress={saveProfile}
+										loading={loading}
+										style={styles.saveButton}
+					>
+						<Text>
+							Save Profile
+						</Text>
+
+					</Button>
+				</View>
+			</ScrollView>
+		</SafeAreaView>
   );
 };
 

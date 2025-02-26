@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import API from "@/components/api";
 
 const LoginScreen = () => {
     const [username, setUsername] = useState('');
@@ -21,6 +22,7 @@ const LoginScreen = () => {
                 // Store token securely
                 await AsyncStorage.setItem('access_token', json.access_token);
                 await AsyncStorage.setItem('refresh_token', json.refresh_token);
+                await AsyncStorage.setItem('token_expiry', json.expire.toString());
 
                 Alert.alert("Success", json.message);
             } else {

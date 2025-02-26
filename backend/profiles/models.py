@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
+from django.db.models.fields.files import default_storage
 
 class CustomUser(AbstractUser):
     PRONOUN_CHOICES = [
@@ -19,6 +20,9 @@ class CustomUser(AbstractUser):
     interests       = models.JSONField(default=list, blank=True)  # Stores a list of interests
     profile_picture = models.ImageField(upload_to='uploads/', blank=True, null=True)
     more_images     = models.ManyToManyField('UserImage', blank=True, related_name='users')
+
+    swipes          = models.BigIntegerField(default=0);
+
 
     bookmarks       = models.ManyToManyField('CustomUser',related_name='bookmarked_by',blank=True)
 
