@@ -114,9 +114,7 @@ const SwipeScreen = () => {
 	const [visible, setVisible] = useState(false)
 
 	useFocusEffect(useCallback(()=>{
-		API.get('/ranking/?location=Karlstad').then(response=>{
-			console.log(response)
-		})
+
 		API.get('/get_swipes')
 			 .then(function (response) {
 				 // handle success
