@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import {Typography, Colors, Spacings} from 'react-native-ui-lib';
+import {Typography, Colors, Text} from 'react-native-ui-lib';
 import ProfileSwipeScreen from './(tabs)/profileswipe';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -23,9 +23,25 @@ export default function RootLayout() {
   });
 
 
+
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    CustomFont: require('../assets/fonts/KOMIKAX_.ttf'),
   });
+
+  Typography.loadTypographies({
+    heading: { fontFamily: 'CustomFont', fontSize: 24 },
+    body: { fontFamily: 'CustomFont', fontSize: 16 },
+    text90: { fontFamily: 'CustomFont', fontSize: 16 },
+    text: { fontFamily: 'CustomFont', fontSize: 16 },
+    text40: { fontFamily: 'CustomFont', fontSize: 16 },
+
+    default: { fontFamily: 'CustomFont', fontSize: 16 },
+  });
+
+  Text.defaultProps = {
+    style: { fontFamily: 'CustomFont' }
+  };
+
 
   useEffect(() => {
     if (loaded) {
@@ -40,7 +56,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <StatusBar hidden={false} style="light" />
-      <Stack>
+      <Stack >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

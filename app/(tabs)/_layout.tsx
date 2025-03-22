@@ -13,6 +13,7 @@ export default function TabLayout() {
         tabBarInactiveTintColor: '#888', // Gray for inactive tabs
         tabBarShowLabel: false, // ✅ Hides the text labels
         headerShown: false,
+
         tabBarStyle: {
           position: 'absolute',
           bottom: 0,
@@ -51,6 +52,7 @@ export default function TabLayout() {
 
       <Tabs.Screen
         name="index"
+
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="hand-o-right" size={size} color={color} />
