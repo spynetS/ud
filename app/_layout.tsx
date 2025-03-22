@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import {Typography, Colors, Text} from 'react-native-ui-lib';
-import ProfileSwipeScreen from './(tabs)/profileswipe';
+
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -58,6 +58,7 @@ export default function RootLayout() {
       <StatusBar hidden={false} style="light" />
       <Stack >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

@@ -19,6 +19,10 @@ User = get_user_model()
 @permission_classes([IsAuthenticated])  # Requires token authentication
 def get_user_data(request):
     user = request.user  # Get user from token
+    bookmarks = []
+    for b in user.bookmarks.all():
+        bookmarks.append(b.pk)
+
     return Response({
         "id": user.id,
         "username": user.username,
@@ -29,6 +33,7 @@ def get_user_data(request):
         "school": user.school,
         "about": user.about,
         "details": user.details,
+        "bookmarks": bookmarks,
         "interests": user.interests,
         "profile_picture": request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
     })

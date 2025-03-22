@@ -4,6 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import API from "@/components/api";
 
+import {router} from "expo-router";
+
+
 const LoginScreen = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -25,6 +28,7 @@ const LoginScreen = () => {
                 await AsyncStorage.setItem('token_expiry', json.expire.toString());
 
                 Alert.alert("Success", json.message);
+                router.push("/", { relativeToDirectory: true })
             } else {
                 Alert.alert("Error", json.error);
             }

@@ -70,7 +70,7 @@ export default function TabLayout() {
 
       {/* ✅ Profile Tab with Icon */}
       <Tabs.Screen
-        name="login"
+        name="profile"
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="user" size={size} color={color} />
