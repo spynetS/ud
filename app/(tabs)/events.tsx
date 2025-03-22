@@ -18,8 +18,8 @@ const { height, width } = Dimensions.get('window');
 const RoundButton = ({ onPress, iconName }) => {
   return (
       <TouchableOpacity style={{
-		  width: 64,
-		  height: 64,
+		  width: 50,
+		  height: 50,
 		  borderRadius: 25, // Makes it round
 		  //backgroundColor: "#007AFF", // Change color as needed
 		  justifyContent: "center",
@@ -69,6 +69,7 @@ const ProfileCard = ({ card, open }) => {
 											containerStyle={{
 												borderWidth: 0,
 												width:80
+												//marginLeft: Spacings.s3
 											}}/>
 							<Text white text90>
 								{card.programe}
@@ -78,8 +79,11 @@ const ProfileCard = ({ card, open }) => {
 							</Text>
 
 						</View>
-						<View style={{position:"absolute",right:20}}>
+						<View style={{flex:1, flexDirection:'row', justifyContent:"end", width:"100%",marginTop:15, paddingRight:15}}>
 							<RoundButton iconName="heart" onPress={()=> bookmark(card.id)} />
+							{/* <Link href={`profileswipe?userId=${card.id}`}>
+								<RoundButton iconName="info" />
+								</Link> */}
 						</View>
 					</View>
 				</View>
@@ -150,14 +154,11 @@ const SwipeScreen = () => {
 
 
 			{/* Swiper should take the rest of the space */}
-			<View style={{ flex: 1, backgroundColor: "pink", overflow: 'visible'}}>
+			<View style={{ flex: 1, backgroundColor: "pink" }}>
 				<Swiper
-					showSecondCard={true}
 					cards={profiles}
-
 					renderCard={(card) => <ProfileCard card={card} open={()=>setVisible(true)} />}
-					stackSize={2}
-					useViewOverflow={false} // ✅ Fix for Android clipping issue
+					stackSize={3}
 					verticalSwipe={false}
 					onSwipedRight={e=>swiped(profiles[e])}
 					containerStyle={{ marginTop: 0, backgroundColor:Colors.$backgroundDefault }}
