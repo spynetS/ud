@@ -21,7 +21,7 @@ const RoundButton = ({ onPress, iconName }) => {
 		  width: 50,
 		  height: 50,
 		  borderRadius: 25, // Makes it round
-		  backgroundColor: "#007AFF", // Change color as needed
+		  //backgroundColor: "#007AFF", // Change color as needed
 		  justifyContent: "center",
 		  alignItems: "center",
 		  elevation: 5, // Adds shadow on Android
@@ -30,7 +30,7 @@ const RoundButton = ({ onPress, iconName }) => {
 		  shadowOpacity: 0.3,
 		  shadowRadius: 2,
 	  }} onPress={onPress}>
-		  <Icon name={iconName} size={24} color="#fff" />
+		  <Icon name={iconName} size={64} color={Colors.primary} />
       </TouchableOpacity>
   );
 };
@@ -53,7 +53,7 @@ const ProfileCard = ({ card, open }) => {
 			<ScrollView >
 				<View style={{width:"100%", height:height-150}}>
 					<Image
-						style={{ flex: 1, width: '100%',borderRadius: 20 }}
+						style={{ flex: 1, width: '100%',borderRadius: 100 }}
 									resizeMode="cover"
 									source={{uri: `http://192.168.1.119:8000/${card.profile_picture}`}}/>
 					<View style={{position:"absolute", bottom:15, left:15,width:"100%"}}  >
@@ -79,11 +79,11 @@ const ProfileCard = ({ card, open }) => {
 							</Text>
 
 						</View>
-						<View style={{flex:1, flexDirection:'row', justifyContent:"space-around", width:"100%",marginTop:15, paddingRight:15}}>
+						<View style={{flex:1, flexDirection:'row', justifyContent:"end", width:"100%",marginTop:15, paddingRight:15}}>
 							<RoundButton iconName="heart" onPress={()=> bookmark(card.id)} />
-							<Link href={`profileswipe?userId=${card.id}`}>
+							{/* <Link href={`profileswipe?userId=${card.id}`}>
 								<RoundButton iconName="info" />
-							</Link>
+								</Link> */}
 						</View>
 					</View>
 				</View>
@@ -144,8 +144,11 @@ const SwipeScreen = () => {
 			>
 				<SegmentedControl
 					segments={[{ label: 'Sverige' }, { label: 'Lunds Universited' }]}
-									 activeBackgroundColor={Colors.$backgroundPrimaryHeavy}
-									 activeColor={Colors.white}
+					activeBackgroundColor={Colors.white}
+					activeColor={Colors.primary}
+					backgroundColor={Colors.primary}
+					inactiveColor={Colors.white}
+					style={{height:50,width:"90%"}}
 				/>
 			</View>
 
@@ -154,11 +157,11 @@ const SwipeScreen = () => {
 			<View style={{ flex: 1, backgroundColor: "pink" }}>
 				<Swiper
 					cards={profiles}
-								renderCard={(card) => <ProfileCard card={card} open={()=>setVisible(true)} />}
-								stackSize={3}
-								verticalSwipe={false}
-								onSwipedRight={e=>swiped(profiles[e])}
-								containerStyle={{ marginTop: 0, backgroundColor:Colors.$backgroundDefault }}
+					renderCard={(card) => <ProfileCard card={card} open={()=>setVisible(true)} />}
+					stackSize={3}
+					verticalSwipe={false}
+					onSwipedRight={e=>swiped(profiles[e])}
+					containerStyle={{ marginTop: 0, backgroundColor:Colors.$backgroundDefault }}
 				/>
 			</View>
 

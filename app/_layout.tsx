@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-
+import {Typography, Colors, Spacings} from 'react-native-ui-lib';
 import ProfileSwipeScreen from './(tabs)/profileswipe';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -16,6 +16,13 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
+  Colors.loadColors({
+    primary: '#FF69B4',
+    gold: '#FFD700',
+  });
+
+
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
