@@ -17,17 +17,10 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
- /* Colors.loadColors({
-   *   primary:      '#FF69B4',
-   *   dark_primary: '#C651C6',
-   *   gold:         '#FFD700',
-   * }); */
-
-
   Colors.loadColors({
-    primary:      '#007BFF',  // A bright blue
-    dark_primary: '#0056b3',  // A darker blue
-    gold:         '#FFD700',  // Keeping gold the same
+    primary:      '#FF69B4',
+    dark_primary: '#C651C6',
+    gold:         '#FFD700',
   });
 
 
