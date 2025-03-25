@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
 
-import { StyleSheet, Dimensions, ScrollView, TouchableOpacity, Pressable } from 'react-native';
+import { Animated, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Pressable } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import Icon from "react-native-vector-icons/FontAwesome"; // Install if not already
 import { useFocusEffect } from '@react-navigation/native';
@@ -123,6 +123,16 @@ const SwipeScreen = () => {
 	const [visible, setVisible] = useState(false)
 	const [selectedUser, setSelectedUser] = useState(null)
 
+	const animatedHeight = useRef(new Animated.Value(0)).current;
+
+	useEffect(() => {
+		Animated.timing(animatedHeight, {
+			toValue: visible ? height * 0.8 : 0,
+			duration: 300, // Adjust the duration for smoothness
+			useNativeDriver: false, // Can't animate height with native driver
+		}).start();
+	}, [visible]);
+
 	const [user,setUser] = useState(null);
 	useFocusEffect(useCallback(()=>{
 
@@ -160,12 +170,12 @@ const SwipeScreen = () => {
 			>
 				<SegmentedControl
 					segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
-							 activeBackgroundColor={Colors.white}
-							 activeColor={Colors.primary}
-							 backgroundColor={Colors.primary}
+					activeBackgroundColor={Colors.white}
+					activeColor={Colors.primary}
+					backgroundColor={Colors.primary}
 
-							 inactiveColor={Colors.white}
-							 style={{height:50,width:300}}
+					inactiveColor={Colors.white}
+					style={{height:50,width:300}}
 
 
 				/>
@@ -177,8 +187,6 @@ const SwipeScreen = () => {
 							<FontAwesome name="cogs" style={{backgroundColor:"white", padding:12, borderRadius:100}} size={52}  />
 						</Pressable>
 					</Link>
-
-
 
 
 					<TouchableOpacity >
@@ -214,7 +222,7 @@ const SwipeScreen = () => {
 								   containerStyle={{ marginTop: 0, backgroundColor:Colors.$backgroundDefault }}
 				/>
 			</View>
-			<View style={{backgroundColor:"white", position:"fixed", zIndex:200,left:0,bottom:0, height:visible ? (height*0.8) : 0, width:width}} >
+			<Animated.View style={{backgroundColor:"white", position:"fixed", zIndex:200,left:0,bottom:0, height:animatedHeight, width:width}} >
 				<TouchableOpacity  onPress={()=>{setVisible(false)}}>
 					<Icon name={"close"} size={52} color={Colors.primary} />
 				</TouchableOpacity>
@@ -252,7 +260,7 @@ const SwipeScreen = () => {
 					</ScrollView>
 				):(null)}
 
-			</View>
+					</Animated.View>
 
 		</SafeAreaView>
 
