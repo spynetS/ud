@@ -81,6 +81,9 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 		return (
 			<ScrollView
 			>
+				<View style={{position:"absolute",right:20, bottom:50,zIndex:200}}>
+					<RoundButton iconName={user.bookmarks.includes(card.id) ? "heart" : "heart-o"} onPress={()=>{bookmark(card.id); bookmark_prop(card.id);  }} />
+				</View>
 				<View style={{
 					position:"absolute",
 					flex:1,
@@ -99,9 +102,6 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 
 				</View>
 				<View style={{width:"100%", height:height-150}}>
-					<Text>
-						{imageIndex}
-					</Text>
 					<Image
 						style={{ flex: 1, width: '100%',borderRadius: 100, marginTop:40 }}
 						resizeMode="cover"
@@ -128,10 +128,9 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 							</Text>
 
 						</View>
-						<View style={{position:"absolute",right:20}}>
-							<RoundButton iconName={user.bookmarks.includes(card.id) ? "heart" : "heart-o"} onPress={()=>{bookmark(card.id); bookmark_prop(card.id);  }} />
-						</View>
+
 					</View>
+
 				</View>
 			</ScrollView>
 
