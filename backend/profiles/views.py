@@ -110,11 +110,17 @@ def swipe(request):
 
     return Response({"user":swiped_user.username})
 
+
 @api_view(['GET'])
-#@permission_classes([IsAuthenticated])  # Requires token authentication
 def get_swipes(request):
+    school_filter = request.GET.get('school', None)  # Get school parameter
+
     users = CustomUser.objects.filter(is_superuser=False)  # Exclude superusers
-    serializer = CustomUserSerializer(users, many=True)    # Serialize user data
+
+    if school_filter and school_filter.lower() != "all":
+        users = users.filter(school=school_filter)  # Filter by school if not "all"
+
+    serializer = CustomUserSerializer(users, many=True)  # Serialize user data
     return Response(serializer.data)
 
 class CustomUserListCreateView(generics.ListCreateAPIView):

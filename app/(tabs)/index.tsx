@@ -50,7 +50,6 @@ const bookmark = (userId=>{
 })
 
 
-
 const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 
 	const scrollViewRef = useRef(null); // Create a ref for the ScrollView
@@ -158,6 +157,8 @@ const SwipeScreen = () => {
 	const [visible, setVisible] = useState(false)
 	const [selectedUser, setSelectedUser] = useState(null)
 
+	const [school,setSchool] = useState<number>(0);
+
 	const animatedHeight = useRef(new Animated.Value(0)).current;
 
 	useEffect(() => {
@@ -176,7 +177,7 @@ const SwipeScreen = () => {
 			}).catch(error=>{
 				router.push("/login", { relativeToDirectory: true })
 			});
-		API.get('/get_swipes')
+		API.get('/get_swipes',{params:{school:school == 0 ? "all" : user?.school || "all"}})
 		   .then(function (response) {
 			   // handle success
 			   setProfile(response.data.concat(response.data));
@@ -189,7 +190,7 @@ const SwipeScreen = () => {
 			   // always executed
 		   });
 
-	},[]))
+	},[school]))
 
 	return (
 		<SafeAreaView style={{flex:1,backgroundColor:"white"}} >
@@ -208,7 +209,7 @@ const SwipeScreen = () => {
 					activeBackgroundColor={Colors.white}
 					activeColor={Colors.primary}
 					backgroundColor={Colors.primary}
-
+					onChangeIndex={setSchool}
 					inactiveColor={Colors.white}
 					style={{height:50,width:300}}
 
