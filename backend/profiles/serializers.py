@@ -14,5 +14,5 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'username', 'first_name', 'last_name', 'email', 'school',
             'pronoun', 'programe', 'location', 'about', 'details', 'interests',
-            'profile_picture', 'images', 'bookmarks', 'swipes'
+            'profile_picture', 'images', 'bookmarks', 'swipes', 'matches'
         ]

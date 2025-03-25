@@ -14,5 +14,7 @@ urlpatterns = [
     path('unbookmark/', unbookmark, name='unbookmark'),
     path('swipe/', swipe, name='swipe'),
     path('ranking/',Top100UsersView.as_view(),name='ranking'),
+    path('matches/',FriendListView.as_view(),name='matches'),
+
 
 ]

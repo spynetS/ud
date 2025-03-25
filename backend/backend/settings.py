@@ -52,8 +52,10 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'rest_framework_simplejwt',
-    "profiles",
     "corsheaders",
+
+    "profiles",
+    "direct_messages",
 ]
 
 AUTH_USER_MODEL = 'profiles.CustomUser'

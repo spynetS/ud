@@ -19,6 +19,8 @@ class CustomUser(AbstractUser):
 
     profile_picture = models.ImageField(upload_to='uploads/', blank=True, null=True)
 
+    matches = models.ManyToManyField('self', symmetrical=False, related_name='matches_of')
+
     swipes = models.BigIntegerField(default=0)
     bookmarks = models.ManyToManyField('CustomUser', related_name='bookmarked_by', blank=True)
 

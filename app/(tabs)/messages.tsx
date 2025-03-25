@@ -15,160 +15,36 @@ import { Link } from 'expo-router';
 
 const { height, width } = Dimensions.get('window');
 
-const RoundButton = ({ onPress, iconName }) => {
-  return (
-      <TouchableOpacity style={{
-		  width: 50,
-		  height: 50,
-		  borderRadius: 25, // Makes it round
-		  //backgroundColor: "#007AFF", // Change color as needed
-		  justifyContent: "center",
-		  alignItems: "center",
-		  elevation: 5, // Adds shadow on Android
-		  shadowColor: "#000",
-		  shadowOffset: { width: 0, height: 2 },
-		  shadowOpacity: 0.3,
-		  shadowRadius: 2,
-	  }} onPress={onPress}>
-		  <Icon name={iconName} size={64} color={Colors.primary} />
-      </TouchableOpacity>
-  );
-};
+const MessageScreen = () => {
 
 
-const bookmark = (userId=>{
-	API.post("/bookmark/",{'userId':userId}).then(response=>{
-		console.log(response.data)
-	}).catch(error=>{
-		console.log(error)
-	})
-})
 
+	const message = () =>{
+		API.get("/matches").then(response=>{}).catch(error=>{})
 
-const ProfileCard = ({ card, open }) => {
-
-	if(!card) {return (<Text>Loading</Text>)}
-	else {
-		return (
-			<ScrollView >
-				<View style={{width:"100%", height:height-150}}>
-					<Image
-						style={{ flex: 1, width: '100%',borderRadius: 100 }}
-									resizeMode="cover"
-									source={{uri: `http://192.168.1.119:8000/${card.profile_picture}`}}/>
-					<View style={{position:"absolute", bottom:15, left:15,width:"100%"}}  >
-						<View style={{}}>
-							<Text white text40 >
-								{card.username}
-							</Text>
-							<Chip
-								resetSpacings
-								label={card.pronoun}
-											labelStyle={{marginRight: Spacings.s1}}
-											backgroundColor={"white"}
-											containerStyle={{
-												borderWidth: 0,
-												width:80
-												//marginLeft: Spacings.s3
-											}}/>
-							<Text white text90>
-								{card.programe}
-							</Text>
-							<Text white text90>
-								{card.swipes}
-							</Text>
-
-						</View>
-						<View style={{flex:1, flexDirection:'row', justifyContent:"end", width:"100%",marginTop:15, paddingRight:15}}>
-							<RoundButton iconName="heart" onPress={()=> bookmark(card.id)} />
-							{/* <Link href={`profileswipe?userId=${card.id}`}>
-								<RoundButton iconName="info" />
-								</Link> */}
-						</View>
-					</View>
-				</View>
-
-			</ScrollView>
-		);
+		API.post("/send_message/",{
+			sender:2,
+			receiver: 3,
+			message:"Tjo bro"
+		}).then(response=>{
+			console.log(response.data)
+		}).catch(error=>{})
 	}
-}
-
-function swiped(profile:any) {
-	console.log(profile)
-
-	API.post("/swipe/",{
-		"id": profile.id,
-		"direction":"right"
-	}).then(response=>{
-		console.log(response)
-	}).catch(error=>{
-
-	})
-
-}
-
-const SwipeScreen = () => {
-
-	const [profiles, setProfile] = useState([]);
-	const [value, setValue] = React.useState('sverige');
-	const [visible, setVisible] = useState(false)
-
-	useFocusEffect(useCallback(()=>{
-
-		API.get('/get_swipes')
-			 .then(function (response) {
-				 // handle success
-				 setProfile(response.data.concat(response.data));
-			 })
-			 .catch(function (error) {
-				 // handle error
-				 console.log(error);
-			 })
-			 .finally(function () {
-				 // always executed
-			 });
-
-	},[]))
 
 	return (
 		<SafeAreaView style={{flex:1}} >
 
-			<View
-				style={{
-					position:"absolute",
-					top:45,
-					width: "100%",
-					alignItems: "center",
-					zIndex: 1000, // Ensures it's above other content
-				}}
-			>
-				<SegmentedControl
-					segments={[{ label: 'Sverige' }, { label: 'Lunds Universited' }]}
-					activeBackgroundColor={Colors.white}
-					activeColor={Colors.primary}
-					backgroundColor={Colors.primary}
-					inactiveColor={Colors.white}
-					style={{height:50,width:"90%"}}
-				/>
-			</View>
+			<TouchableOpacity onPress={message} >
+				Message
+			</TouchableOpacity>
 
-
-			{/* Swiper should take the rest of the space */}
-			<View style={{ flex: 1, backgroundColor: "pink" }}>
-				<Swiper
-					cards={profiles}
-					renderCard={(card) => <ProfileCard card={card} open={()=>setVisible(true)} />}
-					stackSize={3}
-					verticalSwipe={false}
-					onSwipedRight={e=>swiped(profiles[e])}
-					containerStyle={{ marginTop: 0, backgroundColor:Colors.$backgroundDefault }}
-				/>
-			</View>
-
+			<Text>
+				Hello World!
+			</Text>
 		</SafeAreaView>
 
 	);
 };
 
 
-export default SwipeScreen;
+export default MessageScreen;

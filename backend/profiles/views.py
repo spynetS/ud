@@ -106,10 +106,17 @@ class Top100UsersView(generics.ListAPIView):
 def swipe(request):
     swiped_user = CustomUser.objects.get(pk=request.data.get('id'))
     swiped_user.swipes = swiped_user.swipes+1
-    swiped_user.save()
+    swiped_user.save()          #
 
     return Response({"user":swiped_user.username})
 
+class FriendListView(generics.ListAPIView):
+    serializer_class = CustomUserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        profile = self.request.user
+        return profile.matches.all()
 
 @api_view(['GET'])
 def get_swipes(request):
