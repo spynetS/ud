@@ -18,9 +18,9 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   Colors.loadColors({
-    primary: '#FF69B4',
+    primary:      '#FF69B4',
     dark_primary: '#C651C6',
-    gold: '#FFD700',
+    gold:         '#FFD700',
   });
 
 

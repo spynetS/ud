@@ -10,6 +10,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {Colors, SegmentedControl, Text, Button, Avatar, Modal, Card, View} from "react-native-ui-lib"
 import { Link, router } from 'expo-router';
 
+type Image = {
+	image:string,
+}
+
 type User = {
   id: number;
   username: string;
@@ -23,6 +27,7 @@ type User = {
   details: string[];
   interests: string[];
   profile_picture: string | null;
+	images: Image[] | null;
   more_images: string[];
   bookmarks: number[];
   swipes: number;
@@ -44,7 +49,7 @@ const Row = ({item}) => {
 		  <Avatar
 			  size={40}
 			  source={{
-				  uri: item.profile_picture,
+				  uri: item.images[0]?.image || "",
 			  }}
 		  />
 		  <Text>{item.username}</Text>
@@ -58,7 +63,7 @@ const { height, width } = Dimensions.get('window');
 const RankScreen = () => {
 
 	const [users,setUsers] = useState<User[]>([]);
-		const [gender,setGender] = useState<number>(0);
+	const [gender,setGender] = useState<number>(0);
 	const [school,setSchool] = useState<number>(0);
 
 	const [user,setUser] = useState(null);
@@ -138,17 +143,17 @@ const RankScreen = () => {
 								height:130,
 								marginBottom:10
 							}}>
-								<Avatar size={80} ribbonLabel={"3"} source={{uri: users.length > 2 ? users[2].profile_picture : ""}} />
+								<Avatar size={80} ribbonLabel={"3"} source={{uri: users.length > 2 ? users[2].images[0]?.image || "" : ""}} />
 							</View>
 
-							<Avatar size={120} ribbonLabel={"1"} source={{uri: users.length > 0 ? users[0].profile_picture : ""}} />
+							<Avatar size={120} ribbonLabel={"1"} source={{uri: users.length > 0 ? users[0].images[0]?.image || "" : ""}} />
 
 							<View style={{
 								flex:1,
 								justifyContent:"center",
 								height:130,
 							}}>
-								<Avatar size={100} ribbonLabel={"2"} source={{uri: users.length > 1 ? users[1].profile_picture : ""}} />
+								<Avatar size={100} ribbonLabel={"2"} source={{uri: users.length > 1 ? users[1].images[0]?.image || "" : ""}} />
 							</View>
 
 						</View>
