@@ -1,174 +1,213 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
-import { StyleSheet, Dimensions, ScrollView, TouchableOpacity} from 'react-native';
-import Swiper from 'react-native-deck-swiper';
-import Icon from "react-native-vector-icons/FontAwesome"; // Install if not already
+import { StyleSheet, Dimensions, ScrollView, TouchableOpacity, FlatList} from 'react-native';
+
+import { FlatGrid } from 'react-native-super-grid';
 import { useFocusEffect } from '@react-navigation/native';
+import API, {getProfile} from "@/components/api";
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import API from "@/components/api";
+import {Colors, SegmentedControl, Text, Button, Avatar, Modal, Card, View} from "react-native-ui-lib"
+import { Link, router } from 'expo-router';
 
-import axios from "axios"
+type User = {
+  id: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  pronoun: string;
+  programe: string;
+  location: string;
+  about: string;
+  details: string[];
+  interests: string[];
+  profile_picture: string | null;
+  more_images: string[];
+  bookmarks: number[];
+  swipes: number;
+};
 
-import {Chip,Colors, Spacings, Image, SegmentedControl, Text, Button, Assets, Modal, Card, View} from "react-native-ui-lib"
-import { Link } from 'expo-router';
-
-const { height, width } = Dimensions.get('window');
-
-const RoundButton = ({ onPress, iconName }) => {
+const Row = ({item}) => {
   return (
-      <TouchableOpacity style={{
-		  width: 50,
-		  height: 50,
-		  borderRadius: 25, // Makes it round
-		  //backgroundColor: "#007AFF", // Change color as needed
-		  justifyContent: "center",
-		  alignItems: "center",
-		  elevation: 5, // Adds shadow on Android
-		  shadowColor: "#000",
-		  shadowOffset: { width: 0, height: 2 },
-		  shadowOpacity: 0.3,
-		  shadowRadius: 2,
-	  }} onPress={onPress}>
-		  <Icon name={iconName} size={64} color={Colors.primary} />
-      </TouchableOpacity>
+      <View
+		  style={{
+              flex: 1,
+			  flexDirection:"row",
+			  justifyContent: 'space-between',
+			  alignItems: 'center',
+			  padding: 20,
+
+		  }}
+      >
+		  <Text>{item.id}</Text>
+		  <Avatar
+			  size={40}
+			  source={{
+				  uri: item.profile_picture,
+			  }}
+		  />
+		  <Text>{item.username}</Text>
+		  <Text>{item.swipes}</Text>
+      </View>
   );
 };
 
+const { height, width } = Dimensions.get('window');
 
-const bookmark = (userId=>{
-	API.post("/bookmark/",{'userId':userId}).then(response=>{
-		console.log(response.data)
-	}).catch(error=>{
-		console.log(error)
-	})
-})
+const RankScreen = () => {
 
+	const [users,setUsers] = useState<User[]>([]);
+		const [gender,setGender] = useState<number>(0);
+	const [school,setSchool] = useState<number>(0);
 
-const ProfileCard = ({ card, open }) => {
-
-	if(!card) {return (<Text>Loading</Text>)}
-	else {
-		return (
-			<ScrollView >
-				<View style={{width:"100%", height:height-150}}>
-					<Image
-						style={{ flex: 1, width: '100%',borderRadius: 100 }}
-									resizeMode="cover"
-									source={{uri: `http://192.168.1.119:8000/${card.profile_picture}`}}/>
-					<View style={{position:"absolute", bottom:15, left:15,width:"100%"}}  >
-						<View style={{}}>
-							<Text white text40 >
-								{card.username}
-							</Text>
-							<Chip
-								resetSpacings
-								label={card.pronoun}
-											labelStyle={{marginRight: Spacings.s1}}
-											backgroundColor={"white"}
-											containerStyle={{
-												borderWidth: 0,
-												width:80
-												//marginLeft: Spacings.s3
-											}}/>
-							<Text white text90>
-								{card.programe}
-							</Text>
-							<Text white text90>
-								{card.swipes}
-							</Text>
-
-						</View>
-						<View style={{flex:1, flexDirection:'row', justifyContent:"end", width:"100%",marginTop:15, paddingRight:15}}>
-							<RoundButton iconName="heart" onPress={()=> bookmark(card.id)} />
-							{/* <Link href={`profileswipe?userId=${card.id}`}>
-								<RoundButton iconName="info" />
-								</Link> */}
-						</View>
-					</View>
-				</View>
-
-			</ScrollView>
-		);
-	}
-}
-
-function swiped(profile:any) {
-	console.log(profile)
-
-	API.post("/swipe/",{
-		"id": profile.id,
-		"direction":"right"
-	}).then(response=>{
-		console.log(response)
-	}).catch(error=>{
-
-	})
-
-}
-
-const SwipeScreen = () => {
-
-	const [profiles, setProfile] = useState([]);
-	const [value, setValue] = React.useState('sverige');
-	const [visible, setVisible] = useState(false)
-
+	const [user,setUser] = useState(null);
 	useFocusEffect(useCallback(()=>{
 
-		API.get('/get_swipes')
-			 .then(function (response) {
-				 // handle success
-				 setProfile(response.data.concat(response.data));
-			 })
-			 .catch(function (error) {
-				 // handle error
-				 console.log(error);
-			 })
-			 .finally(function () {
-				 // always executed
-			 });
+		getProfile().then(response=>{
+			setUser(response);
+		}).catch(error=>{
+			router.push("/login", { relativeToDirectory: true })
+		});
 
-	},[]))
+		API.get("/ranking/",{
+			params:{
+				pronoun : gender == 0 ? "he/him" : "she/her",
+				school  : school == 0 ? "" : user?.school || ""
+			}}).then(response=>{
+			console.log(response)
+			setUsers(response.data);
+
+		}).catch(error =>{})
+
+
+	},[gender,school]))
+
 
 	return (
-		<SafeAreaView style={{flex:1}} >
-
+		<SafeAreaView style={{flex:1,backgroundColor:"#fff"}} >
 			<View
 				style={{
 					position:"absolute",
 					top:45,
 					width: "100%",
 					alignItems: "center",
+
 					zIndex: 1000, // Ensures it's above other content
 				}}
 			>
 				<SegmentedControl
-					segments={[{ label: 'Sverige' }, { label: 'Lunds Universited' }]}
-					activeBackgroundColor={Colors.white}
-					activeColor={Colors.primary}
-					backgroundColor={Colors.primary}
-					inactiveColor={Colors.white}
-					style={{height:50,width:"90%"}}
+					segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
+							 activeBackgroundColor={Colors.white}
+							 activeColor={Colors.primary}
+							 backgroundColor={Colors.primary}
+							onChangeIndex={setSchool}
+							 inactiveColor={Colors.white}
+							 style={{height:50,width:300}}
 				/>
+
+				<View style={{backgroundColor:Colors.primary,
+							  width:"100%",
+							  paddingTop:10,
+							  marginTop:5,
+							  flex:1,
+							  alignItems:"center",
+							  borderTopLeftRadius:50,
+							  borderTopRightRadius:50}} >
+					<Text style={{color:"white", marginBottom:10, fontSize:32}} heading>
+						TOPPLISTA
+					</Text>
+
+					<View style={{backgroundColor:Colors.dark_primary,
+								  width:"100%",
+								  flex:1,
+								  alignItems:"center",
+								  borderTopLeftRadius:50,
+								  borderTopRightRadius:50}} >
+
+						<View style={{
+							flex:1,
+							flexDirection:"row",
+							justifyContent :"center",
+						}} >
+
+							<View style={{
+								flex:1,
+								justifyContent:"center",
+								alignItems:"center",
+								height:130,
+								marginBottom:10
+							}}>
+								<Avatar size={80} ribbonLabel={"3"} source={{uri: users.length > 2 ? users[2].profile_picture : ""}} />
+							</View>
+
+							<Avatar size={120} ribbonLabel={"1"} source={{uri: users.length > 0 ? users[0].profile_picture : ""}} />
+
+							<View style={{
+								flex:1,
+								justifyContent:"center",
+								height:130,
+							}}>
+								<Avatar size={100} ribbonLabel={"2"} source={{uri: users.length > 1 ? users[1].profile_picture : ""}} />
+							</View>
+
+						</View>
+
+						<SegmentedControl
+							segments={[{ label: 'MAN' }, { label: "KVINNA" }]}
+							activeBackgroundColor={Colors.white}
+							activeColor={Colors.primary}
+							backgroundColor={Colors.primary}
+							onChangeIndex={setGender}
+
+							inactiveColor={Colors.white}
+							style={{height:40,marginBottom:2}}
+						/>
+
+						<View style={{backgroundColor:"#fff",
+									  width:"100%",
+									  flex:1,
+									  flexDirection:"column",
+									  marginHorizontal: "auto",
+									  padding:16,
+
+									  borderTopLeftRadius:50,
+									  borderTopRightRadius:50}} >
+							<View style={{
+								flex:1,
+								flexDirection:"row",
+                width: "100%",
+								justifyContent:"space-between"
+
+							}} >
+								<Text h2 body>
+									PLACERING
+								</Text>
+								<Text h2 body>
+									ANVÄNDARE
+								</Text>
+								<Text h2 body>
+									RATING
+								</Text>
+							</View>
+
+							<FlatGrid
+								style = {{flex:1,margin:10}}
+										data={users}
+										renderItem={Row}
+										itemDimension={300} // Set the item dimension
+							/>
+						</View>
+
+					</View>
+				</View>
+
+
 			</View>
-
-
-			{/* Swiper should take the rest of the space */}
-			<View style={{ flex: 1, backgroundColor: "pink" }}>
-				<Swiper
-					cards={profiles}
-					renderCard={(card) => <ProfileCard card={card} open={()=>setVisible(true)} />}
-					stackSize={3}
-					verticalSwipe={false}
-					onSwipedRight={e=>swiped(profiles[e])}
-					containerStyle={{ marginTop: 0, backgroundColor:Colors.$backgroundDefault }}
-				/>
-			</View>
-
 		</SafeAreaView>
 
 	);
 };
 
 
-export default SwipeScreen;
+export default RankScreen;

@@ -19,6 +19,7 @@ export default function RootLayout() {
 
   Colors.loadColors({
     primary: '#FF69B4',
+    dark_primary: '#C651C6',
     gold: '#FFD700',
   });
 
@@ -55,7 +56,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <StatusBar hidden={false} style="light" />
+      <StatusBar hidden={false} style="dark" />
       <Stack >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />

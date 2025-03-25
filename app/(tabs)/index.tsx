@@ -120,13 +120,10 @@ function swiped(profile:any) {
 const SwipeScreen = () => {
 
 	const [profiles, setProfile] = useState([]);
-	const [value, setValue] = React.useState('sverige');
 	const [visible, setVisible] = useState(false)
 	const [selectedUser, setSelectedUser] = useState(null)
 
 	const [user,setUser] = useState(null);
-
-	const [rerender, setRerender] = useState(0);
 	useFocusEffect(useCallback(()=>{
 
 		getProfile().then(response=>{
@@ -150,7 +147,7 @@ const SwipeScreen = () => {
 	},[]))
 
 	return (
-		<SafeAreaView style={{flex:1}} >
+		<SafeAreaView style={{flex:1,backgroundColor:"white"}} >
 
 			<View
 				style={{
