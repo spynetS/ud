@@ -60,16 +60,52 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 		}
 	  };
 
+	const [currentImage,setCurrentImage] = useState<string>("");
+	const [imageIndex,setImageIndex] = useState<number>(0);
+	useEffect(()=>{
+		if(card){
+			setCurrentImage(card.images[0]?.image || "");
+		}
+	},[card])
+
+
+	const nextImage = (index:number) =>{
+		if(card){
+			setImageIndex(  (imageIndex + index + card.images.length) % card.images.length);
+			setCurrentImage(card.images[imageIndex]?.image);
+		}
+	}
+
 	if(!card) {return (<Text>Loading</Text>)}
 	else {
 		return (
 			<ScrollView
 			>
-				<TouchableOpacity onPress={open} style={{width:"100%", height:height-150}}>
+				<View style={{
+					position:"absolute",
+					flex:1,
+					flexDirection:"row",
+
+					zIndex:100,
+					width:"100%",
+					height:height-150
+				}} >
+					<TouchableOpacity onPress={()=>{nextImage(-1)}} style={{width:"33%",height:"100%"}}>
+					</TouchableOpacity>
+					<TouchableOpacity onPress={open} style={{width:"33%",height:"100%"}}>
+					</TouchableOpacity>
+					<TouchableOpacity onPress={()=>nextImage(1)} style={{width:"33%",height:"100%"}}>
+					</TouchableOpacity>
+
+				</View>
+				<View style={{width:"100%", height:height-150}}>
+					<Text>
+						{imageIndex}
+					</Text>
 					<Image
 						style={{ flex: 1, width: '100%',borderRadius: 100, marginTop:40 }}
-							  resizeMode="cover"
-							  source={{uri: `http://192.168.1.119:8000/${card.profile_picture}`}}/>
+						resizeMode="cover"
+						source={{uri: `http://192.168.1.119:8000/${currentImage}`}}/>
 					<View style={{position:"absolute", bottom:15, left:15,width:"100%"}}  >
 						<View style={{}}>
 							<Text body white heading >
@@ -78,12 +114,12 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 							<Chip
 								resetSpacings
 								label={card.pronoun}
-									  labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont"}}
-									  backgroundColor={"white"}
-									  containerStyle={{
-										  borderWidth: 0,
-										  width:80
-									  }}/>
+								labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont"}}
+								backgroundColor={"white"}
+								containerStyle={{
+									borderWidth: 0,
+									width:80
+								}}/>
 							<Text body white >
 								{card.programe}
 							</Text>
@@ -96,7 +132,7 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 							<RoundButton iconName={user.bookmarks.includes(card.id) ? "heart" : "heart-o"} onPress={()=>{bookmark(card.id); bookmark_prop(card.id);  }} />
 						</View>
 					</View>
-				</TouchableOpacity>
+				</View>
 			</ScrollView>
 
 		);

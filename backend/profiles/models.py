@@ -1,30 +1,29 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
-from django.db.models.fields.files import default_storage
 
 class CustomUser(AbstractUser):
     PRONOUN_CHOICES = [
         ('she/her', 'She/Her'),
         ('he/him', 'He/Him'),
-        # Add more pronoun choices as needed
     ]
 
-    first_name = models.CharField(max_length=30, blank=True)  # Already exists in AbstractUser
-    last_name = models.CharField(max_length=30, blank=True)   # Already exists in AbstractUser
-    pronoun         = models.CharField(max_length=10, choices=PRONOUN_CHOICES, blank=True)
-    location        = models.CharField(max_length=255, blank=True)
-    programe        = models.CharField(max_length=50, blank=True)
-    school          = models.CharField(max_length=255, blank=True)
-    about           = models.TextField(blank=True)
-    details         = models.JSONField(default=list, blank=True)  # Stores a list of details
-    interests       = models.JSONField(default=list, blank=True)  # Stores a list of interests
+    first_name = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=30, blank=True)
+    pronoun = models.CharField(max_length=10, choices=PRONOUN_CHOICES, blank=True)
+    location = models.CharField(max_length=255, blank=True)
+    programe = models.CharField(max_length=50, blank=True)
+    school = models.CharField(max_length=255, blank=True)
+    about = models.TextField(blank=True)
+    details = models.JSONField(default=list, blank=True)
+    interests = models.JSONField(default=list, blank=True)
+
     profile_picture = models.ImageField(upload_to='uploads/', blank=True, null=True)
-    more_images     = models.ManyToManyField('UserImage', blank=True, related_name='users')
 
-    swipes          = models.BigIntegerField(default=0);
+    swipes = models.BigIntegerField(default=0)
+    bookmarks = models.ManyToManyField('CustomUser', related_name='bookmarked_by', blank=True)
 
-
-    bookmarks       = models.ManyToManyField('CustomUser',related_name='bookmarked_by',blank=True)
+    groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True)
+    user_permissions = models.ManyToManyField(Permission, related_name='customuser_permissions_set', blank=True)
 
     groups = models.ManyToManyField(
         Group,
@@ -42,5 +41,10 @@ class CustomUser(AbstractUser):
     )
 
 class UserImage(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="images")
     image = models.ImageField(upload_to='user_images/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    position = models.PositiveIntegerField(default=0)  # Field for sorting
+
+    class Meta:
+        ordering = ["position"]  # Ensures images are sorted by position
