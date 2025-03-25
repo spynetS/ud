@@ -9,7 +9,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#FF69B4', // ✅ Pink for active tab
+        tabBarActiveTintColor: Colors.primary, // ✅ Pink for active tab
         tabBarInactiveTintColor: '#888', // Gray for inactive tabs
         tabBarShowLabel: false, // ✅ Hides the text labels
         headerShown: false,
