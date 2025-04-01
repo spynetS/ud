@@ -19,6 +19,8 @@ User = get_user_model()
 @permission_classes([IsAuthenticated])  # Requires token authentication
 def get_user_data(request):
     user = request.user  # Get user from token
+
+    matches = CustomUserSerializer(user.matches.all(), many=True).data
     bookmarks = []
     for b in user.bookmarks.all():
         bookmarks.append(b.pk)
@@ -34,6 +36,7 @@ def get_user_data(request):
         "about": user.about,
         "details": user.details,
         "bookmarks": bookmarks,
+        "matches": matches,
         "interests": user.interests,
         "profile_picture": request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
     })
@@ -106,7 +109,7 @@ class Top100UsersView(generics.ListAPIView):
 def swipe(request):
     swiped_user = CustomUser.objects.get(pk=request.data.get('id'))
     swiped_user.swipes = swiped_user.swipes+1
-    swiped_user.save()          #
+    swiped_user.save()
 
     return Response({"user":swiped_user.username})
 
