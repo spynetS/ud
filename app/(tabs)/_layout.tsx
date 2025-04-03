@@ -19,9 +19,9 @@ export default function TabLayout() {
           bottom: 0,
           left: 20,
           right: 20,
-          backgroundColor: '#444444ca',
-          borderTopLeftRadius: 500, // Rounded top left
-          borderTopRightRadius: 500, // Rounded top right
+          backgroundColor: '#000000ca',
+          borderTopLeftRadius: 200, // Rounded top left
+          borderTopRightRadius: 200, // Rounded top right
           height: 60,
           paddingBottom: 10,
           shadowColor: '#000',

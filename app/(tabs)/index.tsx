@@ -107,33 +107,49 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 							  resizeMode="cover"
 							  source={{uri: `http://192.168.1.119:8000/${currentImage}`}}/>
 
-					<View flex row center style={{position:"absolute",top:"7%",width:"100%", }} >
-						<View flex row spread style={{width:"66%",marginTop:10, }} >
-
-							{card?.images?.map((e,i)=>(
-								<View style={{borderRadius:10,width:100,height:5,backgroundColor:i == imageIndex ? "#F2F2F2" : "#f2f2f250"}} >
-								</View>
+					<View center style={{ position: "absolute", top: "7%", width: "100%" }}>
+						<View
+							flex
+							row
+							center
+							spread
+							style={{
+								width: width*2/3,
+								marginTop: 10,
+							}}
+						>
+							{card?.images?.map((e, i) => (
+								<View
+									key={i} // Always add a key when mapping
+									style={{
+										borderRadius: 10,
+										marginHorizontal:8,
+										width: 50,
+										height: 5,
+										backgroundColor: i === imageIndex ? "#F2F2F2" : "#f2f2f250",
+									}}
+								/>
 							))}
 						</View>
 					</View>
 
-					<View style={{paddingLeft:15,position:"absolute", bottom:0,height:"25%",width:"100%", backgroundColor:"#00000000"}}  >
+					<View style={{paddingLeft:35,position:"absolute", bottom:0,height:"25%",width:"100%", backgroundColor:"#00000000"}}  >
 						<View style={{}}>
 							<Text body white heading >
 								{card.username}
 							</Text>
-							<Text body white >
+							<Text heading2 white marginB-10 marginL-2>
 								{card.programe}
 							</Text>
 							<Chip
 								resetSpacings
 								label={card.pronoun}
-									  labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont"}}
-									  backgroundColor={"white"}
-									  containerStyle={{
-										  borderWidth: 0,
-										  width:80
-									  }}/>
+								labelStyle={{color:"white",marginRight: Spacings.s1,fontFamily:"CustomFont"}}
+								backgroundColor={"#88888850"}
+								containerStyle={{
+									borderWidth: 0,
+									width:80
+								}}/>
 						</View>
 
 					</View>
@@ -217,7 +233,7 @@ const SwipeScreen = () => {
 
 					<Link href="/profile" asChild>
 						<Pressable>
-							<FontAwesome name="cogs" size={22} color="white"  style={{backgroundColor:"#444444aa", padding:12, borderRadius:100}}/>
+							<FontAwesome name="cogs" size={22} color="white"  style={{backgroundColor:"#000000aa", padding:12, borderRadius:100}}/>
 						</Pressable>
 					</Link>
 
@@ -234,7 +250,7 @@ const SwipeScreen = () => {
 					/>
 
 					<TouchableOpacity >
- 						<FontAwesome name="bell-o" size={22} color="white"  style={{backgroundColor:"#444444aa", padding:12, borderRadius:100}}/>
+ 						<FontAwesome name="bell-o" size={22} color="white"  style={{backgroundColor:"#000000aa", padding:12, borderRadius:100}}/>
 					</TouchableOpacity>
 				</View>
 
@@ -267,11 +283,11 @@ const SwipeScreen = () => {
 					verticalSwipe={false}
 					backgroundColor={"#444444"}
 					onSwipedRight={e=>swiped(profiles[e])}
-								   cardVerticalMargin={0}
-								   cardHorizontalMargin={0}
+					cardVerticalMargin={0}
+					cardHorizontalMargin={0}
 				/>
 			</View>
-			<Animated.View style={{backgroundColor:"#000000ca",borderRadius:50, position:"fixed", zIndex:200,left:0,bottom:0, height:animatedHeight, width:width}} >
+			<Animated.View style={{backgroundColor:"#000000ea",borderRadius:20, position:"fixed", zIndex:200,left:0,bottom:0, height:animatedHeight, width:width}} >
 				<TouchableOpacity style={{marginTop:10, marginLeft:20}}  onPress={()=>{setVisible(false)}}>
 					<Icon name={"close"} size={52} color={Colors.primary} />
 				</TouchableOpacity>

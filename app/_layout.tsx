@@ -25,20 +25,21 @@ export default function RootLayout() {
 
 
   const [loaded] = useFonts({
-    //CustomFont: require('../assets/fonts/KOMIKAX_.ttf'),
+    CustomFont: require('../assets/fonts/Manrope-VariableFont_wght.ttf'),
   });
 
   Typography.loadTypographies({
-    heading: { fontFamily: 'CustomFont', fontSize: 34 },
-    body: { fontFamily: 'CustomFont', fontSize: 16 },
-    text90: { fontFamily: 'CustomFont', fontSize: 12 },
-    text: { fontFamily: 'CustomFont', fontSize: 12 },
-    text40: { fontFamily: 'CustomFont', fontSize: 10 },
+    heading: { fontFamily: 'CustomFont', fontSize: 44,  fontWeight: 'bold' },
+      heading2: { fontFamily: 'CustomFont', fontSize: 24 },
+               body: { fontFamily: 'CustomFont', fontSize: 16 },
+               text90: { fontFamily: 'CustomFont', fontSize: 16 },
+               text: { fontFamily: 'CustomFont', fontSize: 12 },
+               text40: { fontFamily: 'CustomFont', fontSize: 10 },
 
-    default: { fontFamily: 'CustomFont', fontSize: 16 },
+               default: { fontFamily: 'CustomFont', fontSize: 16 },
   });
 
-  Text.defaultProps = {
+    Text.defaultProps = {
     style: { fontFamily: 'CustomFont' }
   };
 
