@@ -116,8 +116,8 @@ const RankScreen = () => {
 											marginTop:5,
 											flex:1,
 											alignItems:"center",
-											borderTopLeftRadius:50,
-											borderTopRightRadius:50}} >
+											borderTopLeftRadius:20,
+											borderTopRightRadius:20}} >
 					<Text style={{color:"white", marginBottom:10, fontSize:32}} heading>
 						TOPPLISTA
 					</Text>
@@ -125,9 +125,10 @@ const RankScreen = () => {
 					<View style={{backgroundColor:Colors.dark_primary,
 												width:"100%",
 												flex:1,
+												paddingTop:10,
 												alignItems:"center",
-												borderTopLeftRadius:50,
-												borderTopRightRadius:50}} >
+												borderTopLeftRadius:20,
+												borderTopRightRadius:20}} >
 
 						<View style={{
 							flex:1,
