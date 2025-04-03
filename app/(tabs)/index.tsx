@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
 
-import { Animated, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Pressable } from 'react-native';
+import { Animated, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Pressable, Modal } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import Icon from "react-native-vector-icons/FontAwesome"; // Install if not already
 import { useFocusEffect } from '@react-navigation/native';
@@ -12,13 +12,85 @@ import API, {getProfile} from "@/components/api";
 
 import axios from "axios"
 
-import {Chip,Colors, Spacings, Image, SegmentedControl, Text, Button, Assets, Modal, Card, View} from "react-native-ui-lib"
+import { Chip, Colors, Spacings, Image, SegmentedControl, Text, View, Dialog, PanningContext, Button, Card } from "react-native-ui-lib"
 import { Link, router } from 'expo-router';
 import { fontConfig } from 'react-native-paper/lib/typescript/styles/fonts';
 import { GestureHandlerRootView, TapGestureHandler } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BlurView } from 'expo-blur';
+import { Avatar } from 'react-native-ui-lib/src/components/avatar';
 
 const { height, width } = Dimensions.get('window');
+type Image = {
+	image:string,
+}
+
+type User = {
+	id: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  pronoun: string;
+  programe: string;
+  location: string;
+  about: string;
+  details: string[];
+  interests: string[];
+  profile_picture: string | null;
+	images: Image[] | null;
+  more_images: string[];
+  bookmarks: number[];
+  swipes: number;
+};
+
+
+const MatchModal = ({close, user, matchUser}) => {
+
+	return (
+		<Modal
+			transparent
+			visible={true}
+					animationType="fade"
+		>
+			<BlurView
+				style={{
+                    height: height,
+					flexDirection:"column",
+					alignItems:"center",
+					paddingTop:100
+				}}
+					  intensity={20}
+					  tint={"dark"}
+					  experimentalBlurMethod={"dimezisBlurView"}
+			>
+				<Text heading white>
+					It's a Match!
+				</Text>
+				<Text heading2 white>
+					Alfred likes you!
+				</Text>
+				<View row spread style={{width:width*2/3}}>
+					<Avatar size={100} source={{uri:"http://192.168.1.119:8000"+user?.images[0].image}} />
+					<Avatar size={100} source={{uri:"http://192.168.1.119:8000"+matchUser?.images[0].image}} />
+				</View>
+				<Button
+					onPress={()=>{close();router.push({pathname:"/messageUser",params:{pressedUser:JSON.stringify(matchUser)}})}}
+							style={{marginTop:20}} >
+					<Text white>
+						Send a Message!
+					</Text>
+				</Button>
+				<Button onPress={close} style={{marginTop:20}} >
+					<Text white>
+						Keep Swiping
+					</Text>
+				</Button>
+			</BlurView>
+
+		</Modal>
+	);
+}
 
 const RoundButton = ({ onPress, iconName }) => {
   return (
@@ -161,29 +233,34 @@ const ProfileCard = ({ card, open,user }) => {
 	}
 }
 
-function swiped(profile:any) {
-	console.log(profile)
 
-	API.post("/swipe/",{
-		"id": profile.id,
-		"direction":"right"
-	}).then(response=>{
-		console.log(response)
-	}).catch(error=>{
-
-	})
-
-}
 
 const SwipeScreen = () => {
 
 	const [profiles, setProfile] = useState([]);
 	const [visible, setVisible] = useState(false)
 	const [selectedUser, setSelectedUser] = useState(null)
-
 	const [school,setSchool] = useState<number>(0);
 
+	const [isMatch,setIsMatch] = useState<boolean>(false);
+	const [matchUser,setMatchUser] = useState<User>(null)
+
 	const animatedHeight = useRef(new Animated.Value(0)).current;
+
+	function swiped(profile:any) {
+		API.post("/swipe/",{
+			"id": profile.id,
+			"direction":"right"
+		}).then(response=>{
+			if(response.data.match === true){
+				setIsMatch(true);
+				setMatchUser(response.data.other);
+			}
+		}).catch(error=>{
+
+		})
+
+	}
 
 	useEffect(() => {
 		Animated.timing(animatedHeight, {
@@ -218,7 +295,7 @@ const SwipeScreen = () => {
 
 	return (
 		<SafeAreaView style={{flex:1,backgroundColor:"white"}} >
-
+			{isMatch && user ? <MatchModal user={user} matchUser={matchUser} close={()=>{setIsMatch(false)}} /> : ""}
 			<View
 				style={{
 					position:"absolute",

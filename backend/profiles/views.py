@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions
-from .models import CustomUser
-from .serializers import CustomUserSerializer
+from .models import CustomUser, UserImage
+from .serializers import CustomUserSerializer, UserImageSerializer
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -18,9 +18,11 @@ User = get_user_model()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])  # Requires token authentication
 def get_user_data(request):
-    user = request.user  # Get user from token
+    user:CustomUser = request.user  # Get user from token
 
-    matches = CustomUserSerializer(user.matches.all(), many=True).data
+    matches = CustomUserSerializer(user.matches.filter(matches=user), many=True).data
+    images = UserImageSerializer(user.images.all(), many=True).data
+
     bookmarks = []
     for b in user.bookmarks.all():
         bookmarks.append(b.pk)
@@ -36,6 +38,7 @@ def get_user_data(request):
         "about": user.about,
         "details": user.details,
         "bookmarks": bookmarks,
+        "images" : images,
         "matches": matches,
         "interests": user.interests,
         "profile_picture": request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
@@ -107,9 +110,17 @@ class Top100UsersView(generics.ListAPIView):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def swipe(request):
-    swiped_user = CustomUser.objects.get(pk=request.data.get('id'))
+    swiped_user : CustomUser = CustomUser.objects.get(pk=request.data.get('id'))
     swiped_user.swipes = swiped_user.swipes+1
     swiped_user.save()
+
+
+    user: CustomUser = request.user;
+    user.matches.add(swiped_user)
+    user.save()
+
+    if user in swiped_user.matches.all():
+        return Response({"match":True, "me":CustomUserSerializer(user).data,"other":CustomUserSerializer(swiped_user).data})
 
     return Response({"user":swiped_user.username})
 

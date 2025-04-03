@@ -45,6 +45,7 @@ type User = {
 };
 
 const MatchItem = ({ match, press }: { match: User, press:any }) => {
+	if(!match) return null;
 
   return (
 		<ListItem
@@ -60,7 +61,8 @@ const MatchItem = ({ match, press }: { match: User, press:any }) => {
 
 		  <ListItem.Part middle column containerStyle={[styles.border, {paddingRight: 17}]}>
 			  <ListItem.Part containerStyle={{marginBottom: 3}}>
-				  <Image source={{uri: ("http://192.168.1.119:8000"+match?.images[0].image)}} style={styles.image}/>
+					{match.images.length > 0 ? (<Image source={{uri: ("http://192.168.1.119:8000"+match?.images[0].image)}} style={styles.image}/>) : ""}
+
 				  <Text grey10 text70 white style={{flex: 1, marginRight: 10}} numberOfLines={1}>
 					  {match.username}
 				  </Text>
