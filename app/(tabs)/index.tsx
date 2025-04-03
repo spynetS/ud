@@ -25,17 +25,13 @@ const RoundButton = ({ onPress, iconName }) => {
       <TouchableOpacity style={{
 		  width: 64,
 		  height: 64,
-		  borderRadius: 25, // Makes it round
-		  //backgroundColor: "#007AFF", // Change color as needed
+		  borderRadius: "100%", // Makes it round
+		  backgroundColor: Colors.primary, // Change color as needed
 		  justifyContent: "center",
 		  alignItems: "center",
 		  elevation: 5, // Adds shadow on Android
-		  shadowColor: "#000",
-		  shadowOffset: { width: 0, height: 2 },
-		  shadowOpacity: 0.3,
-		  shadowRadius: 2,
 	  }} onPress={onPress}>
-		  <Icon name={iconName} size={64} color={Colors.primary} />
+		  <Icon name={iconName} size={24} color={"white"} />
       </TouchableOpacity>
   );
 };
@@ -79,8 +75,9 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 	else {
 		return (
 			<ScrollView
+				style={{backgroundColor:""}}
 			>
-				<View style={{position:"absolute",right:20, bottom:50,zIndex:200}}>
+				<View style={{position:"absolute",right:30, bottom:"15%",zIndex:200}}>
 					<RoundButton iconName={user.bookmarks.includes(card.id) ? "heart" : "heart-o"} onPress={()=>{bookmark(card.id); bookmark_prop(card.id);  }} />
 				</View>
 				<View style={{
@@ -100,32 +97,55 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 					</TouchableOpacity>
 
 				</View>
-				<View style={{width:"100%", height:height-150}}>
+				<View center style={{width:width, height:height-40,marginTop:20}}>
 					<Image
-						style={{ flex: 1, width: '100%',borderRadius: 100, marginTop:40 }}
+						style={{ flex: 1, width: width-40,borderRadius: 30, marginTop:0 }}
 						resizeMode="cover"
 						source={{uri: `http://192.168.1.119:8000/${currentImage}`}}/>
-					<View style={{position:"absolute", bottom:15, left:15,width:"100%"}}  >
+
+					<View center style={{ position: "absolute", top: "7%", width: "100%" }}>
+						<View
+							flex
+							row
+							center
+							spread
+							style={{
+								width: width*2/3,
+								marginTop: 10,
+							}}
+						>
+							{card?.images?.map((e, i) => (
+								<View
+									key={i} // Always add a key when mapping
+									style={{
+										borderRadius: 10,
+										marginHorizontal:8,
+										width: 50,
+										height: 5,
+										backgroundColor: i === imageIndex ? "#F2F2F2" : "#f2f2f250",
+									}}
+								/>
+							))}
+						</View>
+					</View>
+
+					<View style={{paddingLeft:35,position:"absolute", bottom:0,height:"30%",width:"100%", backgroundColor:"#00000000"}}  >
 						<View style={{}}>
 							<Text body white heading >
-								{card.username}
+								{card.first_name} {card.last_name}
+							</Text>
+							<Text heading2 white marginB-10 marginL-2>
+								{card.programe}
 							</Text>
 							<Chip
 								resetSpacings
-								label={card.pronoun}
-								labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont"}}
-								backgroundColor={"white"}
+								label={card.school}
+								labelStyle={{color:"white",marginRight: Spacings.s1,fontFamily:"CustomFont"}}
+								backgroundColor={"#88888850"}
 								containerStyle={{
 									borderWidth: 0,
-									width:80
+									width:(card.school.length*7)
 								}}/>
-							<Text body white >
-								{card.programe}
-							</Text>
-							<Text white body>
-								{card.swipes}
-							</Text>
-
 						</View>
 
 					</View>
@@ -198,37 +218,39 @@ const SwipeScreen = () => {
 			<View
 				style={{
 					position:"absolute",
-					top:45,
+					top:50,
 					width: "100%",
 					alignItems: "center",
 					zIndex: 1000, // Ensures it's above other content
 				}}
 			>
-				<SegmentedControl
-					segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
-					activeBackgroundColor={Colors.white}
-					activeColor={Colors.primary}
-					backgroundColor={Colors.primary}
-					onChangeIndex={setSchool}
-					inactiveColor={Colors.white}
-					style={{height:50,width:300}}
 
-
-				/>
-
-				<View  style={{paddingHorizontal:20,width:"100%", flex:1, flexDirection:"row",justifyContent:"space-between"}}>
+				<View  style={{paddingHorizontal:5,width:"100%", flex:1, flexDirection:"row",justifyContent:"space-between"}}>
 
 					<Link href="/profile" asChild>
 						<Pressable>
-							<FontAwesome name="cogs" style={{backgroundColor:"white", padding:12, borderRadius:100}} size={52}  />
+							<FontAwesome name="cogs" size={22} color="white"  style={{backgroundColor:"#000000da", padding:12, borderRadius:100}}/>
 						</Pressable>
 					</Link>
 
+					<SegmentedControl
+						segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
+						activeBackgroundColor={Colors.primary}
+						activeColor={Colors.white}
+						backgroundColor={"#010101aa"}
+						onChangeIndex={setSchool}
+						inactiveColor={Colors.white}
+						style={{}}
+
+
+					/>
 
 					<TouchableOpacity >
- 						<FontAwesome name="bell-o" size={52}  style={{backgroundColor:"white", padding:12, borderRadius:100}}/>
+ 						<FontAwesome name="bell-o" size={22} color="white"  style={{backgroundColor:"#000000da", padding:12, borderRadius:100}}/>
 					</TouchableOpacity>
 				</View>
+
+
 
 			</View>
 
@@ -240,26 +262,29 @@ const SwipeScreen = () => {
 					disableTopSwipe
 					disableBottomSwipe
 					showSecondCard={true}
-					cards={profiles} renderCard={(card) => <ProfileCard card={card}
-																			 user={user || {bookmarks:[]}}
-																		bookmark_prop={val => {
-																			if(user){
-																				setUser(prevUser => ({
-																					...prevUser, // Copy previous state
-																					bookmarks: prevUser.bookmarks.filter(itm => itm !== val),
-																				}));
-																			}
-																		}}
-																		open={()=>{setVisible(true);setSelectedUser(card)}} />}
+								   cards={profiles}
+								   renderCard={(card) => <ProfileCard card={card}
+																	  user={user || {bookmarks:[]}}
+																	  bookmark_prop={val => {
+																		  if(user){
+																			  setUser(prevUser => ({
+																				  ...prevUser, // Copy previous state
+																				  bookmarks: prevUser.bookmarks.filter(itm => itm !== val),
+																			  }));
+																		  }
+																	  }}
+																	  open={()=>{setVisible(true);setSelectedUser(card)}} />}
 								   stackSize={2}
-								   useViewOverflow={false}
+								   useViewOverflow={true}
 								   verticalSwipe={false}
+								   backgroundColor={"#000000"}
 								   onSwipedRight={e=>swiped(profiles[e])}
-								   containerStyle={{ marginTop: 0, backgroundColor:Colors.$backgroundDefault }}
+								   cardVerticalMargin={0}
+								   cardHorizontalMargin={0}
 				/>
 			</View>
-			<Animated.View style={{backgroundColor:"white", position:"fixed", zIndex:200,left:0,bottom:0, height:animatedHeight, width:width}} >
-				<TouchableOpacity  onPress={()=>{setVisible(false)}}>
+			<Animated.View style={{backgroundColor:"#000000ea",borderRadius:20, position:"fixed", zIndex:200,left:0,bottom:0, height:animatedHeight, width:width}} >
+				<TouchableOpacity style={{marginTop:10, marginLeft:20}}  onPress={()=>{setVisible(false)}}>
 					<Icon name={"close"} size={52} color={Colors.primary} />
 				</TouchableOpacity>
 
@@ -267,27 +292,27 @@ const SwipeScreen = () => {
 					<ScrollView>
 
 						<View style={{flex:1,flexDirection:"column", gap:12, paddingHorizontal:15,paddingBottom:100}} >
-							<Text text70>
+							<Text text70 white>
 								Om mig
 							</Text>
-							<Text>
+							<Text white>
 								{selectedUser.about}
 							</Text>
 
-							<Text text70>
+							<Text text70 white>
 								Intressen
 							</Text>
 							<View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
 								{selectedUser.interests.map((chip, index) => (
-									<Chip labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont"}}  key={index} label={chip} />
+									<Chip labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont", color:"white"}}  key={index} label={chip} />
 								))}
 							</View>
-							<Text text70>
+							<Text text70 white>
 								Ditaljer
 							</Text>
 							<View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
 								{selectedUser.details.map((chip, index) => (
-									<Chip labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont"}}  key={index} label={chip} />
+									<Chip labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont",color:"white"}}  key={index} label={chip} />
 								))}
 							</View	>
 						</View>
@@ -296,7 +321,7 @@ const SwipeScreen = () => {
 					</ScrollView>
 				):(null)}
 
-					</Animated.View>
+			</Animated.View>
 
 		</SafeAreaView>
 
