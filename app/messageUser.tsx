@@ -91,14 +91,19 @@ const MessageUserScreen = () => {
 	useEffect(() => {
 		const interval = setInterval(() => {
 			console.log("update")
-			if(selectedUser !== null)
- 				getMessages(selectedUser?.id)
+			if(selectedUser !== null){
+				API.get("/get_messages?sender="+selectedUser.id).then(response=>{
+					setMessages([...response.data]);
+				}).catch(error=>{})
+			}
+
 		}, 5000);
 
 		return () => clearInterval(interval);
 	}, []);
 
 	const sendMessage = () => {
+		setNewMessage("");
 		API.post("/send_message/",{
 			sender:user?.id,
 			receiver:selectedUser?.id,
@@ -116,66 +121,72 @@ const MessageUserScreen = () => {
 			}).catch(error=>{})
 	}
 
-	return (<View>
-
-		<View row spread paddingH-15 centerV style={{backgroundColor:Colors.$backgroundDefault, height:80, width:"100%"}}>
-			<Link href="/messages">
-				Back
-			</Link>
-			<Text heading>
-				{selectedUser?.username}
-			</Text>
-			<Avatar source={{uri:"http://192.168.1.119:8000"+selectedUser?.images[0].image}} />
-		</View>
-
-		<View style={{ flex: 1,marginBottom:50 }}>
-			<View style={{ backgroundColor: '', padding: 20, height:"60%" }}>
-				<FlatList
-					inverted
-					style={{height:height-10}}
-					data={messages}
-					keyExtractor={(item) => item.id.toString()}
-					renderItem={({ item }) => {
-								  const isMyMessage = item.sender.id === user?.id;
-
-								  return (
-									  <View
-										  style={{
-											  flexDirection: 'row',
-											  justifyContent: isMyMessage ? 'flex-end' : 'flex-start',
-											  marginVertical: 5,
-										  }}
-									  >
-										  <View
-											  style={{
-												  backgroundColor: isMyMessage ? Colors.primary : '#E0E0E0',
-												  padding: 10,
-												  borderRadius: 10,
-												  maxWidth: '70%',
-											  }}
-										  >
-											  <Text style={{ color: isMyMessage ? 'white' : 'black' }}>
-												  {item.message}
-											  </Text>
-										  </View>
-									  </View>
-								  );
-							  }}
-				/>
+	return (
+		<SafeAreaView style={{backgroundColor:"#010101"}}>
+			<View row spread paddingH-15 centerV style={{backgroundColor:Colors.$backgroundDefault, height:80, width:"100%"}}>
+				<Link href="/messages">
+					Back
+				</Link>
+				<Text heading>
+					{selectedUser?.username}
+				</Text>
+				<Avatar source={{uri:"http://192.168.1.119:8000"+selectedUser?.images[0].image}} />
 			</View>
 
-			<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent:"center",alignContent:"center", marginTop: 10, width:"100%" }}>
-				<TextField
-					preset="outline"
-							placeholder='Type a message...'
-							onChangeText={setNewMessage}
-							value={newMessage}
-				/>
-				<Button label='Send' onPress={sendMessage} style={{ marginLeft: 10 }} />
-			</View>
-		</View>
+			<View style={{ flex: 1,marginBottom:50,}}>
+				<View style={{ backgroundColor: '', padding: 20, height:height * 0.8 }}>
+					<FlatList
+						inverted
+						style={{height:height-10}}
+									data={messages}
+									keyExtractor={(item) => item.id.toString()}
+									renderItem={({ item }) => {
+										const isMyMessage = item.sender.id === user?.id;
 
-	</View>)
+										return (
+											<View
+												style={{
+													flexDirection: 'row',
+													justifyContent: isMyMessage ? 'flex-end' : 'flex-start',
+													marginVertical: 5,
+												}}
+											>
+												<View
+													style={{
+														backgroundColor: isMyMessage ? Colors.primary : '#323232',
+														padding: 10,
+														borderRadius: 15,
+														maxWidth: '70%',
+													}}
+												>
+													<Text style={{ color: 'white' }}>
+														{item.message}
+													</Text>
+												</View>
+											</View>
+										);
+									}}
+					/>
+				</View>
+
+				<View flex row style={{ marginTop: 10, width:width, backgroundColor:"blue" }}>
+					<TextField
+
+						style={{width:width*0.7, height:30}}
+						preset="outline"
+						placeholder='Type a message...'
+						onChangeText={setNewMessage}
+						value={newMessage}
+					/>
+					<Button onPress={sendMessage} style={{ marginLeft: 10, width:40 }} >
+						<Text>
+							Send
+						</Text>
+					</Button>
+				</View>
+			</View>
+
+		</SafeAreaView>)
 
 }
 
