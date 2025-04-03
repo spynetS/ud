@@ -33,6 +33,6 @@ def get_messages(request):
     messages = DirectMessage.objects.filter(
         Q(sender=request.user, receiver=sender) |
         Q(sender=sender, receiver=request.user)
-    ).order_by('created_at')  # Newest messages first
+    ).order_by('-created_at')  # Newest messages first
 
     return Response(DirectMessageSerializer(messages,many=True).data)

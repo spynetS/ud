@@ -108,12 +108,13 @@ const MessageUserScreen = () => {
 		}).catch(error=>{})
 	}
 
+
+
 	const getMessages = (id:number) =>{
 		API.get("/get_messages?sender="+id).then(response=>{
 			setMessages([...response.data]);
-		}).catch(error=>{})
+			}).catch(error=>{})
 	}
-
 
 	return (<View>
 
@@ -130,10 +131,11 @@ const MessageUserScreen = () => {
 		<View style={{ flex: 1,marginBottom:50 }}>
 			<View style={{ backgroundColor: '', padding: 20, height:"60%" }}>
 				<FlatList
-
+					inverted
+					style={{height:height-10}}
 					data={messages}
-							  keyExtractor={(item) => item.id.toString()}
-							  renderItem={({ item }) => {
+					keyExtractor={(item) => item.id.toString()}
+					renderItem={({ item }) => {
 								  const isMyMessage = item.sender.id === user?.id;
 
 								  return (
