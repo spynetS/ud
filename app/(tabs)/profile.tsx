@@ -65,13 +65,15 @@ const ProfileScreen = () => {
     }, 1500);
   };
 
+	const logout = () => {
+		AsyncStorage.setItem("access_token", "");
+
+	}
+
   return (
 		<SafeAreaView>
-
 			<ScrollView contentContainerStyle={styles.container}>
 				<View>
-
-
 					<View style={styles.profileContainer}>
 						<TouchableOpacity onPress={pickImage}>
 							<Avatar size={100} source={{ uri: profile.profile_picture }} />
@@ -85,24 +87,24 @@ const ProfileScreen = () => {
 					<View style={styles.form}>
 						<TextField
 							label="Name"
-							value={profile.username}
-							onChangeText={(text) => setProfile({ ...profile, name: text })}
+										 value={profile.username}
+										 onChangeText={(text) => setProfile({ ...profile, name: text })}
 						/>
 						<TextField
 							label="Pronouns"
-							value={profile.pronoun}
-							onChangeText={(text) => setProfile({ ...profile, pronoun: text })}
+										 value={profile.pronoun}
+										 onChangeText={(text) => setProfile({ ...profile, pronoun: text })}
 						/>
 						<TextField
 							label="Bio"
-							value={profile.about}
-							onChangeText={(text) => setProfile({ ...profile, bio: text })}
-							multiline
+										 value={profile.about}
+										 onChangeText={(text) => setProfile({ ...profile, bio: text })}
+										 multiline
 						/>
 						<TextField
 							label="Interests"
-							value={profile.interests}
-							onChangeText={(text) => setProfile({ ...profile, interests: text })}
+										 value={profile.interests}
+										 onChangeText={(text) => setProfile({ ...profile, interests: text })}
 						/>
 					</View>
 
@@ -112,10 +114,20 @@ const ProfileScreen = () => {
 										loading={loading}
 										style={styles.saveButton}
 					>
+
 						<Text>
 							Save Profile
 						</Text>
 
+					</Button>
+					<Button
+						onPress={logout}
+										loading={loading}
+										style={styles.saveButton}
+					>
+						<Text>
+							Logout
+						</Text>
 					</Button>
 				</View>
 			</ScrollView>
