@@ -31,9 +31,9 @@ export default function RootLayout() {
   Typography.loadTypographies({
     heading: { fontFamily: 'CustomFont', fontSize: 34 },
     body: { fontFamily: 'CustomFont', fontSize: 16 },
-    text90: { fontFamily: 'CustomFont', fontSize: 16 },
-    text: { fontFamily: 'CustomFont', fontSize: 16 },
-    text40: { fontFamily: 'CustomFont', fontSize: 16 },
+    text90: { fontFamily: 'CustomFont', fontSize: 12 },
+    text: { fontFamily: 'CustomFont', fontSize: 12 },
+    text40: { fontFamily: 'CustomFont', fontSize: 10 },
 
     default: { fontFamily: 'CustomFont', fontSize: 16 },
   });

@@ -206,7 +206,7 @@ const SwipeScreen = () => {
 			<View
 				style={{
 					position:"absolute",
-					top:10,
+					top:50,
 					width: "100%",
 					alignItems: "center",
 					zIndex: 1000, // Ensures it's above other content
@@ -228,7 +228,7 @@ const SwipeScreen = () => {
 								 backgroundColor={Colors.primary}
 								 onChangeIndex={setSchool}
 								 inactiveColor={Colors.white}
-								 style={{height:50,width:300}}
+								 style={{}}
 
 
 					/>
