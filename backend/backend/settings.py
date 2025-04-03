@@ -37,7 +37,11 @@ ALLOWED_HOSTS = ["*"]
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=2),  # Increase to 2 hours or desired duration
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Refresh token valid for 7 days
+    "ROTATE_REFRESH_TOKENS": True,  # Optional: Rotates refresh token on every use
+    "BLACKLIST_AFTER_ROTATION": True,  # Blacklists old refresh tokens
+    "AUTH_HEADER_TYPES": ("Bearer",),  # Default authorization header type
 }
 
 # Application definition
