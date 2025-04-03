@@ -107,8 +107,8 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 							  resizeMode="cover"
 							  source={{uri: `http://192.168.1.119:8000/${currentImage}`}}/>
 
-					<View centerH style={{position:"absolute",top:"7%",width:"100%"}} >
-						<View flex row spread style={{width:"66%",marginTop:10 }} >
+					<View flex row center style={{position:"absolute",top:"7%",width:"100%", }} >
+						<View flex row spread style={{width:"66%",marginTop:10, }} >
 
 							{card?.images?.map((e,i)=>(
 								<View style={{borderRadius:10,width:100,height:5,backgroundColor:i == imageIndex ? "#F2F2F2" : "#f2f2f250"}} >
@@ -117,7 +117,7 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 						</View>
 					</View>
 
-					<View style={{position:"absolute", bottom:"10%", left:15,width:"100%"}}  >
+					<View style={{paddingLeft:15,position:"absolute", bottom:0,height:"25%",width:"100%", backgroundColor:"#00000000"}}  >
 						<View style={{}}>
 							<Text body white heading >
 								{card.username}
@@ -213,18 +213,18 @@ const SwipeScreen = () => {
 				}}
 			>
 
-				<View  style={{paddingHorizontal:20,width:"100%", flex:1, flexDirection:"row",justifyContent:"space-between"}}>
+				<View  style={{paddingHorizontal:5,width:"100%", flex:1, flexDirection:"row",justifyContent:"space-between"}}>
 
 					<Link href="/profile" asChild>
 						<Pressable>
-							<FontAwesome name="cogs" style={{backgroundColor:"white", padding:12, borderRadius:100}} size={22}  />
+							<FontAwesome name="cogs" size={22} color="white"  style={{backgroundColor:"#444444aa", padding:12, borderRadius:100}}/>
 						</Pressable>
 					</Link>
 
 					<SegmentedControl
 						segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
-								 activeBackgroundColor={Colors.white}
-								 activeColor={Colors.primary}
+								 activeBackgroundColor={"#444444ff"}
+								 activeColor={Colors.white}
 								 backgroundColor={Colors.primary}
 								 onChangeIndex={setSchool}
 								 inactiveColor={Colors.white}
@@ -234,7 +234,7 @@ const SwipeScreen = () => {
 					/>
 
 					<TouchableOpacity >
- 						<FontAwesome name="bell-o" size={22}  style={{backgroundColor:"white", padding:12, borderRadius:100}}/>
+ 						<FontAwesome name="bell-o" size={22} color="white"  style={{backgroundColor:"#444444aa", padding:12, borderRadius:100}}/>
 					</TouchableOpacity>
 				</View>
 
@@ -265,13 +265,14 @@ const SwipeScreen = () => {
 					stackSize={2}
 					useViewOverflow={true}
 					verticalSwipe={false}
+					backgroundColor={"#444444"}
 					onSwipedRight={e=>swiped(profiles[e])}
 								   cardVerticalMargin={0}
 								   cardHorizontalMargin={0}
 				/>
 			</View>
-			<Animated.View style={{backgroundColor:"white", position:"fixed", zIndex:200,left:0,bottom:0, height:animatedHeight, width:width}} >
-				<TouchableOpacity  onPress={()=>{setVisible(false)}}>
+			<Animated.View style={{backgroundColor:"#000000ca",borderRadius:50, position:"fixed", zIndex:200,left:0,bottom:0, height:animatedHeight, width:width}} >
+				<TouchableOpacity style={{marginTop:10, marginLeft:20}}  onPress={()=>{setVisible(false)}}>
 					<Icon name={"close"} size={52} color={Colors.primary} />
 				</TouchableOpacity>
 
@@ -279,27 +280,27 @@ const SwipeScreen = () => {
 					<ScrollView>
 
 						<View style={{flex:1,flexDirection:"column", gap:12, paddingHorizontal:15,paddingBottom:100}} >
-							<Text text70>
+							<Text text70 white>
 								Om mig
 							</Text>
-							<Text>
+							<Text white>
 								{selectedUser.about}
 							</Text>
 
-							<Text text70>
+							<Text text70 white>
 								Intressen
 							</Text>
 							<View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
 								{selectedUser.interests.map((chip, index) => (
-									<Chip labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont"}}  key={index} label={chip} />
+									<Chip labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont", color:"white"}}  key={index} label={chip} />
 								))}
 							</View>
-							<Text text70>
+							<Text text70 white>
 								Ditaljer
 							</Text>
 							<View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
 								{selectedUser.details.map((chip, index) => (
-									<Chip labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont"}}  key={index} label={chip} />
+									<Chip labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont",color:"white"}}  key={index} label={chip} />
 								))}
 							</View	>
 						</View>

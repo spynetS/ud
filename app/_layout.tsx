@@ -25,7 +25,7 @@ export default function RootLayout() {
 
 
   const [loaded] = useFonts({
-    CustomFont: require('../assets/fonts/KOMIKAX_.ttf'),
+    //CustomFont: require('../assets/fonts/KOMIKAX_.ttf'),
   });
 
   Typography.loadTypographies({
