@@ -97,9 +97,9 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 					</TouchableOpacity>
 
 				</View>
-				<View center style={{width:width, height:height,marginTop:0}}>
+				<View center style={{width:width, height:height-40,marginTop:20}}>
 					<Image
-						style={{ flex: 1, width: width,borderRadius: 0, marginTop:0 }}
+						style={{ flex: 1, width: width-40,borderRadius: 30, marginTop:0 }}
 						resizeMode="cover"
 						source={{uri: `http://192.168.1.119:8000/${currentImage}`}}/>
 
@@ -132,19 +132,19 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 					<View style={{paddingLeft:35,position:"absolute", bottom:0,height:"30%",width:"100%", backgroundColor:"#00000000"}}  >
 						<View style={{}}>
 							<Text body white heading >
-								{card.username}
+								{card.first_name} {card.last_name}
 							</Text>
 							<Text heading2 white marginB-10 marginL-2>
 								{card.programe}
 							</Text>
 							<Chip
 								resetSpacings
-								label={card.pronoun}
+								label={card.school}
 								labelStyle={{color:"white",marginRight: Spacings.s1,fontFamily:"CustomFont"}}
 								backgroundColor={"#88888850"}
 								containerStyle={{
 									borderWidth: 0,
-									width:80
+									width:(card.school.length*7)
 								}}/>
 						</View>
 
@@ -229,7 +229,7 @@ const SwipeScreen = () => {
 
 					<Link href="/profile" asChild>
 						<Pressable>
-							<FontAwesome name="cogs" size={22} color="white"  style={{backgroundColor:"#000000aa", padding:12, borderRadius:100}}/>
+							<FontAwesome name="cogs" size={22} color="white"  style={{backgroundColor:"#000000da", padding:12, borderRadius:100}}/>
 						</Pressable>
 					</Link>
 
@@ -246,7 +246,7 @@ const SwipeScreen = () => {
 					/>
 
 					<TouchableOpacity >
- 						<FontAwesome name="bell-o" size={22} color="white"  style={{backgroundColor:"#000000aa", padding:12, borderRadius:100}}/>
+ 						<FontAwesome name="bell-o" size={22} color="white"  style={{backgroundColor:"#000000da", padding:12, borderRadius:100}}/>
 					</TouchableOpacity>
 				</View>
 
