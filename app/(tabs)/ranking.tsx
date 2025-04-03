@@ -45,15 +45,15 @@ const Row = ({item}) => {
 
 		  }}
       >
-		  <Text>{item.id}</Text>
+		  <Text white>{item.id}</Text>
 		  <Avatar
 			  size={40}
 			  source={{
 				  uri: item.images[0]?.image || "",
 			  }}
 		  />
-		  <Text>{item.username}</Text>
-		  <Text>{item.swipes}</Text>
+		  <Text white>{item.username}</Text>
+		  <Text white>{item.swipes}</Text>
       </View>
   );
 };
@@ -90,7 +90,7 @@ const RankScreen = () => {
 
 
 	return (
-		<SafeAreaView style={{flex:1,backgroundColor:"#fff"}} >
+		<SafeAreaView style={{flex:1,backgroundColor:"#000"}} >
 			<View
 				style={{
 					position:"absolute",
@@ -103,32 +103,31 @@ const RankScreen = () => {
 			>
 				<SegmentedControl
 					segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
-							 activeBackgroundColor={Colors.white}
-							 activeColor={Colors.primary}
-							 backgroundColor={Colors.primary}
-							onChangeIndex={setSchool}
-							 inactiveColor={Colors.white}
-							 style={{height:50,width:300}}
+					activeBackgroundColor={Colors.primary}
+					activeColor={Colors.white}
+					backgroundColor={"#010101"}
+					inactiveColor={Colors.white}
+					onChangeIndex={setSchool}
 				/>
 
 				<View style={{backgroundColor:Colors.primary,
-							  width:"100%",
-							  paddingTop:10,
-							  marginTop:5,
-							  flex:1,
-							  alignItems:"center",
-							  borderTopLeftRadius:50,
-							  borderTopRightRadius:50}} >
+											width:"100%",
+											paddingTop:10,
+											marginTop:5,
+											flex:1,
+											alignItems:"center",
+											borderTopLeftRadius:50,
+											borderTopRightRadius:50}} >
 					<Text style={{color:"white", marginBottom:10, fontSize:32}} heading>
 						TOPPLISTA
 					</Text>
 
 					<View style={{backgroundColor:Colors.dark_primary,
-								  width:"100%",
-								  flex:1,
-								  alignItems:"center",
-								  borderTopLeftRadius:50,
-								  borderTopRightRadius:50}} >
+												width:"100%",
+												flex:1,
+												alignItems:"center",
+												borderTopLeftRadius:50,
+												borderTopRightRadius:50}} >
 
 						<View style={{
 							flex:1,
@@ -160,24 +159,23 @@ const RankScreen = () => {
 
 						<SegmentedControl
 							segments={[{ label: 'MAN' }, { label: "KVINNA" }]}
-							activeBackgroundColor={Colors.white}
-							activeColor={Colors.primary}
-							backgroundColor={Colors.primary}
-							onChangeIndex={setGender}
-
-							inactiveColor={Colors.white}
-							style={{height:40,marginBottom:2}}
+											 activeBackgroundColor={Colors.primary}
+											 activeColor={Colors.white}
+											 backgroundColor={"#010101"}
+											 inactiveColor={Colors.white}
+											 onChangeIndex={setGender}
+											 style={{marginBottom:2}}
 						/>
 
-						<View style={{backgroundColor:"#fff",
-									  width:"100%",
-									  flex:1,
-									  flexDirection:"column",
-									  marginHorizontal: "auto",
-									  padding:16,
+						<View style={{backgroundColor:"#000",
+													width:"100%",
+													flex:1,
+													flexDirection:"column",
+													marginHorizontal: "auto",
+													padding:16,
 
-									  borderTopLeftRadius:50,
-									  borderTopRightRadius:50}} >
+													borderTopLeftRadius:50,
+													borderTopRightRadius:50}} >
 							<View style={{
 								flex:1,
 								flexDirection:"row",
@@ -185,22 +183,22 @@ const RankScreen = () => {
 								justifyContent:"space-between"
 
 							}} >
-								<Text h2 body>
+								<Text white  h2 body>
 									PLACERING
 								</Text>
-								<Text h2 body>
+								<Text white  h2 body>
 									ANVÄNDARE
-								</Text>
-								<Text h2 body>
+								</Text >
+								<Text h2 white body>
 									RATING
 								</Text>
 							</View>
 
 							<FlatGrid
 								style = {{flex:1,margin:10}}
-										data={users}
-										renderItem={Row}
-										itemDimension={300} // Set the item dimension
+												data={users}
+												renderItem={Row}
+												itemDimension={300} // Set the item dimension
 							/>
 						</View>
 
