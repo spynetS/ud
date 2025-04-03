@@ -37,6 +37,14 @@ const RoundButton = ({ onPress, iconName }) => {
 };
 
 
+const unbookmark = (userId=>{
+	API.post("/unbookmark/",{'userId':userId}).then(response=>{
+		console.log(response.data)
+	}).catch(error=>{
+		console.log(error)
+	})
+})
+
 const bookmark = (userId=>{
 	API.post("/bookmark/",{'userId':userId}).then(response=>{
 		console.log(response.data)
@@ -46,19 +54,15 @@ const bookmark = (userId=>{
 })
 
 
-const ProfileCard = ({ card, open,user, bookmark_prop }) => {
-
-	const scrollViewRef = useRef(null); // Create a ref for the ScrollView
-	const scrollToBottom = () => {
-		if (scrollViewRef.current) {
-			scrollViewRef.current.scrollToEnd({ animated: true }); // Scroll to bottom
-		}
-	  };
+const ProfileCard = ({ card, open,user }) => {
 
 	const [currentImage,setCurrentImage] = useState<string>("");
 	const [imageIndex,setImageIndex] = useState<number>(0);
+	const [hearted,setHearted] = useState<boolean>(false);
+
 	useEffect(()=>{
 		if(card){
+			setHearted(user.bookmarks.includes(card.id));
 			setCurrentImage(card.images[0]?.image || "");
 		}
 	},[card])
@@ -78,7 +82,7 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 				style={{backgroundColor:""}}
 			>
 				<View style={{position:"absolute",right:30, bottom:"15%",zIndex:200}}>
-					<RoundButton iconName={user.bookmarks.includes(card.id) ? "heart" : "heart-o"} onPress={()=>{bookmark(card.id); bookmark_prop(card.id);  }} />
+					<RoundButton iconName={hearted ? "heart" : "heart-o"} onPress={()=>{!hearted ? bookmark(card.id) : unbookmark(card.id); setHearted(!hearted)  }} />
 				</View>
 				<View style={{
 					position:"absolute",
@@ -265,14 +269,6 @@ const SwipeScreen = () => {
 								   cards={profiles}
 								   renderCard={(card) => <ProfileCard card={card}
 																	  user={user || {bookmarks:[]}}
-																	  bookmark_prop={val => {
-																		  if(user){
-																			  setUser(prevUser => ({
-																				  ...prevUser, // Copy previous state
-																				  bookmarks: prevUser.bookmarks.filter(itm => itm !== val),
-																			  }));
-																		  }
-																	  }}
 																	  open={()=>{setVisible(true);setSelectedUser(card)}} />}
 								   stackSize={2}
 								   useViewOverflow={true}
