@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
-import { StyleSheet, Dimensions, ScrollView, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, TouchableOpacity, FlatList, TextInput } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import Icon from "react-native-vector-icons/FontAwesome"; // Install if not already
 import { useFocusEffect } from '@react-navigation/native';
@@ -13,6 +13,7 @@ import axios from "axios"
 import { ListItem, Image, Colors, Text, Button, View, TextField } from "react-native-ui-lib"
 import { Link, router } from 'expo-router';
 import { Avatar } from 'react-native-ui-lib/src/components/avatar';
+import { Spacings } from 'react-native-ui-lib/src/style/spacings';
 
 const { height, width } = Dimensions.get('window');
 
@@ -46,11 +47,12 @@ type User = {
 const MatchItem = ({ match, press }: { match: User, press:any }) => {
 
   return (
-	  <ListItem
-	  	  activeBackgroundColor={Colors.grey60}
-	  	  activeOpacity={0.3}
-	  	  height={77.5}
-	  	  onPress={() => press(match)}
+		<ListItem
+	  	activeBackgroundColor={Colors.grey60}
+
+	  	activeOpacity={0.3}
+	  	height={77.5}
+	  	onPress={() => press(match)}
 	  >
 		  <ListItem.Part left >
 
@@ -59,16 +61,16 @@ const MatchItem = ({ match, press }: { match: User, press:any }) => {
 		  <ListItem.Part middle column containerStyle={[styles.border, {paddingRight: 17}]}>
 			  <ListItem.Part containerStyle={{marginBottom: 3}}>
 				  <Image source={{uri: ("http://192.168.1.119:8000"+match?.images[0].image)}} style={styles.image}/>
-				  <Text grey10 text70 style={{flex: 1, marginRight: 10}} numberOfLines={1}>
+				  <Text grey10 text70 white style={{flex: 1, marginRight: 10}} numberOfLines={1}>
 					  {match.username}
 				  </Text>
-				  <Text grey10 text70 style={{marginTop: 2}}>
-					  {match.id}
+				  <Text grey10 text40 style={{marginTop: 2, color:"gray"}}>
+					  16 min
 				  </Text>
 			  </ListItem.Part>
 		  </ListItem.Part>
 
-      </ListItem>
+    </ListItem>
   );
 };
 
@@ -89,17 +91,22 @@ const MessageScreen = () => {
 
 
 	return (
-		<SafeAreaView style={{flex:1}} >
+		<SafeAreaView style={{backgroundColor:"#000", padding:10, height:height}} >
+			<Text heading white marginB-25>
+				Messages
+			</Text>
+			<TextInput style={styles.input} placeholder="Search"  />
+			<View row center style={{}} >
+				<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
+				<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
+				<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
+				<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
+			</View>
+			<View style={{padding:10}} >
 
-			<View>
-				<View style={{backgroundColor:Colors.$backgroundDefault, height:80, width:"100%"}}>
-					<TouchableOpacity onPress={null} >
-						Back
-					</TouchableOpacity>
-					<Text heading>
-						Messages
-					</Text>
-				</View>
+				<Text body white bold marginB-10>
+					Messages
+				</Text>
 				{user?.matches?.map(match=>(
 					<MatchItem press={()=>{router.push({pathname:"/messageUser",params:{pressedUser:JSON.stringify(match)}});}} match={match}/>
 				))}
@@ -115,25 +122,32 @@ const styles = StyleSheet.create({
   image: {
     width: 54,
     height: 54,
-    borderRadius: 10,
+    borderRadius: 100,
+		borderColor:Colors.primary,
+		borderWidth:2,
     marginHorizontal: 14
   },
+	 bigImage: {
+			width: 74,
+			height: 74,
+			borderRadius: 100,
+			borderColor:Colors.primary,
+			borderWidth:2,
+			marginHorizontal: 3
+		},
   border: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.grey70
-  }
-});
 
-export default MessageScreen;
+  },
+	input: { backgroundColor:"#28272A",color:"gray", padding: 10, marginBottom: 10, borderRadius: 15 },
+  searchContainer: {
+    padding: Spacings.s1,
+    paddingBottom: 0
+  },
+  searchField: {
+    padding: Spacings.s3,
+    borderRadius: 8
+  },
+	});
 
-/*
-   <FlatList
-   ref={flatListRef}
-   data={messages}
-   keyExtractor={(item) => item.id.toString()}
-   ItemSeparatorComponent={() => <View style={{ height: 10 }} />} // Adds 10px gap
-   onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })} // Scrolls down on update
-   onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })} // Scrolls down on layout load
-   renderItem={({ item }) => {
-
- */
+	export default MessageScreen;
