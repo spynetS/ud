@@ -29,7 +29,7 @@ export default function RootLayout() {
   });
 
   Typography.loadTypographies({
-    heading: { fontFamily: 'CustomFont', fontSize: 24 },
+    heading: { fontFamily: 'CustomFont', fontSize: 34 },
     body: { fontFamily: 'CustomFont', fontSize: 16 },
     text90: { fontFamily: 'CustomFont', fontSize: 16 },
     text: { fontFamily: 'CustomFont', fontSize: 16 },

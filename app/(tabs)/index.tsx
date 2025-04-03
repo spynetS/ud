@@ -79,8 +79,9 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 	else {
 		return (
 			<ScrollView
+				style={{backgroundColor:""}}
 			>
-				<View style={{position:"absolute",right:20, bottom:50,zIndex:200}}>
+				<View style={{position:"absolute",right:20, bottom:"10%",zIndex:200}}>
 					<RoundButton iconName={user.bookmarks.includes(card.id) ? "heart" : "heart-o"} onPress={()=>{bookmark(card.id); bookmark_prop(card.id);  }} />
 				</View>
 				<View style={{
@@ -100,32 +101,39 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 					</TouchableOpacity>
 
 				</View>
-				<View style={{width:"100%", height:height-150}}>
+				<View style={{width:"100%", height:height}}>
 					<Image
-						style={{ flex: 1, width: '100%',borderRadius: 100, marginTop:40 }}
-						resizeMode="cover"
-						source={{uri: `http://192.168.1.119:8000/${currentImage}`}}/>
-					<View style={{position:"absolute", bottom:15, left:15,width:"100%"}}  >
+						style={{ flex: 1, width: '100%',borderRadius: 0, marginTop:0 }}
+							  resizeMode="cover"
+							  source={{uri: `http://192.168.1.119:8000/${currentImage}`}}/>
+
+					<View centerH style={{position:"absolute",top:"7%",width:"100%"}} >
+						<View flex row spread style={{width:"66%",marginTop:10 }} >
+
+							{card?.images?.map((e,i)=>(
+								<View style={{borderRadius:10,width:100,height:5,backgroundColor:i == imageIndex ? "#F2F2F2" : "#f2f2f250"}} >
+								</View>
+							))}
+						</View>
+					</View>
+
+					<View style={{position:"absolute", bottom:"10%", left:15,width:"100%"}}  >
 						<View style={{}}>
 							<Text body white heading >
 								{card.username}
 							</Text>
-							<Chip
-								resetSpacings
-								label={card.pronoun}
-								labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont"}}
-								backgroundColor={"white"}
-								containerStyle={{
-									borderWidth: 0,
-									width:80
-								}}/>
 							<Text body white >
 								{card.programe}
 							</Text>
-							<Text white body>
-								{card.swipes}
-							</Text>
-
+							<Chip
+								resetSpacings
+								label={card.pronoun}
+									  labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont"}}
+									  backgroundColor={"white"}
+									  containerStyle={{
+										  borderWidth: 0,
+										  width:80
+									  }}/>
 						</View>
 
 					</View>
@@ -198,37 +206,39 @@ const SwipeScreen = () => {
 			<View
 				style={{
 					position:"absolute",
-					top:45,
+					top:10,
 					width: "100%",
 					alignItems: "center",
 					zIndex: 1000, // Ensures it's above other content
 				}}
 			>
-				<SegmentedControl
-					segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
-					activeBackgroundColor={Colors.white}
-					activeColor={Colors.primary}
-					backgroundColor={Colors.primary}
-					onChangeIndex={setSchool}
-					inactiveColor={Colors.white}
-					style={{height:50,width:300}}
-
-
-				/>
 
 				<View  style={{paddingHorizontal:20,width:"100%", flex:1, flexDirection:"row",justifyContent:"space-between"}}>
 
 					<Link href="/profile" asChild>
 						<Pressable>
-							<FontAwesome name="cogs" style={{backgroundColor:"white", padding:12, borderRadius:100}} size={52}  />
+							<FontAwesome name="cogs" style={{backgroundColor:"white", padding:12, borderRadius:100}} size={22}  />
 						</Pressable>
 					</Link>
 
+					<SegmentedControl
+						segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
+								 activeBackgroundColor={Colors.white}
+								 activeColor={Colors.primary}
+								 backgroundColor={Colors.primary}
+								 onChangeIndex={setSchool}
+								 inactiveColor={Colors.white}
+								 style={{height:50,width:300}}
+
+
+					/>
 
 					<TouchableOpacity >
- 						<FontAwesome name="bell-o" size={52}  style={{backgroundColor:"white", padding:12, borderRadius:100}}/>
+ 						<FontAwesome name="bell-o" size={22}  style={{backgroundColor:"white", padding:12, borderRadius:100}}/>
 					</TouchableOpacity>
 				</View>
+
+
 
 			</View>
 
@@ -240,22 +250,24 @@ const SwipeScreen = () => {
 					disableTopSwipe
 					disableBottomSwipe
 					showSecondCard={true}
-					cards={profiles} renderCard={(card) => <ProfileCard card={card}
-																			 user={user || {bookmarks:[]}}
-																		bookmark_prop={val => {
-																			if(user){
-																				setUser(prevUser => ({
-																					...prevUser, // Copy previous state
-																					bookmarks: prevUser.bookmarks.filter(itm => itm !== val),
-																				}));
-																			}
-																		}}
-																		open={()=>{setVisible(true);setSelectedUser(card)}} />}
-								   stackSize={2}
-								   useViewOverflow={false}
-								   verticalSwipe={false}
-								   onSwipedRight={e=>swiped(profiles[e])}
-								   containerStyle={{ marginTop: 0, backgroundColor:Colors.$backgroundDefault }}
+					cards={profiles}
+					renderCard={(card) => <ProfileCard card={card}
+													   user={user || {bookmarks:[]}}
+													   bookmark_prop={val => {
+														   if(user){
+															   setUser(prevUser => ({
+																   ...prevUser, // Copy previous state
+																   bookmarks: prevUser.bookmarks.filter(itm => itm !== val),
+															   }));
+														   }
+													   }}
+													   open={()=>{setVisible(true);setSelectedUser(card)}} />}
+					stackSize={2}
+					useViewOverflow={true}
+					verticalSwipe={false}
+					onSwipedRight={e=>swiped(profiles[e])}
+								   cardVerticalMargin={0}
+								   cardHorizontalMargin={0}
 				/>
 			</View>
 			<Animated.View style={{backgroundColor:"white", position:"fixed", zIndex:200,left:0,bottom:0, height:animatedHeight, width:width}} >
@@ -296,7 +308,7 @@ const SwipeScreen = () => {
 					</ScrollView>
 				):(null)}
 
-					</Animated.View>
+			</Animated.View>
 
 		</SafeAreaView>
 
