@@ -25,17 +25,13 @@ const RoundButton = ({ onPress, iconName }) => {
       <TouchableOpacity style={{
 		  width: 64,
 		  height: 64,
-		  borderRadius: 25, // Makes it round
-		  //backgroundColor: "#007AFF", // Change color as needed
+		  borderRadius: "100%", // Makes it round
+		  backgroundColor: Colors.primary, // Change color as needed
 		  justifyContent: "center",
 		  alignItems: "center",
 		  elevation: 5, // Adds shadow on Android
-		  shadowColor: "#000",
-		  shadowOffset: { width: 0, height: 2 },
-		  shadowOpacity: 0.3,
-		  shadowRadius: 2,
 	  }} onPress={onPress}>
-		  <Icon name={iconName} size={64} color={Colors.primary} />
+		  <Icon name={iconName} size={24} color={"white"} />
       </TouchableOpacity>
   );
 };
@@ -81,7 +77,7 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 			<ScrollView
 				style={{backgroundColor:""}}
 			>
-				<View style={{position:"absolute",right:20, bottom:"10%",zIndex:200}}>
+				<View style={{position:"absolute",right:30, bottom:"15%",zIndex:200}}>
 					<RoundButton iconName={user.bookmarks.includes(card.id) ? "heart" : "heart-o"} onPress={()=>{bookmark(card.id); bookmark_prop(card.id);  }} />
 				</View>
 				<View style={{
@@ -101,11 +97,11 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 					</TouchableOpacity>
 
 				</View>
-				<View style={{width:"100%", height:height}}>
+				<View center style={{width:width, height:height,marginTop:0}}>
 					<Image
-						style={{ flex: 1, width: '100%',borderRadius: 0, marginTop:0 }}
-							  resizeMode="cover"
-							  source={{uri: `http://192.168.1.119:8000/${currentImage}`}}/>
+						style={{ flex: 1, width: width,borderRadius: 0, marginTop:0 }}
+						resizeMode="cover"
+						source={{uri: `http://192.168.1.119:8000/${currentImage}`}}/>
 
 					<View center style={{ position: "absolute", top: "7%", width: "100%" }}>
 						<View
@@ -133,7 +129,7 @@ const ProfileCard = ({ card, open,user, bookmark_prop }) => {
 						</View>
 					</View>
 
-					<View style={{paddingLeft:35,position:"absolute", bottom:0,height:"25%",width:"100%", backgroundColor:"#00000000"}}  >
+					<View style={{paddingLeft:35,position:"absolute", bottom:0,height:"30%",width:"100%", backgroundColor:"#00000000"}}  >
 						<View style={{}}>
 							<Text body white heading >
 								{card.username}
@@ -239,12 +235,12 @@ const SwipeScreen = () => {
 
 					<SegmentedControl
 						segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
-								 activeBackgroundColor={"#444444ff"}
-								 activeColor={Colors.white}
-								 backgroundColor={Colors.primary}
-								 onChangeIndex={setSchool}
-								 inactiveColor={Colors.white}
-								 style={{}}
+						activeBackgroundColor={Colors.primary}
+						activeColor={Colors.white}
+						backgroundColor={"#010101aa"}
+						onChangeIndex={setSchool}
+						inactiveColor={Colors.white}
+						style={{}}
 
 
 					/>
@@ -266,25 +262,25 @@ const SwipeScreen = () => {
 					disableTopSwipe
 					disableBottomSwipe
 					showSecondCard={true}
-					cards={profiles}
-					renderCard={(card) => <ProfileCard card={card}
-													   user={user || {bookmarks:[]}}
-													   bookmark_prop={val => {
-														   if(user){
-															   setUser(prevUser => ({
-																   ...prevUser, // Copy previous state
-																   bookmarks: prevUser.bookmarks.filter(itm => itm !== val),
-															   }));
-														   }
-													   }}
-													   open={()=>{setVisible(true);setSelectedUser(card)}} />}
-					stackSize={2}
-					useViewOverflow={true}
-					verticalSwipe={false}
-					backgroundColor={"#444444"}
-					onSwipedRight={e=>swiped(profiles[e])}
-					cardVerticalMargin={0}
-					cardHorizontalMargin={0}
+								   cards={profiles}
+								   renderCard={(card) => <ProfileCard card={card}
+																	  user={user || {bookmarks:[]}}
+																	  bookmark_prop={val => {
+																		  if(user){
+																			  setUser(prevUser => ({
+																				  ...prevUser, // Copy previous state
+																				  bookmarks: prevUser.bookmarks.filter(itm => itm !== val),
+																			  }));
+																		  }
+																	  }}
+																	  open={()=>{setVisible(true);setSelectedUser(card)}} />}
+								   stackSize={2}
+								   useViewOverflow={true}
+								   verticalSwipe={false}
+								   backgroundColor={"#000000"}
+								   onSwipedRight={e=>swiped(profiles[e])}
+								   cardVerticalMargin={0}
+								   cardHorizontalMargin={0}
 				/>
 			</View>
 			<Animated.View style={{backgroundColor:"#000000ea",borderRadius:20, position:"fixed", zIndex:200,left:0,bottom:0, height:animatedHeight, width:width}} >
