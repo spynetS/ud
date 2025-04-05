@@ -9,15 +9,34 @@ import API, { getProfile } from "@/components/api";
 
 import axios from "axios"
 
-import {Chip,Colors, Spacings, Image, SegmentedControl, Text, Button, Assets, Modal, Card, View} from "react-native-ui-lib"
+import { Chip, Colors, Spacings, Image, SegmentedControl, Text, Button, Assets, Modal, Card, View } from "react-native-ui-lib"
+import Icon from "react-native-vector-icons/FontAwesome"; // Install if not already
+
 import { Link, router } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { Avatar } from 'react-native-ui-lib/src/components/avatar';
 
 const { height, width } = Dimensions.get('window');
 
+const RoundButton = ({ onPress, iconName }) => {
+  return (
+      <TouchableOpacity style={{
+		  width: 64,
+		  height: 64,
+		  borderRadius: "100%", // Makes it round
+		  backgroundColor: Colors.primary, // Change color as needed
+		  justifyContent: "center",
+		  alignItems: "center",
+		  elevation: 5, // Adds shadow on Android
+	  }} onPress={onPress}>
+		  <Icon name={iconName} size={24} color={"white"} />
+      </TouchableOpacity>
+  );
+};
+
+
 export type User = {
-  id: number;
+	id: number;
   username: string;
 };
 
@@ -43,11 +62,11 @@ const NewEvent = ({event,small}) =>{
 
 	return(
 		<TouchableOpacity>
-		<View style={{
+		<View center style={{
 			position:"absolute",
 			top:0,
 			zIndex:10,
-			padding:5,
+			padding:3,
 			borderRadius:10,
 			backgroundColor:"#fff",
 			flexDirection:"column",
@@ -145,11 +164,11 @@ const EventScreen = () => {
 			>
 				<SegmentedControl
 					segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
-							 activeBackgroundColor={Colors.primary}
-							 activeColor={Colors.white}
-							 backgroundColor={"#010101aa"}
-							 onChangeIndex={setSchool}
-							 inactiveColor={Colors.white}
+					activeBackgroundColor={Colors.primary}
+					activeColor={Colors.white}
+					backgroundColor={"#010101aa"}
+					onChangeIndex={setSchool}
+					inactiveColor={Colors.white}
 				/>
 			</View>
 
@@ -180,6 +199,9 @@ const EventScreen = () => {
 
 			</View>
 
+			<View style={{position:"absolute",right:30, bottom:"15%",zIndex:200}}>
+				<RoundButton iconName={"plus"}  />
+			</View>
 
 
 		</SafeAreaView>
