@@ -48,47 +48,47 @@ type User = {
 const MatchModal = ({close, user, matchUser}) => {
 
 	return (
-		<Modal
-			transparent
-			visible={true}
-					animationType="fade"
-		>
-			<BlurView
-				style={{
-                    height: height,
-					flexDirection:"column",
-					alignItems:"center",
-					paddingTop:100
-				}}
-					  intensity={20}
-					  tint={"dark"}
-					  experimentalBlurMethod={"dimezisBlurView"}
-			>
-				<Text heading white>
-					It's a Match!
-				</Text>
-				<Text heading2 white>
-					Alfred likes you!
-				</Text>
-				<View row spread style={{width:width*2/3}}>
-					<Avatar size={100} source={{uri:"http://192.168.1.119:8000"+user?.images[0].image}} />
-					<Avatar size={100} source={{uri:"http://192.168.1.119:8000"+matchUser?.images[0].image}} />
-				</View>
-				<Button
-					onPress={()=>{close();router.push({pathname:"/messageUser",params:{pressedUser:JSON.stringify(matchUser)}})}}
-							style={{marginTop:20}} >
-					<Text white>
-						Send a Message!
-					</Text>
-				</Button>
-				<Button onPress={close} style={{marginTop:20}} >
-					<Text white>
-						Keep Swiping
-					</Text>
-				</Button>
-			</BlurView>
+		<BlurView
+			style={{
+				position: "absolute",
+				top: 0,
+				left: 0,
+				width: width,
+				height: height,
+				flexDirection: "column",
+				alignItems: "center",
 
-		</Modal>
+				backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent overlay
+				zIndex: 999, // make sure it's on top
+				paddingTop: 100,
+			}}
+		intensity={5}
+		experimentalBlurMethod="dimezisBlurView"
+		>
+		<Text heading white>
+			It's a Match!
+		</Text>
+		<Text heading2 white>
+			Alfred likes you!
+		</Text>
+		<View row spread style={{width:width*2/3}}>
+			<Avatar size={100} source={{uri:"http://192.168.1.119:8000"+user?.images[0].image}} />
+			<Avatar size={100} source={{uri:"http://192.168.1.119:8000"+matchUser?.images[0].image}} />
+		</View>
+		<Button
+			onPress={()=>{close();router.push({pathname:"/messageUser",params:{pressedUser:JSON.stringify(matchUser)}})}}
+					style={{marginTop:20}} >
+			<Text white>
+				Send a Message!
+			</Text>
+		</Button>
+		<Button onPress={close} style={{marginTop:20}} >
+			<Text white>
+				Keep Swiping
+			</Text>
+		</Button>
+		</BlurView>
+
 	);
 }
 
