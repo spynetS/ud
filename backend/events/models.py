@@ -8,6 +8,7 @@ from profiles.models import CustomUser
 # comming (users that comming)
 
 
+
 class Event(models.Model):
     date = models.DateTimeField()
     location = models.CharField(max_length=255)

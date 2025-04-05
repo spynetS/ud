@@ -199,7 +199,7 @@ const EventScreen = () => {
 
 			</View>
 
-			<View style={{position:"absolute",right:30, bottom:"15%",zIndex:200}}>
+			<View style={{position:"absolute",right:30, bottom:"10%",zIndex:200}}>
 				<RoundButton iconName={"plus"}  />
 			</View>
 

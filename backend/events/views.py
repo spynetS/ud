@@ -7,7 +7,8 @@ from rest_framework.decorators import api_view
 from .models import Event
 from events.serializers import EventSerializer
 
-#@api_view(['GET'])
+# create so we can filter for school (creator's school)
+# and whole sweden any school
 class EventListView(generics.ListAPIView):
     serializer_class = EventSerializer
 
