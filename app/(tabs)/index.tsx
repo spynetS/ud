@@ -321,9 +321,6 @@ const SwipeScreen = () => {
 						backgroundColor={"#010101aa"}
 						onChangeIndex={setSchool}
 						inactiveColor={Colors.white}
-						style={{}}
-
-
 					/>
 
 					<TouchableOpacity >

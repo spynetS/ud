@@ -1,46 +1,113 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
 import { StyleSheet, Dimensions, ScrollView, TouchableOpacity, ImageBackground } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
-import Icon from "react-native-vector-icons/FontAwesome"; // Install if not already
 import { useFocusEffect } from '@react-navigation/native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { GiPartyPopper } from "react-icons/gi";
 import API, { getProfile } from "@/components/api";
 
 import axios from "axios"
 
 import {Chip,Colors, Spacings, Image, SegmentedControl, Text, Button, Assets, Modal, Card, View} from "react-native-ui-lib"
 import { Link, router } from 'expo-router';
+import { FontAwesome } from '@expo/vector-icons';
+import { Avatar } from 'react-native-ui-lib/src/components/avatar';
 
 const { height, width } = Dimensions.get('window');
 
-const NewEvent = ({small}) =>{
+export type User = {
+  id: number;
+  username: string;
+};
+
+// Define the Event type
+export type Event = {
+  id: number;
+  date: string; // ISO 8601 Date string
+  location: string;
+  description: string;
+	creator: User; // Creator is a user object
+	coming: User[]; // List of users attending the event
+	image: string | null; // URL to the image, can be null if no image is provided
+};
+
+
+const NewEvent = ({event,small}) =>{
+	const getMonthName = (date: string): string => {
+		const eventDate = new Date(date);
+		const options = { month: 'long' };  // Use 'long' for full month name
+		return eventDate.toLocaleString('sv-SE', options); // Outputs the month name (e.g., "April")
+	};
+
+
 	return(
+		<TouchableOpacity>
+		<View style={{
+			position:"absolute",
+			top:0,
+			zIndex:10,
+			padding:5,
+			borderRadius:10,
+			backgroundColor:"#fff",
+			flexDirection:"column",
+
+
+		}} >
+			<Text style={{fontWeight:"bold"}} >
+				{new Date(event.date).getDay()}
+			</Text>
+			<Text style={{fontWeight:"bold"}}>
+				{getMonthName(event.date)}
+			</Text>
+
+		</View>
 		<ImageBackground
-			source={{uri:'http://192.168.1.119:8000/media/uploads/Erik-XIV-toppbild.jpg'}}
-				   style={{
-					   margin:10,
-					   width:  small? 120 : "100%",
-					   height: small? 120 : height*0.2,
-					   borderRadius: 20,
-					   overflow: 'hidden', // 🔥 this is key
-					   justifyContent: 'flex-end',
-				   }}
-				   resizeMode="cover" // or "contain", "stretch", etc.
+		source={{uri:event?.image}}
+		style={{
+			margin:10,
+			width:  small? 120 : "100%",
+			height: small? 120 : height*0.2,
+			borderRadius: 20,
+			overflow: 'hidden', // 🔥 this is key
+			justifyContent: 'flex-end',
+		}}
+		resizeMode="cover" // or "contain", "stretch", etc.
 		>
-			<View style={{ padding: 10,  borderRadius: 100 }}>
-				<Text white style={{fontSize:12}}>Enginering dinner</Text>
-			</View>
-		</ImageBackground>
-	)
-}
+		<View style={{padding:12,backgroundColor:"#00000040"}}>
+
+		<View row centerV style={{}}>
+			{!small?(
+				<>
+					<GiPartyPopper size={24} color="white" />
+					<Text heading2 white marginL-10>{event?.title}</Text>
+				</>)
+			:(
+				<Text body white style={{fontWeight:"bold"}}>{event?.title}</Text>
+			)}
+
+		</View>
+		{!small?(
+			<View row centerV>
+				<Avatar size={28} source={{uri:event?.creator.images[0].image}} />
+				<Text body white marginL-10>{event?.creator.first_name} {event?.creator.last_name}</Text>
+			</View>)
+		:""}
+				</View>
+				</ImageBackground>
+
+				</TouchableOpacity>
+			)
+			}
 
 
 const EventScreen = () => {
 
 	const [profiles, setProfile] = useState([]);
 	const [school,setSchool] = useState<number>(0);
+
+	const [newstEvents, setNewestEvents] = useState(null);
+	const [popularEvents, setPopularEvents] = useState(null);
 
 	const [user,setUser] = useState(null);
 	useFocusEffect(useCallback(()=>{
@@ -50,6 +117,18 @@ const EventScreen = () => {
 			}).catch(error=>{
 				router.push("/login", { relativeToDirectory: true })
 			});
+
+		API.get("get_events?filter=newest").then(response=>{
+			setNewestEvents(response.data);
+		}).catch(error=>{
+
+		})
+		API.get("get_events?filter=popular").then(response=>{
+			setPopularEvents(response.data);
+		}).catch(error=>{
+
+		})
+
 	},[]))
 
 	return (
@@ -66,11 +145,11 @@ const EventScreen = () => {
 			>
 				<SegmentedControl
 					segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
-					activeBackgroundColor={Colors.primary}
-					activeColor={Colors.white}
-					backgroundColor={"#010101aa"}
-					onChangeIndex={setSchool}
-					inactiveColor={Colors.white}
+							 activeBackgroundColor={Colors.primary}
+							 activeColor={Colors.white}
+							 backgroundColor={"#010101aa"}
+							 onChangeIndex={setSchool}
+							 inactiveColor={Colors.white}
 				/>
 			</View>
 
@@ -78,27 +157,23 @@ const EventScreen = () => {
 				style={{
 					marginTop:50,
 					padding:20,
-					height:height-90,
+					height:height-50,
 				}} >
 				<Text white heading2 marginB-10>
 					Nya Event
 				</Text>
 				<ScrollView horizontal  >
-					<NewEvent small>
-					</NewEvent>
-					<NewEvent small>
-					</NewEvent>
-					<NewEvent small>
-					</NewEvent>
+					{newstEvents?.map(event=>(<NewEvent event={event} small />))}
 				</ScrollView>
 
 				<Text white heading2 marginV-10>
 					Populära Event
 				</Text>
-				<ScrollView  >
-					<NewEvent></NewEvent>
-					<NewEvent></NewEvent>
-					<NewEvent></NewEvent>
+				<ScrollView style={{height:height*0.6}}  >
+
+					{popularEvents?.map(event=>(<NewEvent event={event} />))}
+
+
 					<View style={{ height: 100 }} />
 				</ScrollView>
 

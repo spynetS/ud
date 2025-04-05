@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('profiles.urls')),  # Routes 'api/' URLs to the 'dating' app
     path('api/', include('direct_messages.urls')),  # Routes 'api/' URLs to the 'dating' app
+    path('api/', include('events.urls')),  # Routes 'api/' URLs to the 'dating' app
 ]
 
 if settings.DEBUG:

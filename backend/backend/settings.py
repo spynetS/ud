@@ -60,6 +60,7 @@ INSTALLED_APPS = [
 
     "profiles",
     "direct_messages",
+    "events",
 ]
 
 AUTH_USER_MODEL = 'profiles.CustomUser'

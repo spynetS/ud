@@ -30,7 +30,7 @@ export default function RootLayout() {
 
   Typography.loadTypographies({
     heading: { fontFamily: 'CustomFont', fontSize: 44,  fontWeight: 'bold' },
-      heading2: { fontFamily: 'CustomFont', fontSize: 24 },
+    heading2: { fontFamily: 'CustomFont', fontSize: 24,fontWeight: 'bold'  },
                body: { fontFamily: 'CustomFont', fontSize: 16 },
                text90: { fontFamily: 'CustomFont', fontSize: 16 },
                text: { fontFamily: 'CustomFont', fontSize: 12 },
@@ -39,7 +39,7 @@ export default function RootLayout() {
                default: { fontFamily: 'CustomFont', fontSize: 16 },
   });
 
-    Text.defaultProps = {
+  Text.defaultProps = {
     style: { fontFamily: 'CustomFont' }
   };
 
