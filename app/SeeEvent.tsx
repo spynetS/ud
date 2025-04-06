@@ -16,6 +16,7 @@ import { Link, router, useLocalSearchParams } from 'expo-router';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { Avatar } from 'react-native-ui-lib/src/components/avatar';
 import { DateTimePicker } from 'react-native-ui-lib/src/components/dateTimePicker';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { height, width } = Dimensions.get('window');
 
@@ -71,50 +72,77 @@ const CreateEventScreen = () => {
 	}
 
 	return (
-		<SafeAreaView style={{flex:1,backgroundColor:"#000",padding:20}} >
-			<ScrollView>
-
-
-				<Image style={{height:200}} source={{uri:event?.image}}/>
-				<View centerH>
-					<Text heading white marginB-20>
+		<SafeAreaView style={{flex:1,backgroundColor:"#000",}} >
+			<Image style={{height:height*0.35}} source={{uri:event?.image}}/>
+			<ScrollView style={styles.card} >
+				<View>
+					<Text style={{color:"gray"}}>
+						Kommer: {event?.coming.length}
+					</Text>
+					<Text heading2 white>
 						{event?.title}
 					</Text>
-					<Text body white>
-						{event?.description}
-					</Text>
-					<View row spread style={{width:"70%"}}>
-						<Chip
-							labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont", color:"white"}}
-							backgroundColor="#414141"
-							label={new Date(event?.date).toDateString()} />
-						<Chip
-							labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont", color:"white"}}
-									   backgroundColor="#414141"
-									   label={"Kommer: " + event?.coming.length.toString()} />
-					</View>
-
-
-
-					{event?.creator === user?.id ? (
-						<Button marginT-20 backgroundColor={Colors.primary}>
-							<Text white>
-								TABORT
-							</Text>
-						</Button>
-					) : (
-						<TouchableOpacity onPress={comming} style={{marginTop:20,backgroundColor:Colors.primary, paddingVertical:10,paddingHorizontal:20, borderRadius:50, width:width*0.5}} >
-							<View row centerV spread>
-								<Text white>
-									Kommer
-								</Text>
-								<FontAwesome marginL-10 color="white" name={userComming?"check-circle":"check-circle-o"} size={24} />
-							</View>
-						</TouchableOpacity>
-					)}
 				</View>
-				<View style={{height:100}}></View>
+
+				<View
+					style={{
+						borderBottomColor: 'gray',
+						marginVertical:20,
+						borderBottomWidth: StyleSheet.hairlineWidth,
+					}}
+				/>
+
+				<View row centerV>
+					<FontAwesome5 color={Colors.primary} name="calendar" />
+					<Text marginL-10  text white style={{color:"#A0A0A0"}}>
+						{new Date(event?.date).toDateString()}
+					</Text>
+				</View>
+				<View marginT-2 row centerV>
+					<FontAwesome5 color={Colors.primary} name="map-pin" />
+					<Text marginL-10  text white style={{color:"#A0A0A0"}}>
+						{event?.location}
+					</Text>
+				</View>
+
+				<Text marginT-10 body white>
+					Detaljer
+				</Text>
+
+				<Text marginT-20 body style={{color:"#a0a0a0"}} >
+					{event?.description}
+					{event?.description}
+					{event?.description}
+					{event?.description}
+				</Text>
+				<View style={{height:200}}></View>
 			</ScrollView>
+			<View style={styles.buttonDiv} >
+				<LinearGradient
+					colors={['transparent', 'black']}
+					style={styles.gradient}
+					locations={[0, 1]}
+					start={{ x: 0.5, y: 0 }}
+					end={{ x: 0.5, y: 1 }}
+				/>
+				{event?.creator === user?.id ? (
+					<Button marginT-20 backgroundColor={Colors.primary}>
+						<Text white>
+							TABORT
+						</Text>
+					</Button>
+				) : (
+					<TouchableOpacity onPress={comming} style={{marginTop:20,backgroundColor:Colors.primary, paddingVertical:10,paddingHorizontal:20, borderRadius:50, width:width*0.5}} >
+						<View row centerV spread>
+							<Text white>
+								Kommer
+							</Text>
+							<FontAwesome marginL-10 color="white" name={userComming?"check-circle":"check-circle-o"} size={24} />
+						</View>
+					</TouchableOpacity>
+				)}
+
+			</View>
 		</SafeAreaView>
 	);
 };
@@ -127,7 +155,46 @@ const styles = StyleSheet.create({
 		padding: 10,
 		//backgroundColor: '#fff',
 	},
+	card: {
+		position:"absolute",
+		bottom:0,
+		backgroundColor:"#000",
+		borderRadius:20,
+		padding:20,
+		height:height*0.7,
+        width: width,
+		gap:6,
+	},
+	buttonDiv: {
+		position:"absolute",
+		bottom:0,
+		width:width,
+		height:height*0.5,
+		justifyContent:"flex-end",
+		padding:20
+
+	},
+	  gradient: {
+		  ...StyleSheet.absoluteFillObject,
+	  },
 })
 
 
 export default CreateEventScreen;
+
+/* {event?.creator === user?.id ? (
+   <Button marginT-20 backgroundColor={Colors.primary}>
+   <Text white>
+   TABORT
+   </Text>
+   </Button>
+   ) : (
+   <TouchableOpacity onPress={comming} style={{marginTop:20,backgroundColor:Colors.primary, paddingVertical:10,paddingHorizontal:20, borderRadius:50, width:width*0.5}} >
+   <View row centerV spread>
+   <Text white>
+   Kommer
+   </Text>
+   <FontAwesome marginL-10 color="white" name={userComming?"check-circle":"check-circle-o"} size={24} />
+   </View>
+   </TouchableOpacity>
+   )} */

@@ -62,6 +62,7 @@ export default function RootLayout() {
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="messageUser" options={{ headerShown: false }} />
         <Stack.Screen name="CreateEvent" options={{ headerShown: false }} />
+        <Stack.Screen name="SeeEvent" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>
