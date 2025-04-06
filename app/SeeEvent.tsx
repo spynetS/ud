@@ -13,7 +13,7 @@ import { Chip, Colors, Spacings, Image, SegmentedControl, Text, Button, Assets, 
 import Icon from "react-native-vector-icons/FontAwesome"; // Install if not already
 
 import { Link, router, useLocalSearchParams } from 'expo-router';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { Avatar } from 'react-native-ui-lib/src/components/avatar';
 import { DateTimePicker } from 'react-native-ui-lib/src/components/dateTimePicker';
 
@@ -38,42 +38,83 @@ export type Event = {
 
 const CreateEventScreen = () => {
 
-	const [profiles, setProfile] = useState([]);
-	const [school,setSchool] = useState<number>(0);
-	const [date, setDate] = useState(new Date());
 	const [event,setEvent] = useState<Event>(null);
+	const [userComming,setUserComming] = useState<boolean>(false)
 
 	const glob = useLocalSearchParams();
 
 	useEffect(()=>{
 		setEvent(JSON.parse(glob.event))
-	})
+	},[])
 
 
 	const [user,setUser] = useState(null);
 	useFocusEffect(useCallback(()=>{
 
 		getProfile().then(response=>{
-				setUser(response);
-			}).catch(error=>{
-				router.push("/login", { relativeToDirectory: true })
+			setUser(response);
+			const event : Event = JSON.parse(glob.event);
+			setUserComming(event.coming.includes(response.username))
+		}).catch(error=>{
+			router.push("/login", { relativeToDirectory: true })
 			});
 
 	},[]))
 
-
+	const comming = () =>{
+		setUserComming(!userComming)
+		API.post("events/comming/",{
+			event:event?.id
+		}).then(response=>{
+			setUserComming(response.data.added)
+		}).catch(error=>{})
+	}
 
 	return (
 		<SafeAreaView style={{flex:1,backgroundColor:"#000",padding:20}} >
-			<Image style={{width:width, height:100}} source={{uri:event?.image}}/>
+			<ScrollView>
 
-			<Text heading2 white>
-				{event?.title}
-			</Text>
-			<Text body white>
-				{event?.description}
-			</Text>
 
+				<Image style={{height:200}} source={{uri:event?.image}}/>
+				<View centerH>
+					<Text heading white marginB-20>
+						{event?.title}
+					</Text>
+					<Text body white>
+						{event?.description}
+					</Text>
+					<View row spread style={{width:"70%"}}>
+						<Chip
+							labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont", color:"white"}}
+							backgroundColor="#414141"
+							label={new Date(event?.date).toDateString()} />
+						<Chip
+							labelStyle={{marginRight: Spacings.s1,fontFamily:"CustomFont", color:"white"}}
+									   backgroundColor="#414141"
+									   label={"Kommer: " + event?.coming.length.toString()} />
+					</View>
+
+
+
+					{event?.creator === user?.id ? (
+						<Button marginT-20 backgroundColor={Colors.primary}>
+							<Text white>
+								TABORT
+							</Text>
+						</Button>
+					) : (
+						<TouchableOpacity onPress={comming} style={{marginTop:20,backgroundColor:Colors.primary, paddingVertical:10,paddingHorizontal:20, borderRadius:50, width:width*0.5}} >
+							<View row centerV spread>
+								<Text white>
+									Kommer
+								</Text>
+								<FontAwesome marginL-10 color="white" name={userComming?"check-circle":"check-circle-o"} size={24} />
+							</View>
+						</TouchableOpacity>
+					)}
+				</View>
+				<View style={{height:100}}></View>
+			</ScrollView>
 		</SafeAreaView>
 	);
 };

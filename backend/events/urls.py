@@ -9,6 +9,7 @@ router.register(r'events', EventViewSet)
 urlpatterns = [
     path('get_events/', EventListView.as_view(), name='get_events'),
     path('events/',include(router.urls)),
+    path('events/comming/',comming),
 
 
 ]

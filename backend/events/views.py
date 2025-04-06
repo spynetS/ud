@@ -1,5 +1,8 @@
+from rest_framework.permissions import IsAuthenticated
 from django.db.models import Count
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
 
 # Create your views here.
 from rest_framework import generics, viewsets
@@ -34,3 +37,18 @@ class EventListView(generics.ListAPIView):
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])  # Requires token authentication
+def comming(request):
+    user = request.user
+    event:Event = get_object_or_404(Event,pk=request.data.get('event'))
+    if user in event.coming.all():
+        event.coming.remove(user)
+        event.save()
+        return Response({"status":"removed user to event","added":False})
+    else:
+        event.coming.add(user)
+        event.save()
+        return Response({"status":"added user to event","added":True})
+    return Response({"sucess":False})

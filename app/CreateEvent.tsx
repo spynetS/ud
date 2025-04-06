@@ -66,45 +66,59 @@ const CreateEventScreen = () => {
 			creator:user.id,
 			coming:[]
 		}).then(response=>{
-
+			router.push("/events");
 		}).catch(error=>{})
 	}
 
 
 	return (
 		<SafeAreaView style={{flex:1,backgroundColor:"#000",padding:20}} >
+			<Text heading white marginB-20>
+				Skapa Event
+			</Text>
+			<Text body white marginB-10>
+				Titel
+			</Text>
 			<TextInput
 				placeholder={"Titel"}
 							value={title}
 							onChangeText={setTitle}
 							style={styles.input}
 			/>
+			<Text body white marginB-10>
+				Beskrivning
+			</Text>
 			<TextInput
-				placeholder={"Description"}
+				placeholder={"Beskrivning"}
 							value={description}
 							onChangeText={setDescription}
 							style={styles.input}
 			/>
+			<Text body white marginB-10>
+				Plats
+			</Text>
 			<TextInput
-				placeholder={"Location"}
+				placeholder={"Plats"}
 							value={location}
 							onChangeText={setLocation}
 							style={styles.input}
-			/>
+			/><Text body white marginB-10>
+				Datom och tid
+			</Text>
 			<DateTimePicker
 				value={date}
-					  style={{color:"#a2a2a2"}}
-					  containerStyle={styles.input}
+				style={{color:"#a2a2a2"}}
+				containerStyle={styles.input}
 
-					  mode="date"
-					  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-					  onChange={(e, selectedDate) => {
-						  setDate(selectedDate || date);
-					  }}
+				mode="date"
+				display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+				onChange={(e, selectedDate) => {
+					setDate(selectedDate || date);
+				}}
 			/>
 
-			<Button onPress={publish}  >
-				<Text>
+			<Button onPress={publish} backgroundColor={Colors.primary} >
+				<Text color="white">
 					Publicera
 				</Text>
 			</Button>
@@ -115,7 +129,7 @@ const CreateEventScreen = () => {
 };
 
 const styles = StyleSheet.create({
-	input: { backgroundColor:"#28272A",color:"#a2a2a2", padding: 10, marginBottom: 10, borderRadius: 15 },
+	input: { backgroundColor:"#000", borderColor:"#28272A", borderWidth:2,color:"#a2a2a2", padding: 10, marginBottom: 10, borderRadius: 15 },
 	inputContainer: {
 		flexDirection: 'row',
 		alignItems: 'center',
