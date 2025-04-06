@@ -4,7 +4,7 @@ import Swiper from 'react-native-deck-swiper';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GiPartyPopper } from "react-icons/gi";
+import { FontAwesome5 } from '@expo/vector-icons'; // If using expo
 import API, { getProfile } from "@/components/api";
 
 import axios from "axios"
@@ -61,63 +61,64 @@ const NewEvent = ({event,small}) =>{
 
 
 	return(
-		<TouchableOpacity>
-		<View center style={{
-			position:"absolute",
-			top:0,
-			zIndex:10,
-			padding:3,
-			borderRadius:10,
-			backgroundColor:"#fff",
-			flexDirection:"column",
+		<TouchableOpacity key={event.id}>
+			<View center style={{
+				position:"absolute",
+				top:0,
+				zIndex:10,
+				padding:3,
+				borderRadius:10,
+				backgroundColor:"#fff",
+				flexDirection:"column",
 
 
-		}} >
-			<Text style={{fontWeight:"bold"}} >
-				{new Date(event.date).getDay()}
-			</Text>
-			<Text style={{fontWeight:"bold"}}>
-				{getMonthName(event.date)}
-			</Text>
+			}} >
+				<Text style={{fontWeight:"bold"}} >
+					{new Date(event.date).getDay()}
+				</Text>
+				<Text style={{fontWeight:"bold"}}>
+					{getMonthName(event.date)}
+				</Text>
 
-		</View>
-		<ImageBackground
-		source={{uri:event?.image}}
-		style={{
-			margin:10,
-			width:  small? 120 : "100%",
-			height: small? 120 : height*0.2,
-			borderRadius: 20,
-			overflow: 'hidden', // 🔥 this is key
-			justifyContent: 'flex-end',
-		}}
-		resizeMode="cover" // or "contain", "stretch", etc.
-		>
-		<View style={{padding:12,backgroundColor:"#00000040"}}>
+			</View>
+			<ImageBackground
+				source={{uri:event?.image}}
+					   style={{
+						   margin:10,
+						   width:  small? 120 : "100%",
+						   height: small? 120 : height*0.2,
+						   borderRadius: 20,
+						   overflow: 'hidden', // 🔥 this is key
+						   justifyContent: 'flex-end',
+					   }}
+					   resizeMode="cover" // or "contain", "stretch", etc.
+			>
+				<View style={{padding:12,backgroundColor:"#00000040"}}>
 
-		<View row centerV style={{}}>
-			{!small?(
-				<>
-					<GiPartyPopper size={24} color="white" />
-					<Text heading2 white marginL-10>{event?.title}</Text>
-				</>)
-			:(
-				<Text body white style={{fontWeight:"bold"}}>{event?.title}</Text>
-			)}
+					<View row centerV style={{}}>
+						{!small?(
+							<View row center>
 
-		</View>
-		{!small?(
-			<View row centerV>
-				<Avatar size={28} source={{uri:event?.creator.images[0].image}} />
-				<Text body white marginL-10>{event?.creator.first_name} {event?.creator.last_name}</Text>
-			</View>)
-		:""}
+								<FontAwesome5 name="glass-cheers" size={12} color="white" />
+								<Text heading2 white marginL-10>{event?.title}</Text>
+							</View>)
+						:(
+							<Text body white style={{fontWeight:"bold"}}>{event?.title}</Text>
+						)}
+
+					</View>
+					{!small?(
+						<View row centerV>
+							<Avatar size={28} source={{uri:event?.creator.images[0].image}} />
+							<Text body white marginL-10>{event?.creator.first_name} {event?.creator.last_name}</Text>
+						</View>)
+					:""}
 				</View>
-				</ImageBackground>
+			</ImageBackground>
 
-				</TouchableOpacity>
-			)
-			}
+		</TouchableOpacity>
+	)
+}
 
 
 const EventScreen = () => {
