@@ -3,6 +3,7 @@ from django.db.models import Count
 from django.shortcuts import get_object_or_404, render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.parsers import MultiPartParser, FormParser
 
 # Create your views here.
 from rest_framework import generics, viewsets
@@ -29,7 +30,7 @@ class EventListView(generics.ListAPIView):
         if filter_option == 'newest':
             queryset = queryset.order_by('-date')[:5]  # Order by date descending (newest first) and limit to 5
         elif filter_option == 'popular':
-            queryset = queryset.annotate(num_coming=Count('coming')).order_by('-num_coming')[:5]  # Count the 'coming' users and order by that (most popular) and limit to 5
+            queryset = queryset.annotate(num_coming=Count('coming')).order_by('-num_coming')[:10]  # Count the 'coming' users and order by that (most popular) and limit to 5
 
         return queryset
 
@@ -37,6 +38,7 @@ class EventListView(generics.ListAPIView):
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    parser_classes = (MultiPartParser, FormParser)  # Add parsers to handle file uploads
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])  # Requires token authentication

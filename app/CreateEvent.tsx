@@ -12,10 +12,13 @@ import axios from "axios"
 import { Chip, Colors, Spacings, Image, SegmentedControl, Text, Button, Assets, Modal, Card, View } from "react-native-ui-lib"
 import Icon from "react-native-vector-icons/FontAwesome"; // Install if not already
 
+import ImagePickerComponent from "@/components/ImagePicker";
+
 import { Link, router } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { Avatar } from 'react-native-ui-lib/src/components/avatar';
 import { DateTimePicker } from 'react-native-ui-lib/src/components/dateTimePicker';
+import { Asset } from 'react-native-image-picker';
 
 const { height, width } = Dimensions.get('window');
 
@@ -41,6 +44,7 @@ const CreateEventScreen = () => {
 	const [profiles, setProfile] = useState([]);
 	const [school,setSchool] = useState<number>(0);
 	const [date, setDate] = useState(new Date());
+	const [image,setImage] = useState<Asset>();
 
 	const [title,setTitle] = useState<string>();
 	const [description,setDescription] = useState<string>();
@@ -55,27 +59,46 @@ const CreateEventScreen = () => {
 				router.push("/login", { relativeToDirectory: true })
 			});
 	},[]))
-
-
 	const publish = () => {
-		API.post("/events/events/",{
-			date:date,
-			title:title,
-			location:location,
-			description:description,
-			creator:user.id,
-			coming:[]
-		}).then(response=>{
-			router.push("/events");
-		}).catch(error=>{})
-	}
+		let data = new FormData();
 
+		// Make sure the image is appended correctly to FormData
+		if (image && image.uri) {
+			data.append('image',{
+				uri: image.uri,
+				type: image.type,
+				name: image.fileName || 'image.jpg',
+			});
+		}
+
+		// Append other form fields to the FormData
+		data.append('title', title);
+		data.append('description', description);
+		data.append('location', location);
+		data.append('date', date.toISOString()); // Ensure proper date format
+		data.append('creator', user.id); // Assuming user ID is available
+		//data.append('coming', JSON.stringify([])); // Empty array for 'coming' users
+		console.log(data)
+		// Post the data using FormData with the correct headers
+		API.post("/events/events/", data, {
+			headers: {
+				'Content-Type': 'multipart/form-data', // Ensure the header is set for file uploads
+			},
+		})
+		   .then(response => {
+			   router.push("/events"); // Redirect to events page after success
+		   })
+		   .catch(error => {
+			   console.error('Error creating event:', error); // Handle errors
+		   });
+	};
 
 	return (
 		<SafeAreaView style={{flex:1,backgroundColor:"#000",padding:20}} >
 			<Text heading white marginB-20>
 				Skapa Event
 			</Text>
+			<ImagePickerComponent onImage={setImage} />
 			<Text body white marginB-10>
 				Titel
 			</Text>

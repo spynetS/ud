@@ -5,27 +5,30 @@ from .models import Event
 from profiles.serializers import CustomUserSerializer
 from profiles.models import CustomUser
 
+from rest_framework import serializers
+from .models import Event, CustomUser
+
+
 class EventSerializer(serializers.ModelSerializer):
-    # You can use `related_name` as 'coming' for the users attending the event
-    coming = serializers.SlugRelatedField(slug_field='username', queryset=CustomUser.objects.all(), many=True)
-    creator = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())  # Only expect the ID
+    coming = serializers.SlugRelatedField(slug_field='username', queryset=CustomUser.objects.all(), many=True, required=False, allow_null=True)
+    creator = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
     creator_details = CustomUserSerializer(source='creator', read_only=True)
+    image = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = Event
-        fields = ['id', 'date', 'title', 'location', 'description', 'creator_details','creator', 'coming', 'image']
+        fields = ['id', 'date', 'title', 'location', 'description', 'creator_details', 'creator', 'coming', 'image']
 
     def create(self, validated_data):
-        coming_data = validated_data.pop('coming')
+        coming_data = validated_data.pop('coming', [])  # Handle empty 'coming' list gracefully
         event = Event.objects.create(**validated_data)
-        event.coming.set(coming_data)  # Assign the users that are coming
+        event.coming.set(coming_data)  # Set the users that are coming
         return event
 
     def update(self, instance, validated_data):
-        coming_data = validated_data.pop('coming', None)
+        coming_data = validated_data.pop('coming', [])
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
-        if coming_data is not None:
-            instance.coming.set(coming_data)
+        instance.coming.set(coming_data)  # Update the 'coming' field
         instance.save()
         return instance
