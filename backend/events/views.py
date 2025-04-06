@@ -2,8 +2,8 @@ from django.db.models import Count
 from django.shortcuts import render
 
 # Create your views here.
-from rest_framework import generics
-from rest_framework.decorators import api_view
+from rest_framework import generics, viewsets
+
 from .models import Event
 from events.serializers import EventSerializer
 
@@ -29,3 +29,8 @@ class EventListView(generics.ListAPIView):
             queryset = queryset.annotate(num_coming=Count('coming')).order_by('-num_coming')[:5]  # Count the 'coming' users and order by that (most popular) and limit to 5
 
         return queryset
+
+
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer

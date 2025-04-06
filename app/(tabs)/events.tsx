@@ -46,7 +46,7 @@ export type Event = {
   date: string; // ISO 8601 Date string
   location: string;
   description: string;
-	creator: User; // Creator is a user object
+	creator_details: User; // Creator is a user object
 	coming: User[]; // List of users attending the event
 	image: string | null; // URL to the image, can be null if no image is provided
 };
@@ -109,8 +109,8 @@ const NewEvent = ({event,small}) =>{
 					</View>
 					{!small?(
 						<View row centerV>
-							<Avatar size={28} source={{uri:event?.creator.images[0].image}} />
-							<Text body white marginL-10>{event?.creator.first_name} {event?.creator.last_name}</Text>
+							<Avatar size={28} source={{uri:event?.creator_details.images[0].image}} />
+							<Text body white marginL-10>{event?.creator_details.first_name} {event?.creator_details.last_name}</Text>
 						</View>)
 					:""}
 				</View>
@@ -201,7 +201,7 @@ const EventScreen = () => {
 			</View>
 
 			<View style={{position:"absolute",right:30, bottom:"10%",zIndex:200}}>
-				<RoundButton iconName={"plus"}  />
+				<RoundButton onPress={()=>{router.push("/CreateEvent")}} iconName={"plus"}  />
 			</View>
 
 
