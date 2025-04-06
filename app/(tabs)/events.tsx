@@ -61,7 +61,7 @@ const NewEvent = ({event,small}) =>{
 
 
 	return(
-		<TouchableOpacity key={event.id}>
+		<TouchableOpacity onPress={()=>{router.push({pathname:"/SeeEvent",params:{event:JSON.stringify(event)}})}} key={event.id}>
 			<View center style={{
 				position:"absolute",
 				top:0,
@@ -83,15 +83,15 @@ const NewEvent = ({event,small}) =>{
 			</View>
 			<ImageBackground
 				source={{uri:event?.image}}
-					   style={{
-						   margin:10,
-						   width:  small? 120 : "100%",
-						   height: small? 120 : height*0.2,
-						   borderRadius: 20,
-						   overflow: 'hidden', // 🔥 this is key
-						   justifyContent: 'flex-end',
-					   }}
-					   resizeMode="cover" // or "contain", "stretch", etc.
+				style={{
+					margin:10,
+					width:  small? 120 : "100%",
+					height: small? 120 : height*0.2,
+					borderRadius: 20,
+					overflow: 'hidden', // 🔥 this is key
+					justifyContent: 'flex-end',
+				}}
+				resizeMode="cover" // or "contain", "stretch", etc.
 			>
 				<View style={{padding:12,backgroundColor:"#00000040"}}>
 
