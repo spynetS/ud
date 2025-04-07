@@ -132,7 +132,7 @@ const CreateEventScreen = () => {
 						</Text>
 					</Button>
 				) : (
-					<TouchableOpacity onPress={comming} style={{marginTop:20,backgroundColor:Colors.primary, paddingVertical:10,paddingHorizontal:20, borderRadius:50, width:width*0.5}} >
+					<TouchableOpacity onPress={comming} style={{marginTop:20,backgroundColor:Colors.primary, paddingVertical:10,paddingHorizontal:20, borderRadius:50}} >
 						<View row centerV spread>
 							<Text white>
 								Kommer

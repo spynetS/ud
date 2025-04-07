@@ -22,9 +22,9 @@ const ImagePickerComponent = ({onImage}) => {
         } else if (response.errorCode) {
           console.log('ImagePicker Error: ', response.errorMessage);
         } else {
-          const source = { uri: response.assets[0].uri }; // Image URI
-          setImageUri(source.uri); // Set the URI of the selected image
-			onImage(source)
+			const source = { uri: response.assets[0].uri }; // Image URI
+			setImageUri(source.uri); // Set the URI of the selected image
+			onImage(response.assets[0])
         }
       }
     );
