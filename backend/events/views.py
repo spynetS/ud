@@ -12,6 +12,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 # Create your views here.
 from rest_framework import generics, viewsets
 
+from profiles.models import CustomUser
+
 from .models import Event
 from events.serializers import EventSerializer
 
@@ -67,6 +69,17 @@ def create_event(request):
     event.save()
 
     return Response({"message":"new event added"})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def can_create(request):
+    amount_in_the_top_list = 10
+    top_100 = CustomUser.objects.order_by('-swipes').all()[:amount_in_the_top_list]
+    if request.user in top_100:
+        return Response({"can":True})
+    return Response({"can":False})
+
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])  # Requires token authentication

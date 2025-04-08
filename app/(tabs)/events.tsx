@@ -9,12 +9,13 @@ import API, { getProfile } from "@/components/api";
 
 import axios from "axios"
 
-import { Chip, Colors, Spacings, Image, SegmentedControl, Text, Button, Assets, Modal, Card, View } from "react-native-ui-lib"
+import { Chip, Colors, Spacings, Image, SegmentedControl, Text, Button, Assets, Modal, Card, View, PanningProvider } from "react-native-ui-lib"
 import Icon from "react-native-vector-icons/FontAwesome"; // Install if not already
 
 import { Link, router } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { Avatar } from 'react-native-ui-lib/src/components/avatar';
+import { Dialog } from 'react-native-ui-lib/src/incubator';
 
 const { height, width } = Dimensions.get('window');
 
@@ -125,6 +126,7 @@ const EventScreen = () => {
 
 	const [profiles, setProfile] = useState([]);
 	const [school,setSchool] = useState<number>(0);
+	const [cantAdd,setCantAdd] = useState<boolean>(false);
 
 	const [newstEvents, setNewestEvents] = useState(null);
 	const [popularEvents, setPopularEvents] = useState(null);
@@ -151,8 +153,35 @@ const EventScreen = () => {
 
 	},[]))
 
+	const addEvent = () =>{
+		API.get("/events/can_create").then(response=>{
+			if(response.data.can == true){
+				router.push("/CreateEvent")
+			}
+			else{
+				setCantAdd(true);
+			}
+		})
+	}
+
 	return (
 		<SafeAreaView style={{flex:1,backgroundColor:"#000",}} >
+			<Dialog
+			    useSafeArea
+				panDirection={PanningProvider.Directions.DOWN}
+				containerStyle={styles.roundedDialog}
+				visible={cantAdd}
+				onDismiss={()=>setCantAdd(false)}
+				>
+				<Text center white body>
+					Du kan inte göra events. För att kunna göra events behöver du vara på topllistan!
+				</Text>
+				<Button onPress={()=>{setCantAdd(false)}} marginT-20 backgroundColor={Colors.primary}>
+					<Text white>
+						Stäng
+					</Text>
+				</Button>
+			</Dialog>
 
 			<View
 				style={{
@@ -165,11 +194,11 @@ const EventScreen = () => {
 			>
 				<SegmentedControl
 					segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
-					activeBackgroundColor={Colors.primary}
-					activeColor={Colors.white}
-					backgroundColor={"#010101aa"}
-					onChangeIndex={setSchool}
-					inactiveColor={Colors.white}
+							 activeBackgroundColor={Colors.primary}
+							 activeColor={Colors.white}
+							 backgroundColor={"#010101aa"}
+							 onChangeIndex={setSchool}
+							 inactiveColor={Colors.white}
 				/>
 			</View>
 
@@ -201,7 +230,7 @@ const EventScreen = () => {
 			</View>
 
 			<View style={{position:"absolute",right:30, bottom:"10%",zIndex:200}}>
-				<RoundButton onPress={()=>{router.push("/CreateEvent")}} iconName={"plus"}  />
+				<RoundButton onPress={addEvent} iconName={"plus"}  />
 			</View>
 
 
@@ -209,6 +238,16 @@ const EventScreen = () => {
 
 	);
 };
+
+const styles = StyleSheet.create({
+	  roundedDialog: {
+		  padding:20,
+
+		  backgroundColor: "#000",
+		  marginBottom: 20,
+		  borderRadius: 12
+	  },
+})
 
 
 export default EventScreen;

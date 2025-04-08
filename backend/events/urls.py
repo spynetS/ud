@@ -11,5 +11,6 @@ urlpatterns = [
 
     path('events/comming/',comming),
     path('events/create/', create_event, name='event-create'),
+    path('events/can_create/', can_create, name='event-create'),
 
 ]
