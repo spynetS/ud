@@ -19,6 +19,12 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = ['id', 'date', 'title', 'location', 'description', 'creator_details', 'creator', 'coming', 'image']
 
+    def validate_creator(self, value):
+        # Optionally, restrict to current user
+        request = self.context.get('request')
+        if request and request.user != value:
+            raise serializers.ValidationError("You can only create events for yourself.")
+        return value
     def create(self, validated_data):
         coming_data = validated_data.pop('coming', [])  # Handle empty 'coming' list gracefully
         event = Event.objects.create(**validated_data)

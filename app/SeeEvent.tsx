@@ -111,9 +111,6 @@ const CreateEventScreen = () => {
 
 				<Text marginT-20 body style={{color:"#a0a0a0"}} >
 					{event?.description}
-					{event?.description}
-					{event?.description}
-					{event?.description}
 				</Text>
 				<View style={{height:200}}></View>
 			</ScrollView>

@@ -1,3 +1,7 @@
+from django.core.files.base import ContentFile
+from django.utils.http import base64
+from rest_framework import permissions
+from rest_framework.fields import uuid
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, render
@@ -35,10 +39,34 @@ class EventListView(generics.ListAPIView):
         return queryset
 
 
-class EventViewSet(viewsets.ModelViewSet):
-    queryset = Event.objects.all()
-    serializer_class = EventSerializer
-    parser_classes = (MultiPartParser, FormParser)  # Add parsers to handle file uploads
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_event(request):
+    event: Event = Event(
+        title=request.data.get("title"),
+        description=request.data.get("description"),
+        location=request.data.get("location"),
+        date=request.data.get("date"),
+        creator=request.user
+    )
+
+    base64_data = request.data.get("image")
+
+    # Strip header if present
+    if base64_data.startswith('data:image'):
+        format, imgstr = base64_data.split(';base64,')  # format ~= data:image/png
+        ext = format.split('/')[-1]  # "png"
+    else:
+        imgstr = base64_data
+        ext = 'jpg'  # or default to png/jpg
+
+    filename = f"event_images/{uuid.uuid4()}.{ext}"
+    image_file = ContentFile(base64.b64decode(imgstr), name=filename)
+
+    event.image.save(filename,image_file)
+    event.save()
+
+    return Response({"message":"new event added"})
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])  # Requires token authentication

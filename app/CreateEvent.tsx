@@ -13,7 +13,7 @@ import { Chip, Colors, Spacings, Image, SegmentedControl, Text, Button, Assets, 
 import Icon from "react-native-vector-icons/FontAwesome"; // Install if not already
 
 import ImagePickerComponent from "@/components/ImagePicker";
-
+import { readFile } from 'react-native-fs';
 import { Link, router } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { Avatar } from 'react-native-ui-lib/src/components/avatar';
@@ -39,6 +39,7 @@ export type Event = {
 	image: string | null; // URL to the image, can be null if no image is provided
 };
 
+
 const CreateEventScreen = () => {
 
 	const [profiles, setProfile] = useState([]);
@@ -59,7 +60,8 @@ const CreateEventScreen = () => {
 				router.push("/login", { relativeToDirectory: true })
 			});
 	},[]))
-	const publish = () => {
+
+	const publish2 = () => {
 		let data = new FormData();
 
 		// Make sure the image is appended correctly to FormData
@@ -80,9 +82,9 @@ const CreateEventScreen = () => {
 		//data.append('coming', JSON.stringify([])); // Empty array for 'coming' users
 		console.log(data)
 		// Post the data using FormData with the correct headers
-		API.post("/events/events/", data, {
+		API.post("/events/create/", data, {
 			headers: {
-				'Content-Type': 'multipart/form-data', // Ensure the header is set for file uploads
+			//	'Content-Type': 'multipart/form-data', // Ensure the header is set for file uploads
 			},
 		})
 		   .then(response => {
@@ -93,10 +95,25 @@ const CreateEventScreen = () => {
 		   });
 	};
 
+	const publish = () =>{
+		API.post("/events/create/",{
+			title:title,
+			description:description,
+			location:location,
+			date:date,
+			creator:user.id,
+			image:image?.base64
+		}).then(response=>{
+
+		}).catch(error=>{})
+
+
+	}
+
 	return (
 		<SafeAreaView style={{flex:1,backgroundColor:"#000",padding:20}} >
 			<Text heading white marginB-20>
-				Skapa Event
+				Skapa Event {event?.id}
 			</Text>
 			<ImagePickerComponent onImage={setImage} />
 			<Text body white marginB-10>
@@ -113,6 +130,7 @@ const CreateEventScreen = () => {
 			</Text>
 			<TextInput
 				placeholder={"Beskrivning"}
+				multiline={true}
 							value={description}
 							onChangeText={setDescription}
 							style={styles.input}
@@ -121,7 +139,7 @@ const CreateEventScreen = () => {
 				Plats
 			</Text>
 			<TextInput
-				placeholder={"Plats"}
+				placeholder={"Namn + adress"}
 							value={location}
 							onChangeText={setLocation}
 							style={styles.input}

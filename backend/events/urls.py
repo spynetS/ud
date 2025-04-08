@@ -4,12 +4,12 @@ from .views import *
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r'events', EventViewSet)
+#router.register(r'events', EventViewSet)
 
 urlpatterns = [
     path('get_events/', EventListView.as_view(), name='get_events'),
-    path('events/',include(router.urls)),
-    path('events/comming/',comming),
 
+    path('events/comming/',comming),
+    path('events/create/', create_event, name='event-create'),
 
 ]

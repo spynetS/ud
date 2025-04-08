@@ -4,62 +4,41 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { View, Button, Text, Assets, TouchableOpacity} from 'react-native-ui-lib';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
+import * as ImagePicker from 'expo-image-picker';
+
 const { height, width } = Dimensions.get('window');
 
 const ImagePickerComponent = ({onImage}) => {
 	const [imageUri, setImageUri] = useState(null);
 
-  const pickImage = () => {
-    // Open the image picker and allow the user to choose an image from the gallery
-    launchImageLibrary(
-      {
-        mediaType: 'photo', // You can also allow videos by setting 'mediaType: 'video''
-        includeBase64: false, // You can include base64 image as well if you need it
-      },
-      (response) => {
-        if (response.didCancel) {
-          console.log('User cancelled image picker');
-        } else if (response.errorCode) {
-          console.log('ImagePicker Error: ', response.errorMessage);
-        } else {
-			const source = { uri: response.assets[0].uri }; // Image URI
-			setImageUri(source.uri); // Set the URI of the selected image
-			onImage(response.assets[0])
-        }
-      }
-    );
-  };
+	const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images', 'videos'],
+      allowsEditing: true,
+			base64:true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-  const takePhoto = () => {
-    // Open the camera to take a photo
-    launchCamera(
-      {
-        mediaType: 'photo',
-        includeBase64: false,
-      },
-      (response) => {
-        if (response.didCancel) {
-          console.log('User cancelled camera picker');
-        } else if (response.errorCode) {
-          console.log('Camera Error: ', response.errorMessage);
-        } else {
-          const source = { uri: response.assets[0].uri };
-          setImageUri(source.uri); // Set the URI of the taken photo
-        }
-      }
-    );
+    console.log(result);
+
+    if (!result.canceled) {
+			onImage(result.assets[0]);
+			setImageUri(result.assets[0].uri);
+    }
   };
 
   return (
     <View style={{width:"100%", flexDirection:"row", justifyContent:"center"}}>
       {imageUri ? <Image source={{ uri: imageUri }} style={styles.image} /> : (
-		  <TouchableOpacity onPress={pickImage} center style={styles.image}>
-			  <Text heading2 white >
-				  Välj en bild
-			  </Text>
-		  </TouchableOpacity>
-	  )}
-      </View>
+				<TouchableOpacity onPress={pickImage} center style={styles.image}>
+					<Text heading2 white >
+						Välj en bild
+					</Text>
+				</TouchableOpacity>
+			)}
+    </View>
   );
 };
 

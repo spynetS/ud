@@ -37,7 +37,7 @@ const RoundButton = ({ onPress, iconName }) => {
 
 export type User = {
 	id: number;
-  username: string;
+	username: string;
 };
 
 // Define the Event type
