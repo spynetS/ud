@@ -9,7 +9,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import API, { getProfile } from "@/components/api";
+import API, { getProfile, endPoint } from "@/components/api";
 
 import axios from "axios"
 
@@ -161,7 +161,7 @@ const MessageUserScreen = () => {
 						<FontAwesome name="arrow-left"  color="white" size={24}/>
 					</Link>
 					<View flex row center >
-						<Avatar source={{uri:"http://192.168.1.119:8000"+selectedUser?.images[0].image}} />
+						<Avatar source={{uri:endPoint+selectedUser?.images[0].image}} />
 						<View marginL-10>
 							<Text heading2 white>
 								{selectedUser?.username}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import API from "@/components/api";
+import API, {endPoint} from "@/components/api";
 
 import {router} from "expo-router";
 
@@ -14,7 +14,7 @@ const LoginScreen = () => {
 
     const handleLogin = async () => {
         try {
-            let response = await fetch('http://192.168.1.119:8000/api/login/', {
+            let response = await fetch(endPoint+'/api/login/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),

@@ -6,7 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import API, { getProfile } from "@/components/api";
+import API, { getProfile, endPoint} from "@/components/api";
 
 import axios from "axios"
 
@@ -61,7 +61,7 @@ const MatchItem = ({ match, press }: { match: User, press:any }) => {
 
 		  <ListItem.Part middle column containerStyle={[styles.border, {paddingRight: 17}]}>
 			  <ListItem.Part containerStyle={{marginBottom: 3}}>
-					{match.images.length > 0 ? (<Image source={{uri: ("http://192.168.1.119:8000"+match?.images[0].image)}} style={styles.image}/>) : ""}
+					{match.images.length > 0 ? (<Image source={{uri: (endPoint+match?.images[0].image)}} style={styles.image}/>) : ""}
 
 				  <Text grey10 text70 white style={{flex: 1, marginRight: 10}} numberOfLines={1}>
 					  {match.username}
@@ -99,6 +99,7 @@ const MessageScreen = () => {
 			</Text>
 			<TextInput style={styles.input} placeholder="Search"  />
 			<View row center style={{}} >
+        {/* THIS SHOULDNT BE HARD CODED */}
 				<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
 				<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
 				<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
