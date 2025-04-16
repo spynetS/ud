@@ -8,7 +8,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import API, {getProfile} from "@/components/api";
+import API, {getProfile, endPoint} from "@/components/api";
 
 import axios from "axios"
 
@@ -72,8 +72,8 @@ const MatchModal = ({close, user, matchUser}) => {
 			Alfred likes you!
 		</Text>
 		<View row spread style={{width:width*2/3}}>
-			<Avatar size={100} source={{uri:"http://192.168.1.119:8000"+user?.images[0].image}} />
-			<Avatar size={100} source={{uri:"http://192.168.1.119:8000"+matchUser?.images[0].image}} />
+			<Avatar size={100} source={{uri:endPoint+user?.images[0].image}} />
+			<Avatar size={100} source={{uri:endPoint+matchUser?.images[0].image}} />
 		</View>
 		<Button
 			onPress={()=>{close();router.push({pathname:"/messageUser",params:{pressedUser:JSON.stringify(matchUser)}})}}
@@ -177,7 +177,7 @@ const ProfileCard = ({ card, open,user }) => {
 					<Image
 						style={{ flex: 1, width: width-40,borderRadius: 30, marginTop:0 }}
 						resizeMode="cover"
-						source={{uri: `http://192.168.1.119:8000/${currentImage}`}}/>
+						source={{uri: `${endPoint}/${currentImage}`}}/>
 
 					<View center style={{ position: "absolute", top: "7%", width: "100%" }}>
 						<View
