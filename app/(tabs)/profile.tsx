@@ -2,14 +2,14 @@ import React, { useState, useCallback } from 'react';
 import { StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import axios from "axios"
 
-import { View, TextField, Button, Text, Avatar} from 'react-native-ui-lib';
+import { View, TextField, Button, Text, Avatar, Chip } from 'react-native-ui-lib';
 import { useFocusEffect } from '@react-navigation/native';
 
 //<Divider d10 testID={'divider'}/>
 
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getProfile } from '@/components/api';
+import { endPoint, getProfile } from '@/components/api';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const Divider = ({ color = '#D3D3D3', height = 1, marginV = 10 }) => (
@@ -71,7 +71,7 @@ const ProfileScreen = () => {
 		<SafeAreaView style={{backgroundColor:"#000"}}>
 			<ScrollView contentContainerStyle={styles.container}>
 				<View center marginT-10 marginB-12 >
-					<Avatar size={120} source={{uri:user?.images[0].image}} />
+					<Avatar size={120} source={{uri: endPoint + user?.images[0].image}} />
 				</View>
 
 				<View row center >
@@ -84,6 +84,16 @@ const ProfileScreen = () => {
 				<Entry label={"Program"} value={user?.programe} />
 				<Entry label={"Skola"} value={user?.school} />
 
+				<Text white >
+					Detaljer
+				</Text>
+				<View row center style={styles.chiper} >
+					<Chip labelStyle={{color:"white"}} label={"knas"} />
+					<Chip labelStyle={{color:"white"}} label={"knas"} />
+					<Chip labelStyle={{color:"white"}} label={"knas"} />
+					<Chip labelStyle={{color:"white"}} label={"knas"} />
+					<Chip labelStyle={{color:"white"}} label={"knas"} />
+				</View>
 
 				<Button
 					onPress={logout}
@@ -132,6 +142,11 @@ const styles = StyleSheet.create({
 		marginTop:5,
 		borderRadius: 15
 	},
+	chiper:{
+		backgroundColor:"#111",
+		borderRadius:12,
+		padding:12
+	}
 
 });
 
