@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, FlatList } from 'react-native';
 import axios from "axios"
 
 import { View, TextField, Button, Text, Avatar, Chip } from 'react-native-ui-lib';
@@ -67,6 +67,13 @@ const ProfileScreen = () => {
 		)
 	}
 
+	const add = () => {
+		setUser(prev => ({
+			...prev,
+			details: [...prev.details, "asd"]
+		}));
+	}
+
 	return (
 		<SafeAreaView style={{backgroundColor:"#000"}}>
 			<ScrollView contentContainerStyle={styles.container}>
@@ -87,14 +94,22 @@ const ProfileScreen = () => {
 				<Text white >
 					Detaljer
 				</Text>
-				<View row center style={styles.chiper} >
-					<Chip labelStyle={{color:"white"}} label={"knas"} />
-					<Chip labelStyle={{color:"white"}} label={"knas"} />
-					<Chip labelStyle={{color:"white"}} label={"knas"} />
-					<Chip labelStyle={{color:"white"}} label={"knas"} />
-					<Chip labelStyle={{color:"white"}} label={"knas"} />
-				</View>
+				<FlatList style={styles.chiper}
+						  data={user?.details}
+						  renderItem={({ item }) => (
+							  <Chip labelStyle={{color:"white"}} label={item} />
+						  )} />
+				<View center row spread>
+					<TouchableOpacity
+						onPress={add}
+					>
+						<Text white>
+							Add
+						</Text>
+					</TouchableOpacity>
+					<TextField style={styles.input} />
 
+				</View>
 				<Button
 					onPress={logout}
 							loading={loading}
@@ -145,6 +160,10 @@ const styles = StyleSheet.create({
 	chiper:{
 		backgroundColor:"#111",
 		borderRadius:12,
+		//flex:3,
+		height:100,
+		overflow:"hidden",
+		//flexDirection: "column",
 		padding:12
 	}
 
