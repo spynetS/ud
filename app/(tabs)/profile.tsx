@@ -9,17 +9,35 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { endPoint, getProfile } from '@/components/api';
+import API, { endPoint, getProfile } from '@/components/api';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const Divider = ({ color = '#D3D3D3', height = 1, marginV = 10 }) => (
 	<View style={{ height, backgroundColor: color, width: '100%', marginVertical: marginV }} />
 );
 
+const RenderItem = ({item,remove}) => {
+
+		return (
+			<View style={styles.renderItem}>
+				<Text white>
+					{item}
+				</Text>
+				<TouchableOpacity onPress={remove} >
+					<Text style={{color:"red"}}>
+						Tabort
+					</Text>
+				</TouchableOpacity>
+			</View>
+		)
+}
+
 const ProfileScreen = () => {
 	const [profile, setProfile] = useState({});
-
 	const [loading, setLoading] = useState(false);
+	const [newDetail, setNewDetail] = useState<string>("");
+	const [newInterest, setNewInterest] = useState<string>("");
+
 
 	const [user,setUser] = useState(null);
 	useFocusEffect(useCallback(() => {
@@ -56,71 +74,173 @@ const ProfileScreen = () => {
 	}
 
 	const Entry = ({label,value,onChange}) => {
+		  const [inputValue, setInputValue] = useState(value);  // Store the input locally
+
+		const handleChange = (text) => {
+			setInputValue(text); // Update local input state
+		};
+
 		return(
 			<View >
 				<Text white>
 					{label}
 				</Text>
-				<TextField placeholder="Skriv" value={value} style={styles.input} />
+				<TextField placeholder="Skriv"
+						   value={inputValue}  // Bind to local input state
+						   onChangeText={handleChange}
+						   onBlur={() => onChange(inputValue)}  // Update parent on blur
+						   style={styles.input} />
 
 			</View>
 		)
 	}
 
-	const add = () => {
+	const addDetail = () => {
+		if(newDetail === "") return;
 		setUser(prev => ({
 			...prev,
-			details: [...prev.details, "asd"]
+			details: [...prev.details, newDetail]
+		}));
+		setNewDetail("");
+	}
+
+	const addIntrest = () => {
+		if(newInterest === "") return;
+		setUser(prev => ({
+			...prev,
+			interests: [...prev.interests, newInterest]
+		}));
+		setNewInterest("")
+	}
+
+	const removeInterest = (index) => {
+		setUser(prev => ({
+			...prev,
+			interests: prev.interests.filter((_, i) => i !== index)
+		}));
+	};
+	const removeDetail = (index) =>{
+		setUser(prev => ({
+			...prev,
+			details: prev.details.filter((_, i) => i !== index)
 		}));
 	}
 
+
+	const save = () =>{
+		const { profile_picture,matches, images, bookmarks, swipes, ...cleanedUser } = user;
+
+		API.post("/update/",{
+			user:cleanedUser
+		}).then(response=>{
+
+		}).catch(error=>{
+
+		})
+	}
+
 	return (
-		<SafeAreaView style={{backgroundColor:"#000"}}>
-			<ScrollView contentContainerStyle={styles.container}>
-				<View center marginT-10 marginB-12 >
-					<Avatar size={120} source={{uri: endPoint + user?.images[0].image}} />
-				</View>
+		<ScrollView contentContainerStyle={styles.container}>
+			<View center marginT-10 marginB-12>
+				<Avatar size={120} source={{uri: endPoint + user?.images[0].image}} />
+			</View>
 
-				<View row center >
-					<Entry label={"Förnamn"} value={user?.first_name} />
-					<Entry label={"Efternamn"} value={user?.last_name} />
-				</View>
+			<View row center>
+				<Entry
+					label={"Förnamn"}
+					value={user?.first_name}
+					onChange={(text) => setUser(prev => ({ ...prev, first_name: text }))}
+				/>
+				<Entry
+					label={"Efternamn"}
+					value={user?.last_name}
+					onChange={(text) => setUser(prev => ({ ...prev, last_name: text }))}
+				/>
+			</View>
 
-				<Entry label={"Email"} value={user?.email} />
-				<Entry label={"Bor"} value={user?.location} />
-				<Entry label={"Program"} value={user?.programe} />
-				<Entry label={"Skola"} value={user?.school} />
+			<Entry
+				label={"Email"}
+				value={user?.email}
+				onChange={(text) => setUser(prev => ({ ...prev, email: text }))}
+			/>
+			<Entry
+				label={"Bor"}
+				value={user?.location}
+				onChange={(text) => setUser(prev => ({ ...prev, location: text }))}
+			/>
+			<Entry
+				label={"Program"}
+				value={user?.programe}
+				onChange={(text) => setUser(prev => ({ ...prev, programe: text }))}
+			/>
+			<Entry
+				label={"Skola"}
+				value={user?.school}
+				onChange={(text) => setUser(prev => ({ ...prev, school: text }))}
+			/>
 
-				<Text white >
-					Detaljer
-				</Text>
-				<FlatList style={styles.chiper}
-						  data={user?.details}
-						  renderItem={({ item }) => (
-							  <Chip labelStyle={{color:"white"}} label={item} />
-						  )} />
-				<View center row spread>
-					<TouchableOpacity
-						onPress={add}
-					>
-						<Text white>
-							Add
-						</Text>
-					</TouchableOpacity>
-					<TextField style={styles.input} />
-
-				</View>
-				<Button
-					onPress={logout}
-							loading={loading}
-							style={styles.saveButton}
-				>
-					<Text>
-						Logout
+			<Text white>
+				Detaljer
+			</Text>
+			<FlatList
+				style={styles.chiper}
+				data={user?.details}
+				renderItem={({ item, index }) => (
+					<RenderItem item={item} remove={() => removeDetail(index)} />
+				)}
+			/>
+			<View center>
+				<TextField
+					value={newDetail}
+					onChangeText={setNewDetail}
+					placeholder="Ny detalj"
+					style={styles.input}
+				/>
+				<TouchableOpacity onPress={addDetail}>
+					<Text white>
+						Lägg till detalj
 					</Text>
-				</Button>
-			</ScrollView>
-		</SafeAreaView>
+				</TouchableOpacity>
+			</View>
+
+			<Text white>
+				Intressen
+			</Text>
+			<FlatList
+				style={styles.chiper}
+				data={user?.interests}
+				renderItem={({ item, index }) => (
+					<RenderItem item={item} remove={() => removeInterest(index)} />
+				)}
+			/>
+			<View center>
+				<TextField
+					value={newInterest}
+					onChangeText={setNewInterest}
+					placeholder="Nytt intresse"
+					style={styles.input}
+				/>
+				<TouchableOpacity onPress={addIntrest}>
+					<Text white>
+						Lägg till intresse
+					</Text>
+				</TouchableOpacity>
+			</View>
+
+			<Button onPress={save} loading={loading} style={styles.saveButton}>
+				<Text>
+					Spara ändringar
+				</Text>
+			</Button>
+			<Button onPress={logout} loading={loading} style={styles.saveButton}>
+				<Text>
+					Logout
+				</Text>
+			</Button>
+			<View style={{ height: 200 }}></View>
+		</ScrollView>
+
+
 	);
 };
 
@@ -165,6 +285,11 @@ const styles = StyleSheet.create({
 		overflow:"hidden",
 		//flexDirection: "column",
 		padding:12
+	},
+	renderItem:{
+		padding:2,
+		flexDirection:"row",
+		justifyContent:"space-between"
 	}
 
 });

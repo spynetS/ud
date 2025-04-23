@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions
+from rest_framework.views import status
 from .models import CustomUser, UserImage
 from .serializers import CustomUserSerializer, UserImageSerializer
 
@@ -155,3 +156,18 @@ class CustomUserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    user = request.user
+    user_data = request.data.get('user', {})  # Safely get the nested user dict
+
+    serializer = CustomUserSerializer(user, data=user_data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'status': 'success', 'message': 'Profile updated successfully'})
+    else:
+        return Response({'status': 'error', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
