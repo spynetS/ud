@@ -1,3 +1,6 @@
+import base64
+import uuid
+from django.core.files.base import ContentFile
 from rest_framework import generics, permissions
 from rest_framework.views import status
 from .models import CustomUser, UserImage
@@ -171,3 +174,25 @@ def update_profile(request):
         return Response({'status': 'success', 'message': 'Profile updated successfully'})
     else:
         return Response({'status': 'error', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_image(request):
+    img: UserImage = UserImage(user=request.user)
+
+    base64_data = request.data.get("image")
+
+    # Strip header if present
+    if base64_data.startswith('data:image'):
+        format, imgstr = base64_data.split(';base64,')  # format ~= data:image/png
+        ext = format.split('/')[-1]  # "png"
+    else:
+        imgstr = base64_data
+        ext = 'jpg'  # or default to png/jpg
+
+    filename = f"event_images/{uuid.uuid4()}.{ext}"
+    image_file = ContentFile(base64.b64decode(imgstr), name=filename)
+
+    img.image.save(filename,image_file)
+    img.save()
+    return Response({"sucess":True})

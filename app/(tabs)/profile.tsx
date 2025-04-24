@@ -2,15 +2,18 @@ import React, { useState, useCallback } from 'react';
 import { StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, FlatList } from 'react-native';
 import axios from "axios"
 
-import { View, TextField, Button, Text, Avatar, Chip } from 'react-native-ui-lib';
+import {Image, View, TextField, Button, Text, Avatar, Chip } from 'react-native-ui-lib';
 import { useFocusEffect } from '@react-navigation/native';
 
-//<Divider d10 testID={'divider'}/>
 
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API, { endPoint, getProfile } from '@/components/api';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import DraggableFlatList from 'react-native-draggable-flatlist';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import ImagePickerComponent from '@/components/ImagePicker';
+import { Asset } from 'react-native-image-picker';
 
 const Divider = ({ color = '#D3D3D3', height = 1, marginV = 10 }) => (
 	<View style={{ height, backgroundColor: color, width: '100%', marginVertical: marginV }} />
@@ -37,6 +40,7 @@ const ProfileScreen = () => {
 	const [loading, setLoading] = useState(false);
 	const [newDetail, setNewDetail] = useState<string>("");
 	const [newInterest, setNewInterest] = useState<string>("");
+	const [image,setImage] = useState<Asset>();
 
 
 	const [user,setUser] = useState(null);
@@ -133,17 +137,90 @@ const ProfileScreen = () => {
 		API.post("/update/",{
 			user:cleanedUser
 		}).then(response=>{
-
+			if(image!==null){
+				handleAddImage();
+			}
 		}).catch(error=>{
 
 		})
 	}
 
+	const handleReorder = (data) => {
+		const updated = data.map((item, index) => ({ ...item, position: index }));
+		setUser(prev => ({...prev,images:data}));
+		  // send to backend here if needed
+	};
+	const handleRemove = (id) => {
+	//	setImages(images.filter(img => img.id !== id));
+		// call backend to delete image here
+	};
+
+	const moveUp = (id) => {
+		if (!user?.images) return;
+
+		const index = user.images.findIndex(img => img.id === id);
+		if (index <= 0) return; // already at top
+
+		const newImages = [...user.images];
+		// swap with the one above
+		[newImages[index - 1], newImages[index]] = [newImages[index], newImages[index - 1]];
+
+		// update positions
+		const updated = newImages.map((item, i) => ({ ...item, position: i }));
+		setUser(prev => ({ ...prev, images: updated }));
+	};
+	const moveDown = (id) => {
+		if (!user?.images) return;
+
+		const index = user.images.findIndex(img => img.id === id);
+		if (index < 0 || index === user.images.length - 1) return; // already at bottom
+
+		const newImages = [...user.images];
+		// swap with the one below
+		[newImages[index], newImages[index + 1]] = [newImages[index + 1], newImages[index]];
+
+		// update positions
+		const updated = newImages.map((item, i) => ({ ...item, position: i }));
+		setUser(prev => ({ ...prev, images: updated }));
+	};
+
+	const handleAddImage = async () => {
+
+		API.post("/add_image/",{
+			image:image?.base64
+		}).then(response=>{
+
+		}).catch(error=>{})
+
+	};
+
+
+		const renderItem = ({ item, drag }) => (
+			<TouchableOpacity onLongPress={drag} style={styles.imageContainer}>
+				<Image source={{ uri:"http://192.168.1.119:8000"+ item.image }} style={styles.image} />
+				<View row spread>
+
+					<Button title="Remove" color="white" onPress={() => moveUp(item.id)} >
+						<Text  white>
+							Up
+						</Text>
+					</Button>
+					<Button title="Remove" color="white" onPress={() => handleRemove(item.id)} >
+						<Text  white>
+							Remove
+						</Text>
+					</Button>
+					<Button title="Remove" color="white" onPress={() => moveDown(item.id)} >
+						<Text  white>
+							Down
+						</Text>
+					</Button>
+				</View>
+			</TouchableOpacity>
+		);
+
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
-			<View center marginT-10 marginB-12>
-				<Avatar size={120} source={{uri: endPoint + user?.images[0].image}} />
-			</View>
 
 			<View row center>
 				<Entry
@@ -237,10 +314,27 @@ const ProfileScreen = () => {
 					Logout
 				</Text>
 			</Button>
+
+			<View center marginT-10 marginB-12 height-10 style={{overflow:"hidden"}}>
+				<View style={styles.container}>
+					<Text white style={styles.title}>Edit Images for {user?.username}</Text>
+
+					{user?.images && (
+						<FlatList
+							data={user.images}
+								 keyExtractor={(item) => item.id.toString()}
+								 renderItem={renderItem}
+								 onDragEnd={({ data }) => handleReorder(data)}
+						/>
+					)}
+
+					<ImagePickerComponent onImage={setImage} />
+				</View>
+			</View>
+
+
 			<View style={{ height: 200 }}></View>
 		</ScrollView>
-
-
 	);
 };
 
@@ -290,8 +384,10 @@ const styles = StyleSheet.create({
 		padding:2,
 		flexDirection:"row",
 		justifyContent:"space-between"
-	}
-
+	},
+	title: { fontSize: 20, marginBottom: 10, fontWeight: 'bold' },
+	imageContainer: { marginBottom: 15, alignItems: 'center' },
+	image: { width: 200, height: 120, borderRadius: 10, marginBottom: 5 }
 });
 
 export default ProfileScreen;
