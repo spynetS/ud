@@ -140,12 +140,15 @@ const ProfileCard = ({ card, open,user }) => {
 	},[card])
 
 
-	const nextImage = (index:number) =>{
-		if(card){
-			setImageIndex(  (imageIndex + index + card.images.length) % card.images.length);
-			setCurrentImage(card.images[imageIndex]?.image);
+	const nextImage = (step: number) => {
+		if (card && card.images?.length > 0) {
+			const total = card.images.length;
+			const newIndex = (imageIndex + step + total) % total;
+
+			setImageIndex(newIndex);
+			setCurrentImage(card.images[newIndex]?.image);
 		}
-	}
+	};
 
 	if(!card) {return (<Text>Loading</Text>)}
 	else {
