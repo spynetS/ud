@@ -17,5 +17,6 @@ urlpatterns = [
     path('matches/',FriendListView.as_view(),name='matches'),
     path('update/',update_profile,name="update"),
     path("add_image/",add_image,name="add_image"),
+    path("edit_image_positions/",edit_image_positions,name="edit_image_positions"),
 
 ]

@@ -177,6 +177,34 @@ def update_profile(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+def edit_image_positions(request):
+    user = request.user
+    image_data = request.data.get("images", [])
+
+    if not isinstance(image_data, list):
+        return Response({"error": "Invalid data format."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        # Build a mapping of id -> position
+        positions = {img["id"]: img["position"] for img in image_data if "id" in img and "position" in img}
+
+        # Fetch only the user's images that match provided IDs
+        user_images = UserImage.objects.filter(id__in=positions.keys(), user=user)
+
+        # Update each image
+        for image in user_images:
+            new_position = positions.get(image.id)
+            if new_position is not None:
+                image.position = new_position
+                image.save()
+
+        return Response({"status": "Positions updated successfully."}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_image(request):
     img: UserImage = UserImage(user=request.user)
 

@@ -40,7 +40,7 @@ const ProfileScreen = () => {
 	const [loading, setLoading] = useState(false);
 	const [newDetail, setNewDetail] = useState<string>("");
 	const [newInterest, setNewInterest] = useState<string>("");
-	const [image,setImage] = useState<Asset>();
+	const [image,setImage] = useState<Asset>(null);
 
 
 	const [user,setUser] = useState(null);
@@ -137,8 +137,13 @@ const ProfileScreen = () => {
 		API.post("/update/",{
 			user:cleanedUser
 		}).then(response=>{
+			API.post("edit_image_positions/",{
+				images:user?.images
+			}).then(response=>{})
+
 			if(image!==null){
 				handleAddImage();
+				setImage(null);
 			}
 		}).catch(error=>{
 
@@ -219,41 +224,44 @@ const ProfileScreen = () => {
 			</TouchableOpacity>
 		);
 
+	// TODO Update image pos
+	// TODO Remove image pos
+
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
 
 			<View row center>
 				<Entry
 					label={"Förnamn"}
-					value={user?.first_name}
-					onChange={(text) => setUser(prev => ({ ...prev, first_name: text }))}
+						  value={user?.first_name}
+						  onChange={(text) => setUser(prev => ({ ...prev, first_name: text }))}
 				/>
 				<Entry
 					label={"Efternamn"}
-					value={user?.last_name}
-					onChange={(text) => setUser(prev => ({ ...prev, last_name: text }))}
+						  value={user?.last_name}
+						  onChange={(text) => setUser(prev => ({ ...prev, last_name: text }))}
 				/>
 			</View>
 
 			<Entry
 				label={"Email"}
-				value={user?.email}
-				onChange={(text) => setUser(prev => ({ ...prev, email: text }))}
+					  value={user?.email}
+					  onChange={(text) => setUser(prev => ({ ...prev, email: text }))}
 			/>
 			<Entry
 				label={"Bor"}
-				value={user?.location}
-				onChange={(text) => setUser(prev => ({ ...prev, location: text }))}
+					  value={user?.location}
+					  onChange={(text) => setUser(prev => ({ ...prev, location: text }))}
 			/>
 			<Entry
 				label={"Program"}
-				value={user?.programe}
-				onChange={(text) => setUser(prev => ({ ...prev, programe: text }))}
+					  value={user?.programe}
+					  onChange={(text) => setUser(prev => ({ ...prev, programe: text }))}
 			/>
 			<Entry
 				label={"Skola"}
-				value={user?.school}
-				onChange={(text) => setUser(prev => ({ ...prev, school: text }))}
+					  value={user?.school}
+					  onChange={(text) => setUser(prev => ({ ...prev, school: text }))}
 			/>
 
 			<Text white>
@@ -261,17 +269,17 @@ const ProfileScreen = () => {
 			</Text>
 			<FlatList
 				style={styles.chiper}
-				data={user?.details}
-				renderItem={({ item, index }) => (
-					<RenderItem item={item} remove={() => removeDetail(index)} />
-				)}
+					  data={user?.details}
+					  renderItem={({ item, index }) => (
+						  <RenderItem item={item} remove={() => removeDetail(index)} />
+					  )}
 			/>
 			<View center>
 				<TextField
 					value={newDetail}
-					onChangeText={setNewDetail}
-					placeholder="Ny detalj"
-					style={styles.input}
+						  onChangeText={setNewDetail}
+						  placeholder="Ny detalj"
+						  style={styles.input}
 				/>
 				<TouchableOpacity onPress={addDetail}>
 					<Text white>
@@ -285,23 +293,41 @@ const ProfileScreen = () => {
 			</Text>
 			<FlatList
 				style={styles.chiper}
-				data={user?.interests}
-				renderItem={({ item, index }) => (
-					<RenderItem item={item} remove={() => removeInterest(index)} />
-				)}
+					  data={user?.interests}
+					  renderItem={({ item, index }) => (
+						  <RenderItem item={item} remove={() => removeInterest(index)} />
+					  )}
 			/>
 			<View center>
 				<TextField
 					value={newInterest}
-					onChangeText={setNewInterest}
-					placeholder="Nytt intresse"
-					style={styles.input}
+						  onChangeText={setNewInterest}
+						  placeholder="Nytt intresse"
+						  style={styles.input}
 				/>
 				<TouchableOpacity onPress={addIntrest}>
 					<Text white>
 						Lägg till intresse
 					</Text>
 				</TouchableOpacity>
+			</View>
+
+
+			<View center marginT-10 marginB-12 height-10 style={{overflow:"hidden"}}>
+				<View style={styles.container}>
+					<Text white style={styles.title}>Redigera bilder (Längst upp är första)</Text>
+
+					{user?.images && (
+						<FlatList
+							data={user.images}
+							keyExtractor={(item) => item.id.toString()}
+							renderItem={renderItem}
+							onDragEnd={({ data }) => handleReorder(data)}
+						/>
+					)}
+
+					<ImagePickerComponent onImage={setImage} />
+				</View>
 			</View>
 
 			<Button onPress={save} loading={loading} style={styles.saveButton}>
@@ -314,24 +340,6 @@ const ProfileScreen = () => {
 					Logout
 				</Text>
 			</Button>
-
-			<View center marginT-10 marginB-12 height-10 style={{overflow:"hidden"}}>
-				<View style={styles.container}>
-					<Text white style={styles.title}>Edit Images for {user?.username}</Text>
-
-					{user?.images && (
-						<FlatList
-							data={user.images}
-								 keyExtractor={(item) => item.id.toString()}
-								 renderItem={renderItem}
-								 onDragEnd={({ data }) => handleReorder(data)}
-						/>
-					)}
-
-					<ImagePickerComponent onImage={setImage} />
-				</View>
-			</View>
-
 
 			<View style={{ height: 200 }}></View>
 		</ScrollView>
