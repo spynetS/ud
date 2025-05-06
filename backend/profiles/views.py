@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions
-from .models import CustomUser, UserImage
+from .models import CustomUser, UserImage, SCHOOL_COLORS
 from .serializers import CustomUserSerializer, UserImageSerializer
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -27,6 +27,8 @@ def get_user_data(request):
     for b in user.bookmarks.all():
         bookmarks.append(b.pk)
 
+    school_color = SCHOOL_COLORS.get(user.school, "#000000")  # fallback to black if no match
+
     return Response({
         "id": user.id,
         "username": user.username,
@@ -35,6 +37,7 @@ def get_user_data(request):
         "location": user.location,
         "programe": user.programe,
         "school": user.school,
+        "school_color": school_color,
         "about": user.about,
         "details": user.details,
         "bookmarks": bookmarks,
@@ -69,6 +72,7 @@ def login_user(request):
     username = request.data.get('username')
     password = request.data.get('password')
     user = authenticate(username=username, password=password)
+    school_color = SCHOOL_COLORS.get(user.school, "#000000")  # fallback to black if no match
 
     if user is not None:
         refresh = RefreshToken.for_user(user)
@@ -80,7 +84,8 @@ def login_user(request):
             "access_token": str(access_token),
             "refresh_token": str(refresh),
             "expire": expire_timestamp,
-            "user": user.username
+            "user": user.username,
+            "school_color":school_color,
         })
     else:
         return Response({"error": "Invalid credentials"}, status=400)

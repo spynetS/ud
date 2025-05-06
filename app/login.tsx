@@ -26,6 +26,7 @@ const LoginScreen = () => {
                 await AsyncStorage.setItem('access_token', json.access_token);
                 await AsyncStorage.setItem('refresh_token', json.refresh_token);
                 await AsyncStorage.setItem('token_expiry', json.expire.toString());
+                await AsyncStorage.setItem('primary_color', json.school_color);
 
                 Alert.alert("Success", json.message);
                 router.push("/", { relativeToDirectory: true })
