@@ -203,6 +203,23 @@ def edit_image_positions(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def remove_image(request):
+    user = request.user  # request.user is already your logged-in user
+    image_id = request.data.get("image")
+
+    if not image_id:
+        return Response({"detail": "No image ID provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        image = UserImage.objects.get(pk=image_id, user=user)
+    except UserImage.DoesNotExist:
+        return Response({"detail": "Image not found or does not belong to the user."}, status=status.HTTP_404_NOT_FOUND)
+
+    image.delete()
+    return Response({"detail": "Image deleted successfully."}, status=status.HTTP_200_OK)
+    
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_image(request):

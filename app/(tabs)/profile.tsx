@@ -42,6 +42,7 @@ const ProfileScreen = () => {
 	const [newInterest, setNewInterest] = useState<string>("");
 	const [image,setImage] = useState<Asset>(null);
 
+	const [removeImages,setRemoveImages] = useState<[]>([]);
 
 	const [user,setUser] = useState(null);
 	useFocusEffect(useCallback(() => {
@@ -130,6 +131,10 @@ const ProfileScreen = () => {
 		}));
 	}
 
+	const removeImageLocal = (id) => {
+
+	}
+
 
 	const save = () =>{
 		const { profile_picture,matches, images, bookmarks, swipes, ...cleanedUser } = user;
@@ -145,6 +150,9 @@ const ProfileScreen = () => {
 				handleAddImage();
 				setImage(null);
 			}
+			for(let i = 0; i < removeImages?.length; i ++){
+				removeImage(removeImages[i]);
+			}
 		}).catch(error=>{
 
 		})
@@ -154,10 +162,6 @@ const ProfileScreen = () => {
 		const updated = data.map((item, index) => ({ ...item, position: index }));
 		setUser(prev => ({...prev,images:data}));
 		  // send to backend here if needed
-	};
-	const handleRemove = (id) => {
-	//	setImages(images.filter(img => img.id !== id));
-		// call backend to delete image here
 	};
 
 	const moveUp = (id) => {
@@ -189,6 +193,12 @@ const ProfileScreen = () => {
 		setUser(prev => ({ ...prev, images: updated }));
 	};
 
+	const removeImage = (id) => {
+		API.post("/remove_image/",{"image":id}).then(response=>{
+
+		})
+	};
+
 	const handleAddImage = async () => {
 
 		API.post("/add_image/",{
@@ -210,7 +220,7 @@ const ProfileScreen = () => {
 							Up
 						</Text>
 					</Button>
-					<Button title="Remove" color="white" onPress={() => handleRemove(item.id)} >
+					<Button title="Remove" color="white" onPress={() => removeImageLocal(item.id)} >
 						<Text  white>
 							Remove
 						</Text>
@@ -224,12 +234,10 @@ const ProfileScreen = () => {
 			</TouchableOpacity>
 		);
 
-	// TODO Update image pos
 	// TODO Remove image pos
 
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
-
 			<View row center>
 				<Entry
 					label={"Förnamn"}
