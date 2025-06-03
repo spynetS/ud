@@ -73,7 +73,7 @@ def create_event(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def can_create(request):
-    amount_in_the_top_list = 10
+    amount_in_the_top_list = 1
     top_100 = CustomUser.objects.order_by('-swipes').all()[:amount_in_the_top_list]
     if request.user in top_100:
         return Response({"can":True})

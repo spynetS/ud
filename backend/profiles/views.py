@@ -1,5 +1,10 @@
+import base64
+import uuid
+from django.core.files.base import ContentFile
 from rest_framework import generics, permissions
+from rest_framework.views import status
 from .models import CustomUser, UserImage, SCHOOL_COLORS
+
 from .serializers import CustomUserSerializer, UserImageSerializer
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -32,6 +37,8 @@ def get_user_data(request):
     return Response({
         "id": user.id,
         "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
         "email": user.email,
         "pronoun": user.pronoun,
         "location": user.location,
@@ -158,3 +165,85 @@ class CustomUserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    user = request.user
+    user_data = request.data.get('user', {})  # Safely get the nested user dict
+
+    serializer = CustomUserSerializer(user, data=user_data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'status': 'success', 'message': 'Profile updated successfully'})
+    else:
+        return Response({'status': 'error', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def edit_image_positions(request):
+    user = request.user
+    image_data = request.data.get("images", [])
+
+    if not isinstance(image_data, list):
+        return Response({"error": "Invalid data format."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        # Build a mapping of id -> position
+        positions = {img["id"]: img["position"] for img in image_data if "id" in img and "position" in img}
+
+        # Fetch only the user's images that match provided IDs
+        user_images = UserImage.objects.filter(id__in=positions.keys(), user=user)
+
+        # Update each image
+        for image in user_images:
+            new_position = positions.get(image.id)
+            if new_position is not None:
+                image.position = new_position
+                image.save()
+
+        return Response({"status": "Positions updated successfully."}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def remove_image(request):
+    user = request.user  # request.user is already your logged-in user
+    image_id = request.data.get("image")
+
+    if not image_id:
+        return Response({"detail": "No image ID provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        image = UserImage.objects.get(pk=image_id, user=user)
+    except UserImage.DoesNotExist:
+        return Response({"detail": "Image not found or does not belong to the user."}, status=status.HTTP_404_NOT_FOUND)
+
+    image.delete()
+    return Response({"detail": "Image deleted successfully."}, status=status.HTTP_200_OK)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_image(request):
+    img: UserImage = UserImage(user=request.user)
+
+    base64_data = request.data.get("image")
+
+    # Strip header if present
+    if base64_data.startswith('data:image'):
+        format, imgstr = base64_data.split(';base64,')  # format ~= data:image/png
+        ext = format.split('/')[-1]  # "png"
+    else:
+        imgstr = base64_data
+        ext = 'jpg'  # or default to png/jpg
+
+    filename = f"event_images/{uuid.uuid4()}.{ext}"
+    image_file = ContentFile(base64.b64decode(imgstr), name=filename)
+
+    img.image.save(filename,image_file)
+    img.save()
+    return Response({"sucess":True})

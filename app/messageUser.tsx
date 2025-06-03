@@ -14,9 +14,10 @@ import API, { getProfile, endPoint } from "@/components/api";
 import axios from "axios"
 
 import { ListItem, Image, Colors, Text, Button, View,  } from "react-native-ui-lib"
-import { Link, router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
 import { Avatar } from 'react-native-ui-lib/src/components/avatar';
+
 import { FontAwesome } from '@expo/vector-icons';
+import { Link, router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
 
 const { height, width } = Dimensions.get('window');
 
