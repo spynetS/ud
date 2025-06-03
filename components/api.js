@@ -20,7 +20,7 @@ api.interceptors.request.use(
 
       try {
         axios
-          .post("http://192.168.1.119:8000/api/token/refresh", {
+          .post(endPoint + "/api/token/refresh", {
             refresh_token: refreshToken,
           })
           .then((response) => {

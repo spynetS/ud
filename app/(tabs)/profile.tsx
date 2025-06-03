@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, FlatList } from 'react-native';
 import axios from "axios"
+import { FontAwesome } from '@expo/vector-icons';
+import { Link, router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
 
 import {Image, View, TextField, Button, Text, Avatar, Chip } from 'react-native-ui-lib';
 import { useFocusEffect } from '@react-navigation/native';
@@ -21,18 +23,18 @@ const Divider = ({ color = '#D3D3D3', height = 1, marginV = 10 }) => (
 
 const RenderItem = ({item,remove}) => {
 
-		return (
-			<View style={styles.renderItem}>
-				<Text white>
-					{item}
+	return (
+		<View style={styles.renderItem}>
+			<Text white>
+				{item}
+			</Text>
+			<TouchableOpacity onPress={remove} >
+				<Text style={{color:"red"}}>
+					Tabort
 				</Text>
-				<TouchableOpacity onPress={remove} >
-					<Text style={{color:"red"}}>
-						Tabort
-					</Text>
-				</TouchableOpacity>
-			</View>
-		)
+			</TouchableOpacity>
+		</View>
+	)
 }
 
 const ProfileScreen = () => {
@@ -79,7 +81,7 @@ const ProfileScreen = () => {
 	}
 
 	const Entry = ({label,value,onChange}) => {
-		  const [inputValue, setInputValue] = useState(value);  // Store the input locally
+		const [inputValue, setInputValue] = useState(value);  // Store the input locally
 
 		const handleChange = (text) => {
 			setInputValue(text); // Update local input state
@@ -161,7 +163,7 @@ const ProfileScreen = () => {
 	const handleReorder = (data) => {
 		const updated = data.map((item, index) => ({ ...item, position: index }));
 		setUser(prev => ({...prev,images:data}));
-		  // send to backend here if needed
+		// send to backend here if needed
 	};
 
 	const moveUp = (id) => {
@@ -210,34 +212,48 @@ const ProfileScreen = () => {
 	};
 
 
-		const renderItem = ({ item, drag }) => (
-			<TouchableOpacity onLongPress={drag} style={styles.imageContainer}>
-				<Image source={{ uri:"http://192.168.1.119:8000"+ item.image }} style={styles.image} />
-				<View row spread>
+	const renderItem = ({ item, drag }) => (
+		<TouchableOpacity onLongPress={drag} style={styles.imageContainer}>
+			<Image source={{ uri:"http://192.168.1.119:8000"+ item.image }} style={styles.image} />
+			<View row spread>
 
-					<Button title="Remove" color="white" onPress={() => moveUp(item.id)} >
-						<Text  white>
-							Up
-						</Text>
-					</Button>
-					<Button title="Remove" color="white" onPress={() => removeImageLocal(item.id)} >
-						<Text  white>
-							Remove
-						</Text>
-					</Button>
-					<Button title="Remove" color="white" onPress={() => moveDown(item.id)} >
-						<Text  white>
-							Down
-						</Text>
-					</Button>
-				</View>
-			</TouchableOpacity>
-		);
+				<Button title="Remove" color="white" onPress={() => moveUp(item.id)} >
+					<Text  white>
+						Up
+					</Text>
+				</Button>
+				<Button title="Remove" color="white" onPress={() => removeImageLocal(item.id)} >
+					<Text  white>
+						Remove
+					</Text>
+				</Button>
+				<Button title="Remove" color="white" onPress={() => moveDown(item.id)} >
+					<Text  white>
+						Down
+					</Text>
+				</Button>
+			</View>
+		</TouchableOpacity>
+	);
 
 	// TODO Remove image pos
 
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
+			<View row spread paddingH-15 centerV style={{height:80, width:"100%"}}>
+				<Link href="/">
+					<FontAwesome name="arrow-left"  color="white" size={24}/>
+				</Link>
+				<View flex row center >
+					<Text white heading2>
+						Profile
+					</Text>
+				</View>
+
+				<View>
+				</View>
+
+			</View>
 			<View row center>
 				<Entry
 					label={"Förnamn"}
@@ -275,19 +291,23 @@ const ProfileScreen = () => {
 			<Text white>
 				Detaljer
 			</Text>
-			<FlatList
-				style={styles.chiper}
-					  data={user?.details}
-					  renderItem={({ item, index }) => (
-						  <RenderItem item={item} remove={() => removeDetail(index)} />
-					  )}
-			/>
+			<View>
+				<FlatList
+					style={styles.chiper}
+					data={user?.details}
+					keyExtractor={(item, index) => index.toString()} // Add this
+					renderItem={({ item, index }) => (
+						<RenderItem item={item} remove={() => removeDetail(index)} />
+					)}
+				/>
+			</View>
+
 			<View center>
 				<TextField
 					value={newDetail}
-						  onChangeText={setNewDetail}
-						  placeholder="Ny detalj"
-						  style={styles.input}
+					onChangeText={setNewDetail}
+					placeholder="Ny detalj"
+					style={styles.input}
 				/>
 				<TouchableOpacity onPress={addDetail}>
 					<Text white>
@@ -299,13 +319,18 @@ const ProfileScreen = () => {
 			<Text white>
 				Intressen
 			</Text>
-			<FlatList
-				style={styles.chiper}
-					  data={user?.interests}
-					  renderItem={({ item, index }) => (
-						  <RenderItem item={item} remove={() => removeInterest(index)} />
-					  )}
-			/>
+			<View>
+
+				<FlatList
+					style={styles.chiper}
+						  data={user?.interests}
+						  keyExtractor={(item, index) => index.toString()} // Add this
+
+					renderItem={({ item, index }) => (
+						<RenderItem item={item} remove={() => removeInterest(index)} />
+					)}
+				/>
+			</View>
 			<View center>
 				<TextField
 					value={newInterest}
@@ -321,7 +346,7 @@ const ProfileScreen = () => {
 			</View>
 
 
-			<View center marginT-10 marginB-12 height-10 style={{overflow:"hidden"}}>
+			<View center marginT-10 marginB-12 height-10 style={{overflow:"hidden",flex:1}}>
 				<View style={styles.container}>
 					<Text white style={styles.title}>Redigera bilder (Längst upp är första)</Text>
 
@@ -337,19 +362,20 @@ const ProfileScreen = () => {
 					<ImagePickerComponent onImage={setImage} />
 				</View>
 			</View>
+			<View>
+				<Button onPress={save} loading={loading} style={styles.saveButton}>
+					<Text>
+						Spara ändringar
+					</Text>
+				</Button>
+				<Button onPress={logout} loading={loading} style={styles.saveButton}>
+					<Text>
+						Logout
+					</Text>
+				</Button>
 
-			<Button onPress={save} loading={loading} style={styles.saveButton}>
-				<Text>
-					Spara ändringar
-				</Text>
-			</Button>
-			<Button onPress={logout} loading={loading} style={styles.saveButton}>
-				<Text>
-					Logout
-				</Text>
-			</Button>
-
-			<View style={{ height: 200 }}></View>
+			</View>
+			<View style={{ height: 100 }}></View>
 		</ScrollView>
 	);
 };
@@ -387,14 +413,12 @@ const styles = StyleSheet.create({
 		marginTop:5,
 		borderRadius: 15
 	},
-	chiper:{
-		backgroundColor:"#111",
-		borderRadius:12,
-		//flex:3,
-		height:100,
-		overflow:"hidden",
-		//flexDirection: "column",
-		padding:12
+	chiper: {
+		backgroundColor: "#111",
+		borderRadius: 12,
+		flex: 1,           // Allow FlatList to grow and fill space
+		overflow: "hidden",
+		padding: 12,
 	},
 	renderItem:{
 		padding:2,
