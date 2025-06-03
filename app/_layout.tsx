@@ -10,19 +10,41 @@ import {Typography, Colors, Text} from 'react-native-ui-lib';
 
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { getProfile } from '@/components/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+function darkenHexColor(hex, amount = 0.2) {
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+
+  r = Math.max(Math.floor(r * (1 - amount)), 0);
+  g = Math.max(Math.floor(g * (1 - amount)), 0);
+  b = Math.max(Math.floor(b * (1 - amount)), 0);
+
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+
+async function loadColorsFromStorage() {
+  const primary = await AsyncStorage.getItem('primary_color') || '#ff0000';
+  const dark = darkenHexColor(primary);
+
+  Colors.loadColors({
+    primary,
+    dark_primary: dark,
+    gold: '#FFD700',
+  });
+}
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
-  Colors.loadColors({
-    primary:      '#FF69B4',
-    dark_primary: '#C651C6',
-    gold:         '#FFD700',
-  });
-
+  useEffect(() => {
+    loadColorsFromStorage();
+  }, []);
 
   const [loaded] = useFonts({
     CustomFont: require('../assets/fonts/Manrope-VariableFont_wght.ttf'),
