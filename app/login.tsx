@@ -43,6 +43,11 @@ const LoginScreen = () => {
             <Text style={styles.title}>Login</Text>
             <TextInput style={styles.input} placeholder="Username" value={username} onChangeText={setUsername} />
             <TextInput style={styles.input} placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
+            <TouchableOpacity onPress={()=>{router.push("/signup")}}>
+                <Text>
+                    Signup
+                </Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
