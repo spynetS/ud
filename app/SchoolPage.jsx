@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
 import {
@@ -14,16 +14,44 @@ import {
 import DropDownPicker from "react-native-dropdown-picker";
 import { Props } from "./signup";
 
+import API, { endPoint } from "@/components/api.js";
+import axios from "axios";
+
 const SchoolPage = ({ user, onNext }: Props) => {
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
-    { label: "skola", value: "none" },
-    { label: "Banana", value: "banana" },
-  ]);
-  const [value, setValue] = useState(user.school);
+  const [items, setItems] = useState([]);
+  const [value, setValue] = useState(user.school.id);
 
   const [program, setProgram] = useState(user.programe);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    axios.get(endPoint + "/api/schools").then((response) => {
+      const formattedItems = response.data.map((school) => ({
+        label: school.name,
+        value: school.id,
+        color: school.color, // optional, for custom styling
+      }));
+      setItems(formattedItems);
+    });
+  }, []);
+
+  const next = () => {
+    const selectedSchool = items.find((item) => item.value === value);
+
+    const updatedUser = {
+      ...user,
+      programe: program,
+      school: {
+        id: selectedSchool.value,
+        name: selectedSchool.label,
+        color: selectedSchool.color,
+      },
+    };
+    console.log(updatedUser);
+    onNext(updatedUser);
+  };
+
   return (
     <View>
       <Text white heading2>
@@ -36,6 +64,10 @@ const SchoolPage = ({ user, onNext }: Props) => {
         items={items}
         setOpen={setOpen}
         setValue={setValue}
+        onChangeValue={(val) => {
+          console.log("Selected value:", val);
+          setValue(val);
+        }}
         setItems={setItems}
       />
       {value !== null ? (
@@ -57,7 +89,7 @@ const SchoolPage = ({ user, onNext }: Props) => {
         </View>
       ) : null}
 
-      <Button marginT-50 onPress={onNext}>
+      <Button marginT-50 onPress={next}>
         <Text style={{ color: "white", fontWeight: "bold" }}>Fortsätt</Text>
       </Button>
     </View>

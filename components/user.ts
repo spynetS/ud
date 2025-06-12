@@ -9,6 +9,7 @@ type School = {
 export type User = {
   id: number;
   username: string;
+  password: string;
   first_name: string;
   last_name: string;
   email: string;
@@ -24,4 +25,5 @@ export type User = {
   more_images: string[];
   bookmarks: number[];
   swipes: number;
+  matches: number[];
 };

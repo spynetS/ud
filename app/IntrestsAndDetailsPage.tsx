@@ -63,7 +63,7 @@ const IntrestsAndDetailsPage = ({ user, onNext }: Props) => {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 0 }}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
 
         <Text white heading2>

@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 
-from django.urls import path
+from django.urls import path, include
 from .views import *
+
+from rest_framework.routers import DefaultRouter
+from .views import SchoolViewSet
+
+router = DefaultRouter()
+router.register(r'schools', SchoolViewSet, basename='school')
 
 urlpatterns = [
     path('users/', CustomUserListCreateView.as_view(), name='user-list-create'),
@@ -19,5 +25,5 @@ urlpatterns = [
     path("add_image/",add_image,name="add_image"),
     path("edit_image_positions/",edit_image_positions,name="edit_image_positions"),
     path("remove_image/",remove_image,name="remove_image"),
-
+    path('', include(router.urls)),
 ]

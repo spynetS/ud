@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {TextInput, TouchableOpacity, Alert, StyleSheet, SafeAreaView, SafeAreaViewBase } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import API, {endPoint} from "@/components/api";
 import { Button, Text, TextField,View } from "react-native-ui-lib";
 
-import {router} from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import ProgressBar from 'react-native-progress/Bar';
 
 
@@ -15,7 +15,17 @@ import SchoolPage from "./SchoolPage"
 
 import IntrestsAndDetailsPage from './IntrestsAndDetailsPage';
 import { User } from '@/components/user';
+import ProfileCard from "@/components/ProfileCard"
+import axios from 'axios';
 
+
+/**
+   / Signup is made up of multiple pages which takes
+   / a user object. They change values of them and passes
+   / a new user object back to this page which then passes
+   / the new user to the next part. This is so we can go
+   / forward and backwards through the pages.
+ */
 
 export type Props = {
 	user: User;
@@ -23,11 +33,31 @@ export type Props = {
 };
 
 const LastScreen = ({user, onNext} : Props) => {
+
+	useFocusEffect(useCallback(()=>{
+		const postUser = {
+			...user,
+			school_id:user.school.id
+		}
+		axios.post(endPoint+"/api/users/",postUser).then(response=>{
+			console.log(response)
+		})
+	},[]));
+
 	return(
 		<View>
-			<Text white heading>
-				{user.id}
+			<Text heading2 white>
+				Välkommen {user.first_name}
 			</Text>
+			<Text white>
+				för att lägga till bilder eller redigera uppgifter
+				kan du gå till profil sidan i appen.
+			</Text>
+			<TouchableOpacity style={styles.input} onPress={()=>{router.push("/login");}}>
+				<Text white center>
+					Logga in
+				</Text>
+			</TouchableOpacity>
 		</View>
 	)
 }
@@ -35,25 +65,32 @@ const LastScreen = ({user, onNext} : Props) => {
 const SignupScreen = () => {
     const navigation = useNavigation();
     const pages = 4;
-    const [page,setPage] = useState(3);
+    const [page,setPage] = useState(0);
 
 	const [user,setUser] = useState<User>({
 		id: 0,
 		username: '',
+		password:'',
 		first_name: '',
 		last_name: '',
 		email: '',
 		pronoun: '',
 		programe: '',
+		school:{
+			id:-1,
+			name:"",
+			color:"#000000"
+		},
 		location: '',
 		about: '',
 		details: [],
 		interests: [],
 		profile_picture: null,
-		images: null,
+		images: [],
 		more_images: [],
 		bookmarks: [],
 		swipes: 0,
+		matches:[]
 	});
 
     const getPage = () =>{
@@ -112,6 +149,7 @@ const styles = StyleSheet.create({
 		borderRadius: 15,
         fontSize:22,
 	},
+
 })
 
 export default SignupScreen;

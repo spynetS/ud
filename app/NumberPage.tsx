@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button, Text, TextField } from "react-native-ui-lib";
-import { Props, User } from './signup';
+import { Props } from './signup';
+
+import {User} from "@/components/user"
 
 const NumberPage = ({ user, onNext }: Props) => {
   const [number, setNumber] = useState(user.number || "+46"); // Assuming user has number field
   const [email, setEmail] = useState(user.email);
   const [errorE, setErrorE] = useState('');
   const [errorN, setErrorN] = useState('');
+  const [errorPassword, setErrorPassword] = useState('');
+  const [password,setPassword] = useState(user.password);
 
   const validateEmail = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -17,6 +21,22 @@ const NumberPage = ({ user, onNext }: Props) => {
       setErrorE('');
     }
     setEmail(value);
+  };
+  const validatePassword = (value: string) => {
+    if (!value) {
+      setErrorPassword('Lösenord krävs');
+    } else if (value.length < 8) {
+      setErrorPassword('Minst 8 tecken krävs');
+    } else if (!/[A-Z]/.test(value)) {
+      setErrorPassword('Minst en stor bokstav krävs');
+    } else if (!/[a-z]/.test(value)) {
+      setErrorPassword('Minst en liten bokstav krävs');
+    } else if (!/\d/.test(value)) {
+      setErrorPassword('Minst en siffra krävs');
+    } else {
+      setErrorPassword('');
+    }
+    setPassword(value);
   };
 
   const validateSwedishPhone = (value: string) => {
@@ -38,6 +58,7 @@ const NumberPage = ({ user, onNext }: Props) => {
       ...user,
       email,
       number,
+      password,
     };
 
     onNext(updatedUser);
@@ -62,6 +83,18 @@ const NumberPage = ({ user, onNext }: Props) => {
         validateOnChange
         validationMessage={errorE ? [errorE] : []}
         style={styles.input}
+      />
+      <TextField
+        placeholder="Password"
+        value={password}
+        onChangeText={validatePassword}
+        secureTextEntry
+        style={styles.input}
+        enableErrors
+        validateOnChange
+        validationMessage = {errorPassword ? [errorPassword] : []}
+        validationMessagePosition="top"
+        validate={['required']}
       />
       {email !== "" && errorE === "" ? (
         <View>

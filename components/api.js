@@ -46,8 +46,6 @@ api.interceptors.request.use(
   },
 );
 
-export default api;
-
 export async function getProfile() {
   try {
     const response = await api.get("/user");
@@ -63,3 +61,5 @@ export async function getProfile() {
     return null;
   }
 }
+
+export default api;

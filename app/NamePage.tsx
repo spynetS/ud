@@ -7,6 +7,7 @@ import {User} from "@/components/user"
 const NamePage = ({ user, onNext }: Props) => {
   // Local separate state for fields to avoid mutating props directly
   const [name, setName] = useState(user.first_name !== "" ? user.first_name + " " + user.last_name:"");
+  const [username, setUsername] = useState(user.username);
   const [about, setAbout] = useState(user.about || "");
   const [showAbout, setShowAbout] = useState(false);
   const [error, setError] = useState('');
@@ -20,6 +21,17 @@ const NamePage = ({ user, onNext }: Props) => {
     }
     setName(value);
   };
+
+  const validateUsername = (value: string) => {
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    if (!usernameRegex.test(value)) {
+      setError('Username must be 3–20 characters, letters/numbers/underscores only');
+    } else {
+      setError('');
+    }
+    setUsername(value);
+  };
+
 
   const next = () => {
     if (error !== "" || name.trim() === "") {
@@ -38,6 +50,7 @@ const NamePage = ({ user, onNext }: Props) => {
       first_name,
       last_name,
       about,
+      username,
     };
 
     if (showAbout && about.trim() !== "") {
@@ -66,8 +79,21 @@ const NamePage = ({ user, onNext }: Props) => {
       <Text white>
         Detta kommer visas på din profil
       </Text>
-
-      {(error === "" && name.trim() !== "") && showAbout ? (
+      <TextField
+        marginT-20
+        placeholderTextColor="white"
+        placeholder="Användarnamn"
+        value={username}
+        onChangeText={validateUsername}
+        enableErrors
+        validateOnChange
+        validationMessage={error ? [error] : []}
+        style={styles.input}
+      />
+      <Text white>
+        Detta kommer inte visas på din profil men kan loggas in med
+      </Text>
+      {(error === "" && name.trim() !== "") ? (
         <View>
           <Text marginT-10 white heading2>
             och detta är en beskrivning om mig

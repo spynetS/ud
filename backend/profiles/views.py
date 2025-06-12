@@ -3,9 +3,9 @@ import uuid
 from django.core.files.base import ContentFile
 from rest_framework import generics, permissions
 from rest_framework.views import status
-from .models import CustomUser, UserImage
+from .models import CustomUser, UserImage, School
 
-from .serializers import CustomUserSerializer, UserImageSerializer
+from .serializers import CustomUserSerializer, UserImageSerializer, SchoolSerializer
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -19,6 +19,15 @@ from rest_framework_simplejwt.exceptions import TokenError
 
 
 User = get_user_model()
+
+from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
+
+class SchoolViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = School.objects.all().order_by('name')
+    serializer_class = SchoolSerializer
+    permission_classes = [AllowAny]
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])  # Requires token authentication
