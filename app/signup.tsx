@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Alert, StyleSheet, SafeAreaView, SafeAreaViewBase } from 'react-native';
+import {TextInput, TouchableOpacity, Alert, StyleSheet, SafeAreaView, SafeAreaViewBase } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import API, {endPoint} from "@/components/api";
-import { Button, Text, TextField } from "react-native-ui-lib";
+import { Button, Text, TextField,View } from "react-native-ui-lib";
 
 import {router} from "expo-router";
 import ProgressBar from 'react-native-progress/Bar';
@@ -11,21 +11,64 @@ import ProgressBar from 'react-native-progress/Bar';
 
 import NamePage from "./NamePage"
 import NumberPage from "./NumberPage"
+import SchoolPage from "./SchoolPage"
+
 import IntrestsAndDetailsPage from './IntrestsAndDetailsPage';
+import { User } from '@/components/user';
+
+
+export type Props = {
+	user: User;
+	onNext: (user:User) => void;
+};
+
+const LastScreen = ({user, onNext} : Props) => {
+	return(
+		<View>
+			<Text white heading>
+				{user.id}
+			</Text>
+		</View>
+	)
+}
 
 const SignupScreen = () => {
     const navigation = useNavigation();
-    const pages = 3;
-    const [page,setPage] = useState(2);
+    const pages = 4;
+    const [page,setPage] = useState(3);
+
+	const [user,setUser] = useState<User>({
+		id: 0,
+		username: '',
+		first_name: '',
+		last_name: '',
+		email: '',
+		pronoun: '',
+		programe: '',
+		location: '',
+		about: '',
+		details: [],
+		interests: [],
+		profile_picture: null,
+		images: null,
+		more_images: [],
+		bookmarks: [],
+		swipes: 0,
+	});
 
     const getPage = () =>{
         switch(page){
             case 0:
-                return <NumberPage onNext={()=>{setPage(page+1)}} />
+                return <NumberPage user={user} onNext={(user:User)=>{setUser(user),setPage(page+1)}} />
             case 1:
-                return <NamePage onNext={()=>{setPage(page+1)}} />
+                return <NamePage  user={user} onNext={(user:User)=>{setUser(user),setPage(page+1)}} />
             case 2:
-                return <IntrestsAndDetailsPage onNext={()=>{setPage(page+1)}} />
+                return <IntrestsAndDetailsPage  user={user} onNext={(user:User)=>{setUser(user),setPage(page+1)}} />
+			case 3:
+				return <SchoolPage  user={user} onNext={(user:User)=>{setUser(user),setPage(page+1)}} />
+			case 4:
+				return <LastScreen  user={user} onNext={()=>{}} />
+
 
         }
     }
@@ -39,9 +82,19 @@ const SignupScreen = () => {
             <View style={{width:"100%"}} >
                 <ProgressBar progress={page/pages}  width={null}/>
             </View>
+			<View style={{width:100}}>
+				{page > 0 ? (
+					<TouchableOpacity onPress={()=>{setPage(page-1)}}>
+						<Text white>
+							Tillbaka
+						</Text>
+					</TouchableOpacity>
+				) :null}
+			</View>
             <View style={{padding:40}}>
                 {getPage()}
             </View>
+
         </SafeAreaView>
     );
 };

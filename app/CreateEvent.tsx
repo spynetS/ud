@@ -25,7 +25,7 @@ const { height, width } = Dimensions.get('window');
 
 export type User = {
 	id: number;
-  username: string;
+	username: string;
 };
 
 // Define the Event type
