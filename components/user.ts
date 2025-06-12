@@ -1,7 +1,11 @@
 type Image = {
   image: string;
 };
-
+type School = {
+  id: number;
+  name: string;
+  color: string;
+};
 export type User = {
   id: number;
   username: string;
@@ -10,7 +14,7 @@ export type User = {
   email: string;
   pronoun: string;
   programe: string;
-  school: string;
+  school: School;
   location: string;
   about: string;
   details: string[];

@@ -28,32 +28,7 @@ type Message = {
 	receiver: User
 }
 
-type Image = {
-  id: number;
-  image: string;
-  uploaded_at: string;
-  position: number;
-};
-
-type User = {
-  id: number;
-  username: string;
-  first_name?: string;
-  last_name?: string;
-  email: string;
-  school?: string;
-  pronoun?: string;
-  programe?: string;
-  location?: string;
-  about?: string;
-  details: string[];
-  interests: string[];
-  profile_picture?: string | null;
-  images: Image[];
-  bookmarks: number[];
-  swipes: number;
-  matches: User[];
-};
+import {User} from "@components/user"
 
 
 
@@ -98,7 +73,7 @@ const MessageUserScreen = () => {
 		}
 	}, []);
 
-	const [messages,setMessages] = useState<Message[]>([{"sender":{"id":2,"username":"alfredrooos","first_name":"","last_name":"","email":"alfred@stensatter.se","school":"Jönköping University","pronoun":"he/him","programe":"Dateteknik","location":"Norrköping","about":"asdka sldkj aslkjdlaskj lsakjd lasjdlaksj dlaksj aslkj lasjd laskj dlaskjdlkasjdlkasj dlkasd lkasdlkajsldkjsalkd aslkjaklsj dlkasjdlkasj dlkasldkjasl kdasdkajdlksajd","details":["Adventurous","Affectionate","Ambitious","Artistic","Authentic","Caring","Charismatic","Charming","Cheerful","Compassionate","Confident"],"interests":["Adventurous","Affectionate","Ambitious","Artistic","Authentic","Caring","Charismatic","Charming","Cheerful","Compassionate","Confident"],"profile_picture":"/media/uploads/mig_Zdv4Y5c.jpg","images":[{"id":3,"image":"/media/user_images/mig.jpg","uploaded_at":"2025-03-25T10:12:50.020922Z","position":0},{"id":2,"image":"/media/user_images/img-0006web-1200x630.jpg","uploaded_at":"2025-03-25T09:55:28.563233Z","position":1},{"id":1,"image":"/media/user_images/Dr_Niclas_Adler.jpg","uploaded_at":"2025-03-25T09:55:22.348410Z","position":2}],"bookmarks":[1,2,3],"swipes":26,"matches":[3]},"receiver":{"id":1,"username":"spy","first_name":"","last_name":"","email":"alfred@stensatter.se","school":"Jönköping University","pronoun":"","programe":"","location":"","about":"","details":[],"interests":[],"profile_picture":null,"images":[],"bookmarks":[2,3],"swipes":3,"matches":[2,3]},"message":"Tjo bro","id":9},{"sender":{"id":2,"username":"alfredrooos","first_name":"","last_name":"","email":"alfred@stensatter.se","school":"Jönköping University","pronoun":"he/him","programe":"Dateteknik","location":"Norrköping","about":"asdka sldkj aslkjdlaskj lsakjd lasjdlaksj dlaksj aslkj lasjd laskj dlaskjdlkasjdlkasj dlkasd lkasdlkajsldkjsalkd aslkjaklsj dlkasjdlkasj dlkasldkjasl kdasdkajdlksajd","details":["Adventurous","Affectionate","Ambitious","Artistic","Authentic","Caring","Charismatic","Charming","Cheerful","Compassionate","Confident"],"interests":["Adventurous","Affectionate","Ambitious","Artistic","Authentic","Caring","Charismatic","Charming","Cheerful","Compassionate","Confident"],"profile_picture":"/media/uploads/mig_Zdv4Y5c.jpg","images":[{"id":3,"image":"/media/user_images/mig.jpg","uploaded_at":"2025-03-25T10:12:50.020922Z","position":0},{"id":2,"image":"/media/user_images/img-0006web-1200x630.jpg","uploaded_at":"2025-03-25T09:55:28.563233Z","position":1},{"id":1,"image":"/media/user_images/Dr_Niclas_Adler.jpg","uploaded_at":"2025-03-25T09:55:22.348410Z","position":2}],"bookmarks":[1,2,3],"swipes":26,"matches":[3]},"receiver":{"id":1,"username":"spy","first_name":"","last_name":"","email":"alfred@stensatter.se","school":"Jönköping University","pronoun":"","programe":"","location":"","about":"","details":[],"interests":[],"profile_picture":null,"images":[],"bookmarks":[2,3],"swipes":3,"matches":[2,3]},"message":"Tjo bro","id":10}])
+	const [messages,setMessages] = useState<Message[]>([{"sender":{"id":2,"username":"alfredrooos","first_name":"","last_name":"","email":"alfred@stensatter.se","school":"Jönköping University","pronoun":"he/him","programe":"Dateteknik","location":"Norrköping","about":"asdka sldkj aslkjdlaskj lsakjd lasjdlaksj dlaksj aslkj lasjd laskj dlaskjdlkasjdlkasj dlkasd lkasdlkajsldkjsalkd aslkjaklsj dlkasjdlkasj dlkasldkjasl kdasdkajdlksajd","details":["Adventurous","Affectionate","Ambitious","Artistic","Authentic","Caring","Charismatic","Charming","Cheerful","Compassionate","Confident"],"interests":["Adventurous","Affectionate","Ambitious","Artistic","Authentic","Caring","Charismatic","Charming","Cheerful","Compassionate","Confident"],"profile_picture":"/media/uploads/mig_Zdv4Y5c.jpg","images":[{"id":3,"image":"/media/user_images/mig.jpg","uploaded_at":"2025-03-25T10:12:50.020922Z","position":0},{"id":2,"image":"/media/user_images/img-0006web-1200x630.jpg","uploaded_at":"2025-03-25T09:55:28.563233Z","position":1},{"id":1,"image":"/media/user_images/Dr_Niclas_Adler.jpg","uploaded_at":"2025-03-25T09:55:22.348410Z","position":2}],"bookmarks":[1,2,3],"swipes":26,"matches":[3]},"receiver":{"id":1,"username":"spy","first_name":"","last_name":"","email":"alfred@stensatter.se","school":"Jönköping University","pronoun":"","programe":"","location":"","about":"","details":[],"interests":[],"profile_picture":null,"images":[],"bookmarks":[2,3],"swipes":3,"matches":[2,3]},"message":"Tjo bro","id":9},{"sender":{"id":2,"username":"alfredrooos","first_name":"","last_name":"","email":"alfred@stensatter.se","school":"Jönköping University","pronoun":"he/him","programe":"Dateteknik","location":"Norrköping","about":"asdka sldkj aslkjdlaskj lsakjd lasjdlaksj dlaksj aslkj lasjd laskj dlaskjdlkasjdlkasj dlkasd lkasdlkajsldkjsalkd aslkjaklsj dlkasjdlkasj dlkasldkjasl kdasdkajdlksajd","details":["Adventurous","Affectionate","Ambitious","Artistic","Authentic","Caring","Charismatic","Charming","Cheerful","Compassionate","Confident"],"interests":["Adventurous","Affectionate","Ambitious","Artistic","Authentic","Caring","Charismatic","Charming","Cheerful","Compassionate","Confident"],"profile_picture":"/media/uploads/mig_Zdv4Y5c.jpg","images":[{"id":3,"image":"/media/user_images/mig.jpg","uploaded_at":"2025-03-25T10:12:50.020922Z","position":0},{"id":2,"image":"/media/user_images/img-0006web-1200x630.jpg","uploaded_at":"2025-03-25T09:55:28.563233Z","position":1},{"id":1,"image":"/media/user_images/Dr_Niclas_Adler.jpg","uploaded_at":"2025-03-25T09:55:22.348410Z","position":2}],"bookmarks":[1,2,3],"swipes":26,"matches":[3]},"receiver":{"id":1,"username":"spy","first_name":"","last_name":"","email":"alfred@stensatter.se","school":{name:"jonk"},"pronoun":"","programe":"","location":"","about":"","details":[],"interests":[],"profile_picture":null,"images":[],"bookmarks":[2,3],"swipes":3,"matches":[2,3]},"message":"Tjo bro","id":10}])
 	const [newMessage,setNewMessage] = useState<string>();
 	const [selectedUser, setSelectedUser] = useState<User>(null);
 	const [counter, setCounter] = useState(0);
@@ -168,7 +143,7 @@ const MessageUserScreen = () => {
 								{selectedUser?.username}
 							</Text>
 							<Text text90 gray>
-								{selectedUser?.school}
+								{selectedUser?.school.name}
 							</Text>
 						</View>
 					</View>

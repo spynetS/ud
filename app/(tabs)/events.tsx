@@ -193,7 +193,7 @@ const EventScreen = () => {
 				}}
 			>
 				<SegmentedControl
-					segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
+					segments={[{ label: 'Sverige' }, { label: user?.school.name || "" }]}
 							 activeBackgroundColor={Colors.primary}
 							 activeColor={Colors.white}
 							 backgroundColor={"#010101aa"}

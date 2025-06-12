@@ -78,7 +78,7 @@ const RankScreen = () => {
 		API.get("/ranking/",{
 			params:{
 				pronoun : gender == 0 ? "he/him" : "she/her",
-				school  : school == 0 ? "" : user?.school || ""
+				school  : school == 0 ? "" : user?.school.name || ""
 			}}).then(response=>{
 			console.log(response)
 			setUsers(response.data);
@@ -102,7 +102,7 @@ const RankScreen = () => {
 				}}
 			>
 				<SegmentedControl
-					segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
+					segments={[{ label: 'Sverige' }, { label: user?.school.name || "" }]}
 					activeBackgroundColor={Colors.primary}
 					activeColor={Colors.white}
 					backgroundColor={"#010101"}

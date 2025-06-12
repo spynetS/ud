@@ -284,8 +284,8 @@ const ProfileScreen = () => {
 			/>
 			<Entry
 				label={"Skola"}
-					  value={user?.school}
-					  onChange={(text) => setUser(prev => ({ ...prev, school: text }))}
+					  value={user?.school.name}
+					  onChange={(text) => setUser(prev => ({ ...prev, school: {"id":user?.school.id, "name":text,"color":user?.school.color } }))}
 			/>
 
 			<Text white>

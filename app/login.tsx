@@ -8,8 +8,8 @@ import {router} from "expo-router";
 
 
 const LoginScreen = () => {
-    const [username, setUsername] = useState('spy');
-    const [password, setPassword] = useState('asd');
+    const [username, setUsername] = useState('alfredrooos');
+    const [password, setPassword] = useState('C!ornelia123');
     const navigation = useNavigation();
 
     const handleLogin = async () => {

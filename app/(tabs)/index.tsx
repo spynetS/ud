@@ -218,12 +218,12 @@ const ProfileCard = ({ card, open,user }) => {
 							</Text>
 							<Chip
 								resetSpacings
-								label={card.school}
+								label={card.school.name}
 								labelStyle={{color:"white",marginRight: Spacings.s1,fontFamily:"CustomFont"}}
 								backgroundColor={"#88888850"}
 								containerStyle={{
 									borderWidth: 0,
-									width:(card.school.length*7)
+									width:(card.school.name.length*7)
 								}}/>
 						</View>
 
@@ -281,7 +281,7 @@ const SwipeScreen = () => {
 			}).catch(error=>{
 				router.push("/login", { relativeToDirectory: true })
 			});
-		API.get('/get_swipes',{params:{school:school == 0 ? "all" : user?.school || "all"}})
+		API.get('/get_swipes',{params:{school:school == 0 ? "all" : user?.school.name || "all"}})
 		   .then(function (response) {
 			   // handle success
 			   setProfile(response.data.concat(response.data));
@@ -318,7 +318,7 @@ const SwipeScreen = () => {
 					</Link>
 
 					<SegmentedControl
-						segments={[{ label: 'Sverige' }, { label: user?.school || "" }]}
+						segments={[{ label: 'Sverige' }, { label: user?.school.name || "" }]}
 						activeBackgroundColor={Colors.primary}
 						activeColor={Colors.white}
 						backgroundColor={"#010101aa"}

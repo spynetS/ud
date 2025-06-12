@@ -3,7 +3,7 @@ import uuid
 from django.core.files.base import ContentFile
 from rest_framework import generics, permissions
 from rest_framework.views import status
-from .models import CustomUser, UserImage, SCHOOL_COLORS
+from .models import CustomUser, UserImage
 
 from .serializers import CustomUserSerializer, UserImageSerializer
 
@@ -23,36 +23,26 @@ User = get_user_model()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])  # Requires token authentication
 def get_user_data(request):
-    user:CustomUser = request.user  # Get user from token
+    user = request.user
 
     matches = CustomUserSerializer(user.matches.filter(matches=user), many=True).data
     images = UserImageSerializer(user.images.all(), many=True).data
+    bookmarks = [b.pk for b in user.bookmarks.all()]
 
-    bookmarks = []
-    for b in user.bookmarks.all():
-        bookmarks.append(b.pk)
+    user_data = CustomUserSerializer(user).data
 
-    school_color = SCHOOL_COLORS.get(user.school, "#000000")  # fallback to black if no match
-
-    return Response({
-        "id": user.id,
-        "username": user.username,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "email": user.email,
-        "pronoun": user.pronoun,
-        "location": user.location,
-        "programe": user.programe,
-        "school": user.school,
-        "school_color": school_color,
-        "about": user.about,
-        "details": user.details,
-        "bookmarks": bookmarks,
-        "images" : images,
-        "matches": matches,
-        "interests": user.interests,
-        "profile_picture": request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
+    # Add extra fields not in serializer
+    user_data.update({
+        'bookmarks': bookmarks,
+        'images': images,
+        'matches': matches,
     })
+
+    # Fix profile_picture URL
+    if user.profile_picture:
+        user_data['profile_picture'] = request.build_absolute_uri(user.profile_picture.url)
+
+    return Response(user_data)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -79,7 +69,6 @@ def login_user(request):
     username = request.data.get('username')
     password = request.data.get('password')
     user = authenticate(username=username, password=password)
-    school_color = SCHOOL_COLORS.get(user.school, "#000000")  # fallback to black if no match
 
     if user is not None:
         refresh = RefreshToken.for_user(user)
@@ -92,7 +81,7 @@ def login_user(request):
             "refresh_token": str(refresh),
             "expire": expire_timestamp,
             "user": user.username,
-            "school_color":school_color,
+            "school_color":user.school.color,
         })
     else:
         return Response({"error": "Invalid credentials"}, status=400)
