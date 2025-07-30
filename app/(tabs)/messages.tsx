@@ -67,7 +67,7 @@ const MatchItem = ({ match, press }: { match: User, press:any }) => {
 					  {match.username}
 				  </Text>
 				  <Text grey10 text40 style={{marginTop: 2, color:"gray"}}>
-					  16 min
+					  69 min
 				  </Text>
 			  </ListItem.Part>
 		  </ListItem.Part>

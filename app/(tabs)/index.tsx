@@ -46,10 +46,10 @@ const MatchModal = ({close, user, matchUser}) => {
 		intensity={5}
 		experimentalBlurMethod="dimezisBlurView"
 		>
-		<Text heading white>
+		<Text heading black>
 			It's a Match!
 		</Text>
-		<Text heading2 white>
+		<Text heading2 black>
 			Alfred likes you!
 		</Text>
 		<View row spread style={{width:width*2/3}}>

@@ -1,17 +1,17 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, FlatList } from 'react-native';
 import axios from "axios"
 import { FontAwesome } from '@expo/vector-icons';
 import { Link, router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
 
-import {Image, View, TextField, Button, Text, Avatar, Chip } from 'react-native-ui-lib';
+import {Colors,Image, View, TextField, Button, Text, Avatar, Chip } from 'react-native-ui-lib';
 import { useFocusEffect } from '@react-navigation/native';
 
 
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API, { endPoint, getProfile } from '@/components/api';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ImagePickerComponent from '@/components/ImagePicker';
@@ -133,9 +133,14 @@ const ProfileScreen = () => {
 		}));
 	}
 
-	const removeImageLocal = (id) => {
-
-	}
+	const removeImageLocal = (imageId) => {
+		setRemoveImages(prev=>([...prev,imageId]));
+		console.log(removeImages);
+		setUser(prev => ({
+			...prev,
+			images: prev.images?.filter(image => image.id !== imageId)
+		}));
+	};
 
 
 	const save = () =>{
@@ -144,17 +149,20 @@ const ProfileScreen = () => {
 		API.post("/update/",{
 			user:cleanedUser
 		}).then(response=>{
+
 			API.post("edit_image_positions/",{
 				images:user?.images
 			}).then(response=>{})
 
+			// if image isnt null we want to upload it
 			if(image!==null){
-				handleAddImage();
-				setImage(null);
+				upload_image();
 			}
+			// remove the images in the api that was selected removeable
 			for(let i = 0; i < removeImages?.length; i ++){
 				removeImage(removeImages[i]);
 			}
+
 		}).catch(error=>{
 
 		})
@@ -201,16 +209,30 @@ const ProfileScreen = () => {
 		})
 	};
 
-	const handleAddImage = async () => {
+	const upload_image = async () => {
 
 		API.post("/add_image/",{
 			image:image?.base64
 		}).then(response=>{
+			// refresh the image list by setting the new user with the new image
+			setUser(prev => ({
+				...prev,
+				images: [...prev.images, {image}],
+			}));
+			// reset the image picker
+			resetImage();
+			setImage(null);
 
 		}).catch(error=>{})
 
 	};
 
+	const pickerRef = useRef();
+	const resetImage = () => {
+		if (pickerRef.current) {
+			pickerRef.current.reset();
+		}
+	};
 
 	const renderItem = ({ item, drag }) => (
 		<TouchableOpacity onLongPress={drag} style={styles.imageContainer}>
@@ -219,17 +241,17 @@ const ProfileScreen = () => {
 
 				<Button title="Remove" color="white" onPress={() => moveUp(item.id)} >
 					<Text  white>
-						Up
+						Upp
 					</Text>
 				</Button>
 				<Button title="Remove" color="white" onPress={() => removeImageLocal(item.id)} >
 					<Text  white>
-						Remove
+						Tabort
 					</Text>
 				</Button>
 				<Button title="Remove" color="white" onPress={() => moveDown(item.id)} >
 					<Text  white>
-						Down
+						Ner
 					</Text>
 				</Button>
 			</View>
@@ -359,17 +381,24 @@ const ProfileScreen = () => {
 						/>
 					)}
 
-					<ImagePickerComponent onImage={setImage} />
+					<ImagePickerComponent ref={pickerRef} onImage={setImage} />
+					{image !== null ? (
+						<Button onPress={upload_image} loading={loading} style={styles.saveButton}>
+							<Text white>
+								Ladda upp bild
+							</Text>
+						</Button>
+					):null}
 				</View>
 			</View>
 			<View>
 				<Button onPress={save} loading={loading} style={styles.saveButton}>
-					<Text>
+					<Text white>
 						Spara ändringar
 					</Text>
 				</Button>
 				<Button onPress={logout} loading={loading} style={styles.saveButton}>
-					<Text>
+					<Text white>
 						Logout
 					</Text>
 				</Button>
@@ -400,6 +429,7 @@ const styles = StyleSheet.create({
 	},
 	saveButton: {
 		marginTop: 20,
+		backgroundColor: Colors.primary,
 	},
 	input: {
 		backgroundColor:"#000",
