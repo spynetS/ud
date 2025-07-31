@@ -55,7 +55,7 @@ export default function TabLayout() {
         name="events"
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <FontAwesome name="ticket"  style={{ backgroundColor: focused ? Colors.primary : "#00000000", padding: 0, borderRadius:20}} size={size} color={color} />
+            <FontAwesome name="ticket"  style={{ backgroundColor: focused ? Colors.primary : "#00000000", padding: 10, borderRadius:20}} size={size} color={color} />
           ),
 
         }}
@@ -65,7 +65,7 @@ export default function TabLayout() {
         name="ranking"
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <FontAwesome name="trophy"  style={{ backgroundColor: focused ? Colors.primary : "#00000000", padding: 0, borderRadius:20}} size={size} color={color} />
+            <FontAwesome name="trophy"  style={{ backgroundColor: focused ? Colors.primary : "#00000000", padding: 10, borderRadius:20}} size={size} color={color} />
           ),
 
         }}
@@ -75,7 +75,7 @@ export default function TabLayout() {
         name="index"
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <FontAwesome name="hand-o-right" style={{ backgroundColor: focused ? Colors.primary : "#00000000", padding: 0, borderRadius:20}} size={size} color={color} />
+            <FontAwesome name="hand-o-right" style={{ backgroundColor: focused ? Colors.primary : "#00000000", padding: 10, borderRadius:20}} size={size} color={color} />
           ),
 
         }}
@@ -84,7 +84,7 @@ export default function TabLayout() {
         name="messages"
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <FontAwesome name="comment-o"  style={{ backgroundColor: focused ? Colors.primary : "#00000000", padding: 0, borderRadius:20}} size={size} color={color} />
+            <FontAwesome name="comment-o"  style={{ backgroundColor: focused ? Colors.primary : "#00000000", padding: 10, borderRadius:20}} size={size} color={color} />
           ),
 
         }}
@@ -94,7 +94,7 @@ export default function TabLayout() {
         name="profile"
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <FontAwesome name="user"  style={{ backgroundColor: focused ? Colors.primary : "#00000000", padding: 0, borderRadius:20}} size={size} color={color} />
+            <FontAwesome name="user"  style={{ backgroundColor: focused ? Colors.primary : "#00000000", padding: 10, borderRadius:20}} size={size} color={color} />
           ),
 
         }}
