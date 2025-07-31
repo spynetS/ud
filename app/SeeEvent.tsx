@@ -71,6 +71,14 @@ const CreateEventScreen = () => {
 		}).catch(error=>{})
 	}
 
+	const deleteEvent = (eventId) => {
+		API.delete("events/delete/"+eventId).then(response=>{
+			if(response.data.deleted === true){
+				router.push("/events", { relativeToDirectory: true })
+			}
+		})
+	}
+
 	return (
 		<SafeAreaView style={{flex:1,backgroundColor:"#000",}} >
 			<Image style={{height:height*0.35}} source={{uri:event?.image}}/>
@@ -123,7 +131,7 @@ const CreateEventScreen = () => {
 					end={{ x: 0.5, y: 1 }}
 				/>
 				{event?.creator === user?.id ? (
-					<Button marginT-20 backgroundColor={Colors.primary}>
+					<Button onPress={()=>deleteEvent(event.id)} marginT-20 backgroundColor={Colors.primary}>
 						<Text white>
 							TABORT
 						</Text>

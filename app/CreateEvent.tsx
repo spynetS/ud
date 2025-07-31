@@ -52,6 +52,8 @@ const CreateEventScreen = () => {
 	const [location,setLocation] = useState<string>();
 
 	const [user,setUser] = useState(null);
+	const [loading, setLoading] = useState<boolean>(false);
+
 	useFocusEffect(useCallback(()=>{
 
 		getProfile().then(response=>{
@@ -96,6 +98,7 @@ const CreateEventScreen = () => {
 	};
 
 	const publish = () =>{
+		setLoading(true)
 		API.post("/events/create/",{
 			title:title,
 			description:description,
@@ -104,6 +107,8 @@ const CreateEventScreen = () => {
 			creator:user.id,
 			image:image?.base64
 		}).then(response=>{
+			router.push("/events");
+			setLoading(false)
 
 		}).catch(error=>{})
 
@@ -158,7 +163,7 @@ const CreateEventScreen = () => {
 				}}
 			/>
 
-			<Button onPress={publish} backgroundColor={Colors.primary} >
+			<Button onPress={publish} disabled={loading} backgroundColor={Colors.primary} >
 				<Text color="white">
 					Publicera
 				</Text>

@@ -8,7 +8,7 @@ router = DefaultRouter()
 
 urlpatterns = [
     path('get_events/', EventListView.as_view(), name='get_events'),
-
+    path('events/delete/<int:pk>',delete_event,name="event-delete"),
     path('events/comming/',comming),
     path('events/create/', create_event, name='event-create'),
     path('events/can_create/', can_create, name='event-create'),

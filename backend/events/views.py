@@ -70,14 +70,26 @@ def create_event(request):
 
     return Response({"message":"new event added"})
 
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_event(request, pk):
+    try:
+        event: Event = Event.objects.get(pk=pk,creator=request.user)
+        event.delete()
+        return Response({"deleted":True})
+    except Exception as e:
+        return Response({"deleted":False, error:str(e)})
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def can_create(request):
-    amount_in_the_top_list = 1
-    top_100 = CustomUser.objects.order_by('-swipes').all()[:amount_in_the_top_list]
-    if request.user in top_100:
-        return Response({"can":True})
-    return Response({"can":False})
+    top_10_he_him = CustomUser.objects.filter(pronoun='he/him').order_by('-swipes')[:10]
+    top_10_she_her = CustomUser.objects.filter(pronoun='she/her').order_by('-swipes')[:10]
+
+    if request.user in top_10_he_him or request.user in top_10_she_her:
+        return Response({"can": True})
+    return Response({"can": False})
 
 
 

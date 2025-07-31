@@ -35,10 +35,17 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c7040fbe-f5a8-40e7-8eed-1cb157eb5558"
+      }
     }
   }
 }
