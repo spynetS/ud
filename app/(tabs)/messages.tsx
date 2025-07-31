@@ -67,7 +67,7 @@ const MatchItem = ({ match, press }: { match: User, press:any }) => {
 					  {match.username}
 				  </Text>
 				  <Text grey10 text40 style={{marginTop: 2, color:"gray"}}>
-					  69 min
+
 				  </Text>
 			  </ListItem.Part>
 		  </ListItem.Part>
@@ -99,11 +99,12 @@ const MessageScreen = () => {
 			</Text>
 			<TextInput style={styles.input} placeholder="Search"  />
 			<View row center style={{}} >
-        {/* THIS SHOULDNT BE HARD CODED */}
-				<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
-				<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
-				<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
-				<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
+        {/* THIS SHOULDNT BE HARD CODED
+						<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
+						<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
+						<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
+						<Image source={{uri: ("http://192.168.1.119:8000/media/uploads/mig_Zdv4Y5c.jpg")}} style={styles.bigImage}/>
+					*/}
 			</View>
 			<View style={{padding:10}} >
 

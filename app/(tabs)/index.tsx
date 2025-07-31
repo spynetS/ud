@@ -134,10 +134,10 @@ const SwipeScreen = () => {
 			}).catch(error=>{
 				router.push("/login", { relativeToDirectory: true })
 			});
-		API.get('/get_swipes',{params:{school:school == 0 ? "all" : user?.school.name || "all"}})
+		API.get('/get_swipes',{params:{school:school == 0 ? "all" : user?.school.id || "all"}})
 		   .then(function (response) {
 			   // handle success
-			   setProfile(response.data.concat(response.data));
+			   setProfile(response.data);
 		   })
 		   .catch(function (error) {
 			   // handle error

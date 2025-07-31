@@ -52,7 +52,7 @@ const ProfileCard = ({ card, open,user }) => {
 		}
 	};
 
-	if(!card) {return (<Text>Loading</Text>)}
+	if(!card) {return (<Text white></Text>)}
 	else {
 		return (
 			<ScrollView

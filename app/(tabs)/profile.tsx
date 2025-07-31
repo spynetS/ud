@@ -375,7 +375,7 @@ const ProfileScreen = () => {
 					{user?.images && (
 						<FlatList
 							data={user.images}
-							keyExtractor={(item) => item.id.toString()}
+							keyExtractor={(item) => item.id ? item.id.toString() : item.toString()}
 							renderItem={renderItem}
 							onDragEnd={({ data }) => handleReorder(data)}
 						/>

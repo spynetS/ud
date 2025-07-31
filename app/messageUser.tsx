@@ -134,7 +134,7 @@ const MessageUserScreen = () => {
 
 				<View row spread paddingH-15 centerV style={{height:80, width:"100%"}}>
 					<Link href="/messages">
-						<FontAwesome name="arrow-left"  color="white" size={24}/>
+						<FontAwesome name="arrow-left" color="white" size={24}/>
 					</Link>
 					<View flex row center >
 						<Avatar source={{uri:endPoint+selectedUser?.images[0].image}} />
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
 		padding: 16,
 	  },
 	sendButton: {
-		backgroundColor: '#007AFF',
+		backgroundColor: Colors.primary,
 		borderRadius: 25,
 		padding: 10,
 		marginLeft: 8,
