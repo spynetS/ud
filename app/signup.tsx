@@ -32,36 +32,73 @@ export type Props = {
 	onNext: (user:User) => void;
 };
 
-const LastScreen = ({user, onNext} : Props) => {
+const LastScreen = ({ user, onNext }: Props) => {
+	const [error, setError] = useState<string | null>(null);
 
-	useFocusEffect(useCallback(()=>{
-		const postUser = {
-			...user,
-			school_id:user.school.id
-		}
-		axios.post(endPoint+"/api/users/",postUser).then(response=>{
-			console.log(response)
-		})
-	},[]));
+	useFocusEffect(
+		useCallback(() => {
+			const postUser = {
+				...user,
+				school_id: user.school.id,
+			};
 
-	return(
+			const sendUser = async () => {
+				try {
+					const response = await axios.post(endPoint + "/api/users/", postUser);
+					console.log("User posted successfully:", response.data);
+					setError(null); // clear any previous error
+				} catch (err: any) {
+					console.error("Error posting user:", err);
+
+					// Check if response data contains validation errors
+					if (err.response?.data && typeof err.response.data === "object") {
+						// Extract all error messages and join them
+						const messages = Object.values(err.response.data)
+											   .flat() // flatten arrays of messages
+											   .join("\n");
+						setError(messages);
+					} else {
+						// Generic fallback error
+						setError("Det gick inte att skapa användaren. Försök igen senare.");
+					}
+				}
+			};
+
+
+			sendUser();
+		}, [])
+	);
+
+	return (
 		<View>
 			<Text heading2 white>
 				Välkommen {user.first_name}
 			</Text>
 			<Text white>
-				Veriferia din mail sedan kan du logga in.
-				för att lägga till bilder eller redigera uppgifter
-				kan du gå till profil sidan i appen.
+				Verifiera din mail sedan kan du logga in. För att lägga till bilder eller redigera uppgifter kan du gå till profil sidan i appen.
 			</Text>
-			<TouchableOpacity style={styles.input} onPress={()=>{router.push("/login");}}>
+
+			{/* Error Label */}
+			{error && (
+				<Text style={{ color: "red", marginTop: 10 }}>
+					{error}
+				</Text>
+			)}
+
+			<TouchableOpacity
+				style={styles.input}
+					  onPress={() => {
+						  router.push("/login");
+					  }}
+			>
 				<Text white center>
 					Logga in
 				</Text>
 			</TouchableOpacity>
 		</View>
-	)
-}
+	);
+};
+
 
 const SignupScreen = () => {
     const navigation = useNavigation();
@@ -112,7 +149,7 @@ const SignupScreen = () => {
     }
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{height:"100%",backgroundColor:"#000"}} >
             {/*             Margin so it doesnt appear inside the camera */}
             <Text marginT-50 marginB-10 center white heading2>
                 Registrera för UD
