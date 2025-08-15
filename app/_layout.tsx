@@ -29,7 +29,7 @@ function darkenHexColor(hex, amount = 0.2) {
 }
 
 async function loadColorsFromStorage() {
-  const primary = await AsyncStorage.getItem('primary_color') || '#ff0000';
+  const primary = (await AsyncStorage.getItem('primary_color')) || '#FF69B4';
   const dark = darkenHexColor(primary);
 
   Colors.loadColors({

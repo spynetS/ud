@@ -1,8 +1,13 @@
+from django.template.loader import render_to_string
 import base64
 import uuid
 from django.core.files.base import ContentFile
+from django.http import HttpResponse
 from rest_framework import generics, permissions
 from rest_framework.views import status
+from django.shortcuts import render
+
+from mail.mail import sendmail
 from .models import CustomUser, UserImage, School
 
 from .serializers import CustomUserSerializer, UserImageSerializer, SchoolSerializer
@@ -22,6 +27,8 @@ User = get_user_model()
 
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
+
+
 
 class SchoolViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = School.objects.all().order_by('name')
@@ -80,6 +87,8 @@ def login_user(request):
     user = authenticate(username=username, password=password)
 
     if user is not None:
+        if not user.verified:
+            return Response({"error": "User not verified"}, status=400)
         refresh = RefreshToken.for_user(user)
         access_token = refresh.access_token
         expire_timestamp = access_token.payload["exp"]  # Correct way to access expiration
@@ -158,6 +167,32 @@ class CustomUserListCreateView(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [permissions.AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        # Call the parent class's create method to create the user
+        response = super().create(request, *args, **kwargs)
+
+        # Get the created user instance
+        user = response.data
+
+        # Send an email to the new user
+        sendmail(
+            'Welcome to Our Service',
+            render_to_string("email_verification.html",{
+                "app_name":"UD",
+                "app_url":f"http://localhost:8000/verify/{user['id']}",
+                "verify_url":f"http://localhost:8000/api/verify/{user['id']}",
+                "first_name":user['first_name'],
+                "verification_code":"COMING SOON",
+                "code_expiry_minutes":"10"
+            }),
+            "",
+            "",
+            user['email'],  # Replace with the user's email
+            content_subtype="html"
+        )
+
+        return response
 
 class CustomUserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
@@ -245,3 +280,12 @@ def add_image(request):
     img.image.save(filename,image_file)
     img.save()
     return Response({"sucess":True})
+
+def verify(request,pk):
+    user: User = User.objects.get(pk=pk)
+    user.verified = True
+    user.save()
+    return render(request,"verified.html",{
+        "app_name":"UD",
+        "logo_url":"10"
+    })

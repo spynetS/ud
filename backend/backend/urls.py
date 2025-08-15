@@ -18,12 +18,17 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
+from mail.mail import sendmail
+
+def send(request):
+    sendmail("test","Hej hej\n","alfred (name)","alfred@stensatter.se","alfred@stensatter.se")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('profiles.urls')),  # Routes 'api/' URLs to the 'dating' app
     path('api/', include('direct_messages.urls')),  # Routes 'api/' URLs to the 'dating' app
-    path('api/', include('events.urls')),  # Routes 'api/' URLs to the 'dating' app
+    path('api/', include('events.urls')),
+    path('sendmail',send),
 ]
 
 if settings.DEBUG:
