@@ -1,9 +1,11 @@
+from django.template.loader import render_to_string
 import base64
 import uuid
 from django.core.files.base import ContentFile
 from django.http import HttpResponse
 from rest_framework import generics, permissions
 from rest_framework.views import status
+from django.shortcuts import render
 
 from mail.mail import sendmail
 from .models import CustomUser, UserImage, School
@@ -176,10 +178,18 @@ class CustomUserListCreateView(generics.ListCreateAPIView):
         # Send an email to the new user
         sendmail(
             'Welcome to Our Service',
-            'Thank you for signing up, {}! http://localhost:8000/api/verify/{}'.format(user['username'],user['id']),
+            render_to_string("email_verification.html",{
+                "app_name":"UD",
+                "app_url":f"http://localhost:8000/verify/{user['id']}",
+                "verify_url":f"http://localhost:8000/api/verify/{user['id']}",
+                "first_name":user['first_name'],
+                "verification_code":"COMING SOON",
+                "code_expiry_minutes":"10"
+            }),
             "",
             "",
             user['email'],  # Replace with the user's email
+            content_subtype="html"
         )
 
         return response
@@ -271,24 +281,11 @@ def add_image(request):
     img.save()
     return Response({"sucess":True})
 
-verified_html = '''
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Verified</title>
-	</head>
-  <body>
-
-	<h1>Du är nu verifierad och kan logga in!</h1>
-
-  </body>
-  </html>
-'''
-
 def verify(request,pk):
-    user: Usern = User.objects.get(pk=pk)
+    user: User = User.objects.get(pk=pk)
     user.verified = True
     user.save()
-    return HttpResponse(verified_html)
+    return render(request,"verified.html",{
+        "app_name":"UD",
+        "logo_url":"10"
+    })
