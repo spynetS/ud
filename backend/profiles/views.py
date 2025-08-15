@@ -1,8 +1,11 @@
 import base64
 import uuid
 from django.core.files.base import ContentFile
+from django.http import HttpResponse
 from rest_framework import generics, permissions
 from rest_framework.views import status
+
+from mail.mail import sendmail
 from .models import CustomUser, UserImage, School
 
 from .serializers import CustomUserSerializer, UserImageSerializer, SchoolSerializer
@@ -22,6 +25,8 @@ User = get_user_model()
 
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
+
+
 
 class SchoolViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = School.objects.all().order_by('name')
@@ -80,6 +85,8 @@ def login_user(request):
     user = authenticate(username=username, password=password)
 
     if user is not None:
+        if not user.verified:
+            return Response({"error": "User not verified"}, status=400)
         refresh = RefreshToken.for_user(user)
         access_token = refresh.access_token
         expire_timestamp = access_token.payload["exp"]  # Correct way to access expiration
@@ -158,6 +165,24 @@ class CustomUserListCreateView(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [permissions.AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        # Call the parent class's create method to create the user
+        response = super().create(request, *args, **kwargs)
+
+        # Get the created user instance
+        user = response.data
+
+        # Send an email to the new user
+        sendmail(
+            'Welcome to Our Service',
+            'Thank you for signing up, {}! http://localhost:8000/api/verify/{}'.format(user['username'],user['id']),
+            "",
+            "",
+            user['email'],  # Replace with the user's email
+        )
+
+        return response
 
 class CustomUserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
@@ -245,3 +270,25 @@ def add_image(request):
     img.image.save(filename,image_file)
     img.save()
     return Response({"sucess":True})
+
+verified_html = '''
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Verified</title>
+	</head>
+  <body>
+
+	<h1>Du är nu verifierad och kan logga in!</h1>
+
+  </body>
+  </html>
+'''
+
+def verify(request,pk):
+    user: Usern = User.objects.get(pk=pk)
+    user.verified = True
+    user.save()
+    return HttpResponse(verified_html)

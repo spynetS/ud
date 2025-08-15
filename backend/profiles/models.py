@@ -28,6 +28,8 @@ class CustomUser(AbstractUser):
         related_name='users'
     )
 
+    verified = models.BooleanField(default=False)
+
     about = models.TextField(blank=True)
     details = models.JSONField(default=list, blank=True)
     interests = models.JSONField(default=list, blank=True)

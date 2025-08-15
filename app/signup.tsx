@@ -50,6 +50,7 @@ const LastScreen = ({user, onNext} : Props) => {
 				Välkommen {user.first_name}
 			</Text>
 			<Text white>
+				Veriferia din mail sedan kan du logga in.
 				för att lägga till bilder eller redigera uppgifter
 				kan du gå till profil sidan i appen.
 			</Text>
