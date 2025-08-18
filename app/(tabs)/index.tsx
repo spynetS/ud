@@ -199,7 +199,10 @@ const SwipeScreen = () => {
 								   cards={profiles}
 								   renderCard={(card) => <ProfileCard card={card}
 																	  user={user || {bookmarks:[]}}
-																	  open={()=>{setVisible(true);setSelectedUser(card)}} />}
+																	  open={()=>{setVisible(true);setSelectedUser(card)}}
+																	  bookmark={bookmark}
+																	  unbookmark={unbookmark}
+														 />}
 								   stackSize={2}
 								   useViewOverflow={true}
 								   verticalSwipe={false}

@@ -33,7 +33,7 @@ type User = {
   swipes: number;
 };
 
-const Row = ({item}) => {
+const Row = ({item, index}) => {
   return (
       <View
 		  style={{
@@ -45,7 +45,7 @@ const Row = ({item}) => {
 
 		  }}
       >
-		  <Text white>{item.id}</Text>
+		  <Text white>{index+1}</Text>
 		  <Avatar
 			  size={40}
 			  source={{
@@ -78,7 +78,7 @@ const RankScreen = () => {
 		API.get("/ranking/",{
 			params:{
 				pronoun : gender == 0 ? "he/him" : "she/her",
-				school  : school == 0 ? "" : user?.school.name || ""
+				school  : school == 0 ? "" : user?.school.id || ""
 			}}).then(response=>{
 			console.log(response)
 			setUsers(response.data);

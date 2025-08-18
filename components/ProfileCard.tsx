@@ -28,7 +28,7 @@ const RoundButton = ({ onPress, iconName }) => {
 };
 
 
-const ProfileCard = ({ card, open,user }) => {
+const ProfileCard = ({ card, open,user,bookmark, unbookmark }) => {
 
 	const [currentImage,setCurrentImage] = useState<string>("");
 	const [imageIndex,setImageIndex] = useState<number>(0);

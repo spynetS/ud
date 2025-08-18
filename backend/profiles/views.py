@@ -21,7 +21,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.exceptions import TokenError
-
+import random
 
 User = get_user_model()
 
@@ -160,7 +160,11 @@ def get_swipes(request):
     if school_filter and school_filter.lower() != "all":
         users = users.filter(school=school_filter)  # Filter by school if not "all"
 
-    serializer = CustomUserSerializer(users, many=True)  # Serialize user data
+
+    users = list(users)  # Convert queryset to list
+    random.shuffle(users)
+
+    serializer = CustomUserSerializer(users, many=True)
     return Response(serializer.data)
 
 class CustomUserListCreateView(generics.ListCreateAPIView):
