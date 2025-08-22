@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "UD",
+    "name": "Unidate",
     "slug": "UD",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,14 +10,14 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.UD"
+      "bundleIdentifier": "com.unidate.unidate"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.UD"
+      "package": "com.unidate.unidate"
     },
     "web": {
       "bundler": "metro",

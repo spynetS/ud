@@ -2,7 +2,8 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, router } from "expo-router";
 
-export const endPoint = "http://localhost:8000";
+/ssh:hungriguf.se:/ehmo / spy / westerberg / manage.py;
+export const endPoint = "http://alfredroos.se:8000";
 const api = axios.create({
   //baseURL: "http://192.168.1.119:8000/api",
   baseURL: endPoint + "/api",

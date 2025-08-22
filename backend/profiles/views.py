@@ -293,3 +293,19 @@ def verify(request,pk):
         "app_name":"UD",
         "logo_url":"10"
     })
+
+from django.contrib import messages
+
+def remove_page(request):
+    if request.method == 'POST':
+        try:
+            # Get the current logged-in user's email
+            user = CustomUser.objects.get(email=request.POST["email"])
+            user.delete()
+            messages.success(request, "Your account has been successfully deleted.")
+            return render(request, "remove.html", {"success": True})
+        except CustomUser.DoesNotExist:
+            messages.error(request, "User not found.")
+            return render(request, "remove.html", {"success": False})
+    else:
+        return render(request, "remove.html", {"success": False})

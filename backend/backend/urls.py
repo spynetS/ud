@@ -20,6 +20,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from mail.mail import sendmail
 
+from profiles.views import remove_page
+
 def send(request):
     sendmail("test","Hej hej\n","alfred (name)","alfred@stensatter.se","alfred@stensatter.se")
 
@@ -29,6 +31,7 @@ urlpatterns = [
     path('api/', include('direct_messages.urls')),  # Routes 'api/' URLs to the 'dating' app
     path('api/', include('events.urls')),
     path('sendmail',send),
+    path('remove-account',remove_page),
 ]
 
 if settings.DEBUG:

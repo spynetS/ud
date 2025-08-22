@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Begäran om borttagning av Unidate-konto</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px 30px;
+    }
+    h1 {
+      margin-top: 0;
+      color: #333;
+    }
+    p {
+      line-height: 1.5;
+      color: #555;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .checkbox {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+    }
+    .checkbox input {
+      margin-right: 10px;
+    }
+    button {
+      margin-top: 25px;
+      padding: 12px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #777;
+    }
+    .footer a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Begäran om borttagning av Unidate‑konto</h1>
+    <p>Den här sidan låter dig begära borttagning av ditt konto och all personlig data som är knuten till Unidate. Fyll i formuläret nedan för att identifiera ditt konto. Vi påbörjar processen så snart vi mottagit din begäran och återkopplar via e‑post. Din data raderas normalt inom 30 dagar, men viss information kan behöva sparas längre om lag eller säkerhetsskäl kräver det.</p>
+
+    <form action="/remove-account" method="post">
+		{% csrf_token %}
+      <label for="email">E‑postadress (obligatorisk)</label>
+      <input type="email" id="email" name="email" required placeholder="din@epost.se">
+
+      <label for="username">Användarnamn eller Unidate‑ID (valfritt)</label>
+      <input type="text" id="username" name="username" placeholder="Ditt användarnamn eller ID">
+
+      <label for="message">Ytterligare information (valfritt)</label>
+      <textarea id="message" name="message" placeholder="Beskriv eventuellt problem eller särskilda önskemål"></textarea>
+
+      <div class="checkbox">
+        <input type="checkbox" id="confirm" name="confirm" required>
+        <label for="confirm" style="font-weight: normal;">Jag bekräftar att jag vill ta bort mitt Unidate‑konto och all tillhörande data. Jag är medveten om att borttagningen är permanent och att viss data kan behöva behållas för lagkrav eller säkerhetsskäl.</label>
+      </div>
+
+      <button type="submit" >Skicka begäran</button>
+    </form>
+
+	{% if success %}
+	<div id="response" style="display:block; margin-top:20px; padding:15px; border:1px solid #c3e6cb; background-color:#d4edda; color:#155724; border-radius:4px;">
+		Ditt konto har nu blivit permanent borttaget!
+	</div>
+	{% endif %}
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="footer">
+      <p>För frågor om databehandling och integritet, kontakta oss på <a href="mailto:privacy@unidate.app">privacy@unidate.app</a>.</p>
+      <p>Läs mer om hur vi behandlar dina personuppgifter i vår <a href="https://unidate.app/integritetspolicy" target="_blank">integritetspolicy</a>.</p>
+    </div>
+  </div>
+</body>
+</html>
